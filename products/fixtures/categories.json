@@ -1,0 +1,90 @@
+[
+    {
+        "pk": 1,
+        "model": "products.category",
+        "fields": {
+            "name": "motherboard",
+            "friendly_name": "Motherboards"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "products.category",
+        "fields": {
+            "name": "cpu",
+            "friendly_name": "CPU"
+        }
+    },
+    {
+        "pk": 6,
+        "model": "products.category",
+        "fields": {
+            "name": "graphic_card",
+            "friendly_name": "Graphic Cards"
+        }
+    },
+    {
+        "pk": 7,
+        "model": "products.category",
+        "fields": {
+            "name": "ram",
+            "friendly_name": "RAM"
+        }
+    },
+    {
+        "pk": 10,
+        "model": "products.category",
+        "fields": {
+            "name": "ssd",
+            "friendly_name": "Solid State Disk"
+        }
+    },
+    {
+        "pk": 11,
+        "model": "products.category",
+        "fields": {
+            "name": "hdd",
+            "friendly_name": "Hard Disk"
+        }
+    },
+    {
+        "pk": 12,
+        "model": "products.category",
+        "fields": {
+            "name": "power_supply",
+            "friendly_name": "Power Supply"
+        }
+    },
+    {
+        "pk": 13,
+        "model": "products.category",
+        "fields": {
+            "name": "keyboard_mouse",
+            "friendly_name": "Keyboard & Mouse"
+        }
+    },
+    {
+        "pk": 14,
+        "model": "products.category",
+        "fields": {
+            "name": "case",
+            "friendly_name": "Case"
+        }
+    },
+    {
+        "pk": 14,
+        "model": "products.category",
+        "fields": {
+            "name": "speakers",
+            "friendly_name": "Speaker"
+        }
+    },
+    {
+        "pk": 15,
+        "model": "products.category",
+        "fields": {
+            "name": "others",
+            "friendly_name": "Others"
+        }
+    }
+]
