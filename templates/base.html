@@ -1,0 +1,54 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    {% block meta %}
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% endblock %}
+
+    {% block extra_meta %}
+    {% endblock %}
+
+    {% block corecss %}
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="{% static 'css/output.css' %}">
+    {% endblock %}
+
+    {% block extra_css %}
+    {% endblock %}
+
+    {% block corejs %}
+        <script src="https://kit.fontawesome.com/c18c39146b.js" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    {% endblock %}
+
+    {% block extra_js %}
+    {% endblock %}
+
+    <title>Django Store Test {% block extra_title %}{% endblock %}</title>
+  </head>
+  <body>
+    <header class="w-full mb-0" id="topnav">
+      {% include 'includes/main-nav.html' %}
+      <div id="delivery-banner" class="bg-black mb-0 mt-0">
+        <h4 class="logo-font text-center text-yellow-200 mt-3 mb-0">Free delivery on orders over ${{ free_delivery_treshold }}!</h4>
+      </div> 
+    </header>
+
+    {% block content_title %}
+    {% endblock %}
+
+    {% block content %}
+    {% endblock %}
+
+    {% block postloadjs %}
+    <script src="/static/vendor/flowbite/flowbite.min.js" type="text/javascript"></script>
+    <script src="/static//vendor/htmx/htmx.min.js" type="text/javascript"></script>
+    {% endblock %}
+  </body>
+</html>

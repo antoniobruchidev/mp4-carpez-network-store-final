@@ -1,1 +1,19 @@
 {% extends "allauth/layouts/entrance.html" %}
+{% block content_title %}
+<h2 class="text-center text-5xl font-extrabold dark:text-whited mt-10">
+    {% block header %}{% endblock %}
+</h2>
+{% endblock %}
+{% block content %}
+    <div class="md:container md:mx-auto mt-4">
+        <div class="overlay"></div>
+        <div class="row">
+            <div class="col-12">
+                <div class="allauth-form-inner-content">
+                    {% block inner_content %}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
