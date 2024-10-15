@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import os
 from pathlib import Path
 from .env import config
+from custom_storages import StaticStorage, MediaStorage
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -147,13 +148,46 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+USE_AWS = config(str('USE_AWS'), cast=bool, default=False)
+
+AWS_ACCESS_KEY_ID = config(str('AWS_ACCESS_KEY_ID'))
+AWS_SECRET_ACCESS_KEY = config(str('AWS_SECRET_ACCESS_KEY'))
+AWS_STORAGE_BUCKET_NAME = config(str('AWS_STORAGE_BUCKET_NAME'))
+AWS_DEFAULT_ACL = 'public-read'
+AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
 
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
+    ("css", "/home/carpez/dev/ecommerce/mp4-ecommerce-app/static/css"),
+    ("images", "/home/carpez/dev/ecommerce/mp4-ecommerce-app/static/images"),
+    ("tailwind", "/home/carpez/dev/ecommerce/mp4-ecommerce-app/static/tailwind"),
+    ("vendor", "/home/carpez/dev/ecommerce/mp4-ecommerce-app/static/vendor"),
 ]
 
+if USE_AWS:
+    # aws settings should work
+    # s3 static settings
+    AWS_STATIC_LOCATION = 'static'
+    AWS_MEDIA_LOCATION = 'media'
+    STORAGES = {
+        'default': {  
+            'BACKEND': 'custom_storages.MediaStorage'
+            },
+        "staticfiles": {
+            "BACKEND": 'custom_storages.StaticStorage'
+            }
+        }
+    MEDIA_ROOT = 'media'
+    # STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_STATIC_LOCATION}/'
+    # DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_MEDIA_LOCATION}/'
+else:
+    STATIC_URL = 'staticfiles/'
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+    MEDIA_URL = 'media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'mediafiles')
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 

@@ -1,8 +1,8 @@
 from django import forms
+from django.conf import settings
 from .models import Brand, Product, Category, Tag
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, Submit, ButtonHolder
-# from crispy_tailwind.layout import Submit
+from crispy_forms.layout import Layout, Fieldset, ButtonHolder, HTML
 
 input_css_class = 'form-control'
 input_css_class_tags = 'form-select'
@@ -39,7 +39,11 @@ class ProductForm(forms.ModelForm):
                 'price',
                 'image'
             ),
-            ButtonHolder(Submit('submit', 'Add'))
+            ButtonHolder(HTML(
+                '<button class="btn-reset ml-2" type="reset">Reset</button>'
+                '<button class="btn-submit ml-2" type="submit">Submit</button>'),
+                css_class='text-end' 
+            )
         )
         return helper
     
@@ -54,8 +58,4 @@ class ProductForm(forms.ModelForm):
         self.fields['category'].choices = _categories
         self.fields['tags'].choices = _tags
         self.fields['brand'].choices = _brands
-        for field_name, field in self.fields.items():
-            if field_name == 'tags':
-                field.widget.attrs['multiple'] = True
-            field.widget.attrs['class'] = input_css_class
-
+        
