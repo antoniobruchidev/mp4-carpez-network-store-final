@@ -1,0 +1,58 @@
+[
+    {
+        "pk": 1,
+        "model": "products.brand",
+        "fields": {
+            "brand": "asus",
+            "support_page": "https://www.asus.com/uk/support/download-center/"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "products.brand",
+        "fields": {
+            "brand": "msi",
+            "support_page": "https://www.msi.com/support/download"
+        }
+    },
+    {
+        "pk": 3,
+        "model": "products.brand",
+        "fields": {
+            "brand": "gigabyte",
+            "support_page": "https://www.gigabyte.com/Support"
+        }
+    },
+    {
+        "pk": 4,
+        "model": "products.brand",
+        "fields": {
+            "brand": "pny",
+            "support_page": "https://www.pny.com/support"
+        }
+    },
+    {
+        "pk": 5,
+        "model": "products.brand",
+        "fields": {
+            "brand": "sapphire",
+            "support_page": "https://www.sapphiretech.com/en/drivers-download"
+        }
+    },
+    {
+        "pk": 6,
+        "model": "products.brand",
+        "fields": {
+            "brand": "xfx",
+            "support_page": "https://www.xfxforce.com/support/drivers-downloads"
+        }
+    },
+    {
+        "pk": 7,
+        "model": "products.brand",
+        "fields": {
+            "brand": "alienware",
+            "support_page": "https://www.dell.com/support/home/en-uk?app=drivers"
+        }
+    }
+]

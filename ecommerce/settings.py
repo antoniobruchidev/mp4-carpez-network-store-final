@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'allauth.account',
     'home',
     'products',
+    'crispy_forms',
+    'crispy_tailwind',
 ]
 
 MIDDLEWARE = [
@@ -77,6 +79,10 @@ TEMPLATES = [
         },
     },
 ]
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
+
+CRISPY_TEMPLATE_PACK = "tailwind"
 
 SITE_ID = 1
 

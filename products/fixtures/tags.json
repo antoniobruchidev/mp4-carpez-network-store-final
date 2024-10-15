@@ -1,0 +1,130 @@
+[
+    {
+        "pk": 1,
+        "model": "products.tag",
+        "fields": {
+            "tag": "clearance",
+            "friendly_tag": "Clearance"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "products.tag",
+        "fields": {
+            "tag": "am4",
+            "friendly_tag": "AM4"
+        }
+    },
+    {
+        "pk": 3,
+        "model": "products.tag",
+        "fields": {
+            "tag": "am5",
+            "friendly_tag": "AM5"
+        }
+    },
+    {
+        "pk": 4,
+        "model": "products.tag",
+        "fields": {
+            "tag": "lga1700",
+            "friendly_tag": "LGA 1700"
+        }
+    },
+    {
+        "pk": 5,
+        "model": "products.tag",
+        "fields": {
+            "tag": "lga1851",
+            "friendly_tag": "LGA 1851"
+        }
+    },
+    {
+        "pk": 6,
+        "model": "products.tag",
+        "fields": {
+            "tag": "DDR4",
+            "friendly_tag": "LGA 1851"
+        }
+    },
+    {
+        "pk": 7,
+        "model": "products.tag",
+        "fields": {
+            "tag": "DDR5",
+            "friendly_tag": "LGA 1851"
+        }
+    },
+    {
+        "pk": 8,
+        "model": "products.tag",
+        "fields": {
+            "tag": "GDDR6",
+            "friendly_tag": "LGA 1851"
+        }
+    },
+    {
+        "pk": 9,
+        "model": "products.tag",
+        "fields": {
+            "tag": "GDDR6X",
+            "friendly_tag": "LGA 1851"
+        }
+    },
+    {
+        "pk": 10,
+        "model": "products.tag",
+        "fields": {
+            "tag": "8GB",
+            "friendly_tag": "LGA 1851"
+        }
+    },
+    {
+        "pk": 11,
+        "model": "products.tag",
+        "fields": {
+            "tag": "12GB",
+            "friendly_tag": "LGA 1851"
+        }
+    },
+    {
+        "pk": 12,
+        "model": "products.tag",
+        "fields": {
+            "tag": "16GB",
+            "friendly_tag": "LGA 1851"
+        }
+    },
+    {
+        "pk": 12,
+        "model": "products.tag",
+        "fields": {
+            "tag": "20GB",
+            "friendly_tag": "LGA 1851"
+        }
+    },
+    {
+        "pk": 12,
+        "model": "products.tag",
+        "fields": {
+            "tag": "24GB",
+            "friendly_tag": "LGA 1851"
+        }
+    },
+    {
+        "pk": 12,
+        "model": "products.tag",
+        "fields": {
+            "tag": "32GB",
+            "friendly_tag": "LGA 1851"
+        }
+    },
+    {
+        "pk": 12,
+        "model": "products.tag",
+        "fields": {
+            "tag": "64GB",
+            "friendly_tag": "LGA 1851"
+        }
+    }
+]

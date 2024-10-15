@@ -8,3 +8,5 @@ stripe
 boto3
 django-storages
 gunicorn
+django-crispy-forms
+crispy-tailwind

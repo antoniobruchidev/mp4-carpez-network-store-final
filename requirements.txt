@@ -16,16 +16,24 @@ certifi==2024.8.30
     # via requests
 charset-normalizer==3.4.0
     # via requests
+crispy-tailwind==1.0.3
+    # via -r requirements/requirements.in
 dj-database-url==2.2.0
     # via -r requirements/requirements.in
 django==5.1.2
     # via
     #   -r requirements/requirements.in
+    #   crispy-tailwind
     #   dj-database-url
     #   django-allauth
+    #   django-crispy-forms
     #   django-storages
 django-allauth==65.0.2
     # via -r requirements/requirements.in
+django-crispy-forms==2.3
+    # via
+    #   -r requirements/requirements.in
+    #   crispy-tailwind
 django-storages==1.14.4
     # via -r requirements/requirements.in
 gunicorn==23.0.0

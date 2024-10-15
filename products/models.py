@@ -16,18 +16,22 @@ class Category(models.Model):
 
 
 class Brand(models.Model):
-    brand = models.CharField(max_length=20, blank=False, null=False)
-    support_page = models.URLField
+    brand = models.CharField(max_length=20, null=False, default="")
+    support_page = models.CharField(max_length=254, null=False, default="")
     
     def __str__(self):
         return str(self.brand)
 
 
 class Tag(models.Model):
-    tag = models.CharField(max_length=10, null=False, blank=False)
+    tag = models.CharField(max_length=10, null=False, default="")
+    friendly_tag = models.CharField(max_length=16, null=False, default="")
     
     def __str__(self):
         return str(self.tag)
+    
+    def get_friendly_tag(self):
+        return str(self.friendly_tag)
 
 
 class Product(models.Model):
