@@ -39,6 +39,24 @@
         <h4 class="logo-font text-center text-yellow-200 mt-3 mb-0">Free delivery on orders over ${{ free_delivery_treshold }}!</h4>
       </div> 
     </header>
+    <div class="max-h-[0px] overflow-visible grid justify-items-center">
+
+      {% if messages %}
+      {% for message in messages %}
+        {% with message.level as level %}
+          {% if level == 40 %}
+            {% include 'includes/toasts/toast_error.html' %}
+          {% elif level == 30 %}
+            {% include 'includes/toasts/toast_warning.html' %}
+          {% elif level == 25 %}
+            {% include 'includes/toasts/toast_success.html' %}
+          {% else %}
+            {% include 'includes/toasts/toast_warning.html' %}
+          {% endif %}
+        {% endwith %}
+      {% endfor %}
+      {% endif %}
+    </div>
 
     {% block content_title %}
     {% endblock %}
