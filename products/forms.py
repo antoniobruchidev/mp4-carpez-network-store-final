@@ -14,7 +14,7 @@ class ProductForm(forms.ModelForm):
         fields = ['name', 'price', 'image', 'description', 'category',
                   'tags', 'brand', 'sku',]
 
-    name = forms.CharField(max_length=20, required=True, label='Name:')
+    name = forms.CharField(max_length=254, required=True, label='Name:')
     price = forms.DecimalField(decimal_places=2, required=True, label='Price:')
     image = forms.ImageField(label='Image:', required=True)
     description = forms.CharField(max_length=254, label='Description')

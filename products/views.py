@@ -20,7 +20,6 @@ def get_products(request):
 
 def get_product_details(request, product_id):
     """View to return the details of a given product"""
-    print(product_id)
     product = get_object_or_404(Product, id=product_id)
     template = 'products/product_details.html'
     context = {
@@ -54,4 +53,49 @@ def add_product(request):
         return render(request, template, context)
     else:
         messages.error(request, "You are not allowed to add products")
+        return redirect(reverse('home'))
+
+
+@login_required
+def edit_product_details(request, product_id):
+    """View to edit a product in the store"""
+    if request.user.is_superuser:
+        product = get_object_or_404(Product, id=product_id)
+        if request.method == 'POST':
+            form = ProductForm(request.POST, request.FILES, instance=product)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Successfully updated product")
+                return redirect(
+                    reverse('get_product_details', args=[product.id])
+                    )
+            else:
+                messages.error(
+                    request, "Failed to update, ensure the data is valid"
+                    )
+        else:
+            form = ProductForm(instance=product)
+            messages.info(request, f"You are editing {product.name}")
+        template = 'products/edit_product.html'
+        context = {
+            'form': form,
+            'product': product,
+        }
+
+        return render(request, template, context)
+    else:
+        messages.error(request, "Authorization denied, you are not an admin.")
+        return redirect(reverse('home'))
+
+
+@login_required
+def delete_product(request, product_id):
+    """Delete a product from the store"""
+    if request.user.is_superuser:
+        product = get_object_or_404(Product, id=product_id)
+        product.delete()
+        messages.success(request, "Product deleted.")
+        return redirect(reverse('get_products'))
+    else:
+        messages.error(request, "Authorization denied, you are not an admin.")
         return redirect(reverse('home'))

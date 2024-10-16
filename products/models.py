@@ -34,6 +34,11 @@ class Tag(models.Model):
         return str(self.friendly_tag)
 
 
+class Reviews(models.Model):
+    review = models.TextField()
+    rating = models.IntegerField()
+
+
 class Product(models.Model):
     category = models.ForeignKey(
         'Category', null=True, blank=True, on_delete=models.SET_NULL
@@ -45,8 +50,18 @@ class Product(models.Model):
     sku = models.CharField(max_length=254, null=True, blank=True)
     name = models.CharField(max_length=254)
     description = models.TextField()
+    rating = models.DecimalField(max_digits=2, decimal_places=1, null=True, blank=False)
     price = models.DecimalField(max_digits=6, decimal_places=2)
     image = models.ImageField(null=True, blank=True)
+    reviews = models.ManyToManyField(Reviews)
 
     def __str__(self):
         return str(self.name)
+    
+    def rate(self):
+        if self.reviews != 0:
+            rating = 0
+            for review in self.reviews:
+                rating += review.rating
+            return 10 * rating // self.reviews.count() / 10
+                
