@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% load static %}
+{% load bag_tools %}
+
+
+{% block content %}
+<div class="container">
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                    <th scope="col" class="px-16 py-3 hidden md:inline-flex">
+                        <span class="sr-only">Image</span>
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Product
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Qty
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Price
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for bag_item in bag_items %}
+                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                    <form method="POST" class=".update-form" action="">
+                        {% csrf_token %}
+                        <td class="hidden md:inline-flex p-2">
+                            <img src="{{ bag_item.product.image.url }}" class="w-16 md:w-32 max-w-full max-h-full" alt="Apple Watch">
+                        </td>
+                        <td class="px-3 py-4 font-semibold text-gray-900 dark:text-white">
+                            {{ bag_item.product.name }}
+                        </td>
+                        <td class="px-3 py-4">
+                            <div class="flex items-center">
+                                <button id="decrement-{{ bag_item.product_id }}" class="remove-1 inline-flex items-center justify-center p-1 me-3 text-sm font-medium h-6 w-6 text-gray-500 bg-white border border-gray-300 rounded-full focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" type="button">
+                                    <span class="sr-only">Decrement button</span>
+                                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16"/>
+                                    </svg>
+                                </button>
+                                <div>
+                                    <input class="qty-input" type="number" data-id="{{ bag_item.product_id }}" id="item-{{ bag_item.product_id }}" value="{{ bag_item.quantity }}" required />
+                                </div>
+                                <button id="increment-{{ bag_item.product_id }}" class="add-1 inline-flex items-center justify-center h-6 w-6 p-1 ms-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-full focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" type="button">
+                                    <span class="sr-only">Increment button</span>
+                                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+                                    </svg>
+                                </button>
+                                <button class="update-product inline-flex items-center justify-center h-6 w-6 p-1 ms-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-full focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" type="button">
+                                    <span class="sr-only">Update button</span>
+                                    <i class="fa-solid fa-file-pen w-4 h-4 text-green-300 bg-white hover:text-green-100 hover:bg-green-900"></i>
+                                </button>
+                                <button class="remove-product inline-flex items-center justify-center h-6 w-6 p-1 ms-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-full focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" type="button">
+                                    <span class="sr-only">Remove button</span>
+                                    <i class="fa-solid fa-trash-can w-4 h-4 text-red-600 bg-white hover:text-red-100 hover:bg-red-900"></i>
+                                </button>
+                            </div>
+                        </td>
+                        <td class="pl-6 pr-3 md:px-6 py-4 font-semibold text-gray-900 dark:text-white">
+                        £ {{ bag_item.product.price|calc_subtotal:bag_item.quantity }}
+                        </td>
+                    </form>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block postloadjs %}
+{{ block.super }}
+<script src="{% static 'js/bag.js' %}" type="text/javascript"></script>
+{% endblock %}

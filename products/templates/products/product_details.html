@@ -78,29 +78,33 @@
                 </div>
                 <span class="bg-yellow-100 text-black text-xs font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800 ms-3">{% if product.rating %}{{ product.rating }}{% else %} N/A{% endif %}</span>
             </div>
-            <div class="flex rounded-md mx-auto shadow-sm">
-                {% if request.user.is_superuser %}
-                    <a href="" aria-current="page" class="self-auto md:self-start px-4 py-2 text-sm font-medium text-black bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
-                        Reviews
-                    </a>
-                    <a href="" class="self-auto md:self-start px-4 py-2 text-sm font-medium text-black bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
-                        Edit
-                    </a>
-                    <a data-hx-get="{% url 'delete_product' product.id %}" hx-confirm="Are you sure you wish to delete {{ product.name }}?" hx-swap="outerHTML" hx-target="#body" class="self-auto md:self-start px-4 py-2 text-sm font-medium text black bg-red-100 border-t border-b border-red-200 hover:bg-red-700 hover:text-red-100 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
-                        Delete
-                    </a>
-                {% else %}
-                    <a href="" aria-current="page" class="self-auto md:self-start px-4 py-2 text-sm font-medium text-blue-700 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
-                        Reviews
-                    </a>
-                    <a href="" class="self-auto md:self-start px-4 py-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
-                        Support
-                    </a>
-                    <a href="" class="self-auto md:self-start px-4 py-2 text-sm font-medium bg-yellow-300 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
-                        Add to cart
-                    </a>
-                {% endif %}
-            </div>
+            <form method="POST" action="{% url 'add_to_bag' product.id %}">
+                {% csrf_token %}
+                <input type="hidden" name="redirect_url" value="{{ request.path }}">
+                <div class="flex rounded-md mx-auto shadow-sm">
+                    {% if request.user.is_superuser %}
+                        <a href="" aria-current="page" class="self-auto md:self-start px-4 py-2 text-sm font-medium text-black bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
+                            Reviews
+                        </a>
+                        <a href="" class="self-auto md:self-start px-4 py-2 text-sm font-medium text-black bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
+                            Edit
+                        </a>
+                        <a data-hx-get="{% url 'delete_product' product.id %}" hx-confirm="Are you sure you wish to delete {{ product.name }}?" hx-swap="outerHTML" hx-target="#body" class="self-auto md:self-start px-4 py-2 text-sm font-medium text black bg-red-100 border-t border-b border-red-200 hover:bg-red-700 hover:text-red-100 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
+                            Delete
+                        </a>
+                    {% else %}
+                        <a href="" aria-current="page" class="self-auto md:self-start px-4 py-2 text-sm font-medium text-blue-700 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
+                            Reviews
+                        </a>
+                        <a href="" class="self-auto md:self-start px-4 py-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
+                            Support
+                        </a>
+                        <button hx-post="{% url 'add_to_bag' product.id %}" hx-swap="outerHTML" hx-target="#body" class="self-auto md:self-start px-4 py-2 text-sm font-medium bg-yellow-300 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
+                            Add to cart
+                        </button>
+                    {% endif %}
+                </div>
+            </form>
             <p class="mt-5 text-center text-3xl font-semibold text-gray-900 mx-10">£ {{ product.price }}</p>
         </div>
     </div>
