@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
 from products.models import Product
@@ -7,7 +8,10 @@ from django.contrib import messages
 def view_bag(request):
     """ A view to return the bag contents page """
     template = 'bag/bag.html'
-    return render(request, template)
+    context = {
+        'on_bag_page': True,
+    }
+    return render(request, template, context)
 
 
 def add_to_bag(request, product_id):
@@ -23,3 +27,23 @@ def add_to_bag(request, product_id):
     request.session['bag'] = bag
     messages.success(request, f"Successfully added {product.name}")
     return redirect(redirect_url)
+
+
+def update_item_quantity(request, product_id):
+    """ Update quantity of item in bag """
+    bag = request.session.get('bag', {})
+    new_quantity = int(request.POST.get('quantity'))
+    bag[product_id] = new_quantity
+    request.session['bag'] = bag
+    messages.success(request, "Successfully updated quantity")
+    return HttpResponse(status=200)
+
+
+def remove_from_bag(request, product_id):
+    """ Remove item from bag """
+    bag = request.session.get('bag', {})
+    if bag[product_id]:
+        del bag[product_id]
+    request.session['bag'] = bag
+    messages.success(request, "Successfully removed item")
+    return redirect('view_bag')

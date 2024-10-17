@@ -1,6 +1,6 @@
 // Disable +/- buttons outside 1-99 range
 function handleEnableDisable(itemId) {
-    var currentValue = parseInt($(`#item-${itemId}`).val());
+    var currentValue = parseInt($(`#quantity-${itemId}`).val());
     var minusDisabled = currentValue < 2;
     var plusDisabled = currentValue > 98;
     $(`#decrement-${itemId}`).prop('disabled', minusDisabled);
@@ -18,6 +18,7 @@ for(var i = 0; i < allQtyInputs.length; i++){
 // Check enable/disable every time the input is changed
 $('.qty-input').on('change', function() {
     var itemId = $(this).data('id');
+    console.log("something")
     handleEnableDisable(itemId);
 });
 
@@ -48,20 +49,23 @@ $('.remove-1').click(function(e) {
 })
 
 // Update quantity on click
-$('.update').click(function(e) {
-    var form = $(this).prev('.update-form');
-    form.submit();
+$('.update-product').click(function(e) {
+    var csrfToken = $('input[name=csrfmiddlewaretoken]').val();
+    var itemId = $(this).attr('id').split('update-')[1];
+    var quantity = $(`#quantity-${itemId}`).val();
+    var data = {'csrfmiddlewaretoken': csrfToken, 'quantity': quantity}
+    var url = `update/${itemId}`;
+    
+    $.post(url, data)
+     .done(function() {
+        location.reload();
+     })
+    
 })
 
 // Remove item and reload on click
 $('.remove-product').click(function(e) {
-    var csrfToken = "{{ csrf_token }}";
-    var itemId = $(this).attr('id').split('remove_')[1];
-    var url = `remove/${itemId}/`;
-    var data = {'csrfmiddlewaretoken': csrfToken};
-
-    $.post(url, data)
-     .done(function() {
-         location.reload();
-     });
+    itemId = $(this).attr('id').split('remove-')[1]
+    url = `remove/${itemId}`
+    window.location.href = url
 })
