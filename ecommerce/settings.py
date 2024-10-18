@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'home',
     'products',
     'bag',
+    'checkout',
     'crispy_forms',
     'crispy_tailwind',
 ]
@@ -224,3 +225,8 @@ LOGIN_REDIRECT_URL = '/'
 FREE_DELIVERY_TRESHOLD = 50
 
 STANDARD_DELIVERY_PERCENTAGE = 10
+
+STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
+STRIPE_PUBLIC_KEY = config('STRIPE_PUBLIC_KEY')
+WH_SECRET_KEY = config('STRIPE_WEBHOOK_SECRET')
+STRIPE_CURRENCY = 'gbp'

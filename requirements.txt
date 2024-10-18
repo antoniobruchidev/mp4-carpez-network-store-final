@@ -5,7 +5,9 @@
 #    pip-compile --output-file=requirements.txt requirements/requirements.in
 #
 asgiref==3.8.1
-    # via django
+    # via
+    #   django
+    #   django-countries
 boto3==1.35.39
     # via -r requirements/requirements.in
 botocore==1.35.39
@@ -29,6 +31,8 @@ django==5.1.2
     #   django-crispy-forms
     #   django-storages
 django-allauth==65.0.2
+    # via -r requirements/requirements.in
+django-countries==7.6.1
     # via -r requirements/requirements.in
 django-crispy-forms==2.3
     # via
@@ -67,6 +71,7 @@ stripe==11.1.0
 typing-extensions==4.12.2
     # via
     #   dj-database-url
+    #   django-countries
     #   stripe
 urllib3==2.2.3
     # via
