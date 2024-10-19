@@ -1,4 +1,5 @@
 from decimal import Decimal
+import json
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 
@@ -30,8 +31,9 @@ def bag(request):
         delivery = 0
         free_delivery_delta = 0
     grand_total = total + delivery
-
+    json_bag = json.dumps(b)
     context = {
+        'bag': json_bag,
         'bag_items': bag_items,
         'total': total,
         'objects': objects,

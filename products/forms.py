@@ -1,5 +1,4 @@
 from django import forms
-from django.conf import settings
 from .models import Brand, Product, Category, Tag
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, ButtonHolder, HTML
@@ -23,7 +22,6 @@ class ProductForm(forms.ModelForm):
     brands = forms.Select()
     sku = forms.CharField(label='SKU')
 
-
     @property
     def helper(self):
         helper = FormHelper()
@@ -46,7 +44,7 @@ class ProductForm(forms.ModelForm):
             )
         )
         return helper
-    
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         categories = Category.objects.all()
@@ -58,4 +56,3 @@ class ProductForm(forms.ModelForm):
         self.fields['category'].choices = _categories
         self.fields['tags'].choices = _tags
         self.fields['brand'].choices = _brands
-        
