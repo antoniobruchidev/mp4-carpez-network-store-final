@@ -42,7 +42,6 @@ class OrderAdmin(admin.ModelAdmin):
         "full_name",
         "email",
         "shipping",
-        "full_name",
         "order_total",
         "delivery_cost",
         "grand_total",

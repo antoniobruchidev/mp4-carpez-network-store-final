@@ -26,6 +26,7 @@ const form = document.getElementById('payment-form');
 let detailss;
 form.addEventListener('submit', async (event) => {
     event.preventDefault();
+    $('.loading').removeClass('invisible')
 
     // From using {% csrf_token %} in the form
   
@@ -81,6 +82,7 @@ form.addEventListener('submit', async (event) => {
             
         } catch (error) {
             console.log(error)
+            $('.loading').addClass('invisible')
         }
 
     })

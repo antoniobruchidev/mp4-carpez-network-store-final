@@ -93,8 +93,6 @@ def place_order(request):
 
 
 def checkout(request):
-    if request.method == 'POST':
-        print(request.POST)
     stripe_public_key = settings.STRIPE_PUBLIC_KEY
 
     current_bag = bag(request)
@@ -115,6 +113,7 @@ def checkout(request):
 
 def checkout_success(request, order_number):
     order = get_object_or_404(Order, order_number=order_number)
+    line_items = order.lineitems.all()
        
     messages.success(
         request,
@@ -129,6 +128,7 @@ def checkout_success(request, order_number):
     template = "checkout/checkout_success.html"
     context = {
         "order": order,
+        "line_items": line_items
     }
 
     return render(request, template, context)

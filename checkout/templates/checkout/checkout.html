@@ -1,8 +1,13 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load bag_tools %}
-
+{% block extra_css %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'checkout/css/checkout.css' %}">
+{% endblock %}
 {% block content %}
+
+<div class="loading invisible">Loading&#8230;</div>
 <div class="container mt-5 bg-gray-100">
     <div class="w-full min-w-sm md:min-w-md p-1 mb-0 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800">
         <div class="relative overflow-x-auto">
