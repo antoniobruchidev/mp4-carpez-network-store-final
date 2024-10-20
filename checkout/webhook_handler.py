@@ -52,36 +52,30 @@ class StripeWH_Handler:
         """
         intent = event.data.object
         pid = intent.id
+        print(pid)
         bag = json.loads(intent.metadata.bag)
         email = intent.metadata.email
         shipping = dict(intent.shipping)
-        print(shipping['address'])
         stripe.api_key = settings.STRIPE_SECRET_KEY
         stripe_charge = stripe.Charge.retrieve(
             intent.latest_charge
         )
-        amount = stripe_charge.amount
-        billing = dict(stripe_charge.billing_details)
+        amount = round(stripe_charge.amount / 100, 2)
+        billing_details = stripe_charge.billing_details
         order_exists = False
         attempt = 1
-        bag_and_shipping_details = {
-            'bag': bag,
-            'stripe_pid': pid,
-            'shipping': shipping,
-            'billing': dict(billing),
-            'email': email
-        }
         while attempt <= 5:
-            print(attempt)
+            print(attempt, pid, amount)
             try:
                 order = Order.objects.get(
-                    bag_and_shipping_details=bag_and_shipping_details
+                    stripe_pid=pid,
+                    grand_total=amount
                     )
-                print(order)
+                order.billing_details = billing_details
+                print(order, order_exists)
                 if order:
-                    if order.grand_total == amount:
-                        order_exists = True
-                        break
+                    order_exists = True
+                    break
             except Order.DoesNotExist:
                 pass
             
@@ -89,7 +83,6 @@ class StripeWH_Handler:
             time.sleep(1)
         if order_exists:
             self._send_confirmation_email(order)
-            ()
             return HttpResponse(
                     content=f'Webhook received: {event["type"]} | SUCCESS: \
                         Verified order already in database',
@@ -99,12 +92,12 @@ class StripeWH_Handler:
                 order = Order.objects.create(
                     bag_and_shipping_details={
                         "bag": bag,
-                        "stripe_pid": pid,
-                        "shipping": dict(intent.shipping),
-                        "billing": dict(billing),
-                        "email": email
-                        }
+                        "shipping": shipping,
+                        "email": email,
+                        "stripe_pid": pid
+                    }
                 )
+                order.save(pid)
                 for item_id, quantity in bag.items():
                     product = Product.objects.get(id=item_id)
                     order_line_item = OrderLineItem(

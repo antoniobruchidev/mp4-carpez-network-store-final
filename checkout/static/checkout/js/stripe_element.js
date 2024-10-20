@@ -10,7 +10,9 @@ var clientSecret = $('#id_client_secret').text().slice(1, -1);
 const stripe = Stripe(stripePublicKey);
 const appearance = { /* appearance */ };
 const options = { mode: 'shipping'};
-const optionsb = {mode: 'payment'};
+const optionsb = {
+    mode: 'payment',
+};
 const elements = stripe.elements({ clientSecret, appearance });
 const addressElement = elements.create('address', options);
 var bag = $.trim($('#bag').html())
@@ -52,25 +54,15 @@ form.addEventListener('submit', async (event) => {
                 // Your customer will be redirected to your `return_url`. For some payment
                 // methods like iDEAL, your customer will be redirected to an intermediate
                 // site first to authorize the payment, then redirected to the `return_url`.
-                console.log(bag, typeof(bag))
-                if (await data['paymentIntent']['billing']){
-                    var details = {
+                
+                console.log(await data)
+                var details = {
                         "bag": bag,
                         "stripe_pid":JSON.stringify(await data["paymentIntent"]["id"]),
                         "shipping": JSON.stringify(await data["paymentIntent"]["shipping"]),
-                        "billing": JSON.stringify(await data["billing"]),
                         "email": $("#email").val()
                         }
-                } else {
-                    var details = {
-                        "bag": JSON.parse(bag),
-                        "stripe_pid": JSON.stringify(await data["paymentIntent"]["id"]),
-                        "shipping": JSON.stringify(await data["paymentIntent"]["shipping"]),
-                        "billing": "none",
-                        "email": $("#email").val()
-                    }
-                }
-                console.log(details)
+                
                 var json_details = JSON.stringify(details)
 
                 const response = await fetch('/checkout/place_order/', {

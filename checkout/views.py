@@ -45,29 +45,29 @@ def cache_checkout_data(request):
 def place_order(request):
     body = request.body.decode('utf-8')
     json_body = json.loads(body)
-    b = json.loads(json_body['bag'])
+    b = json.loads(json.loads(json_body['bag']))
     e = json_body['email']
     s = json.loads(json_body['shipping'])
-    bi = json_body['billing']
-    pid = json_body['stripe_pid']
-    if json_body['billing'] != "none":
-        bi = json.loads(json_body['billing'])
-    json_body['bag'] = b
-    json_body['email'] = e
-    json_body['shipping'] = s
+    print(b, type(b))
+    pid = json_body['stripe_pid'].replace('"','')
     bag_and_shipping_details = {
         'bag': b,
-        'email': e,
+        'stripe_pid': pid,
         'shipping': s,
-        'billing': bi,
-        'stripe_pid': pid
+        'email': e
     }
     order_form = OrderForm({
-        'bag_and_shipping_details': bag_and_shipping_details
+        'bag_and_shipping_details': bag_and_shipping_details,
     })
-    if order_form.is_valid():
+    try:
+        order = Order.objects.get(stripe_pid=pid)
+        order_exist = True
+    except Order.DoesNotExist:
+        order_exist = False
+        
+    if order_form.is_valid() and not order_exist:
         order = order_form.save()
-        for item_id, quantity in bag_and_shipping_details['bag'].items():
+        for item_id, quantity in b.items():
             try:
                 product = Product.objects.get(id=item_id)
                 order_line_item = OrderLineItem(

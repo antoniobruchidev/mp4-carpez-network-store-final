@@ -8,5 +8,3 @@ class OrderForm(forms.ModelForm):
         model = Order
         fields = ('bag_and_shipping_details',)
 
-
-    

@@ -22,6 +22,7 @@ class OrderAdmin(admin.ModelAdmin):
         "delivery_cost",
         "order_total",
         "grand_total",
+        "stripe_pid",
     )
 
     fields = (
@@ -32,6 +33,7 @@ class OrderAdmin(admin.ModelAdmin):
         "delivery_cost",
         "order_total",
         "grand_total",
+        "stripe_pid",
     )
 
     list_display = (
@@ -44,6 +46,7 @@ class OrderAdmin(admin.ModelAdmin):
         "order_total",
         "delivery_cost",
         "grand_total",
+        "stripe_pid",
     )
 
     ordering = ('-date',)

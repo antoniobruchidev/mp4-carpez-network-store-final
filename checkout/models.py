@@ -38,14 +38,21 @@ class Order(models.Model):
     full_name = models.CharField(max_length=254, null=True, editable=False)
     email = models.EmailField(max_length=254, null=True, editable=False)
     shipping = models.CharField(max_length=254, null=True, editable=False)
-    billing = models.CharField(max_length=254, null=True, editable=False)
+    billing_details = models.JSONField(null=True, editable=False)
+    stripe_pid = models.CharField(
+        max_length=32,
+        null=False,
+        blank=False,
+        editable=False,
+        default="before migration"
+        )
 
     def _generate_order_number(self):
         """Generate a random unique order number"""
         return uuid.uuid4().hex.upper()
     
     def _generate_order_details(self):
-        """Generate content for email, shipping and billing fields"""
+        """Generate content for full name, email, shipping and pid fields"""
         details = self.bag_and_shipping_details
         self.full_name = details['shipping']['name']
         self.email = details['email']
@@ -61,8 +68,8 @@ class Order(models.Model):
         shipping = shipping + " " + shipping_line_2 + " - "
         shipping = shipping + shipping_postcode + " - " + shipping_locality
         shipping = shipping + " - (" + shipping_county + " - " + shipping_country + ")"
-        print(shipping)
         self.shipping = shipping
+        self.stripe_pid = details['stripe_pid']
 
     def save(self, *args, **kwargs):
         """
@@ -71,8 +78,7 @@ class Order(models.Model):
         """
         if not self.order_number:
             self.order_number = self._generate_order_number()
-        
-        self._generate_order_details()
+            self._generate_order_details(*args)
         super().save(*args, **kwargs)
 
     def update_total(self):
