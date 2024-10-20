@@ -27,7 +27,11 @@ SECRET_KEY = config(str('SECRET_KEY'))
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['antoniobruchidev.uk.to', 'localhost',]
+ALLOWED_HOSTS = [
+    'antoniobruchidev.uk.to',
+    'localhost',
+    'https://carpez-network-store-9da961f19555.herokuapp.com/',
+]
 
 
 # Application definition
