@@ -30,7 +30,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     'antoniobruchidev.uk.to',
     'localhost',
-    'https://carpez-network-store-9da961f19555.herokuapp.com/',
+    config('HREOKU_DOMAIN'),
 ]
 
 
