@@ -27,6 +27,9 @@ def cache_checkout_data(request):
             metadata={
                 "bag": json.dumps(request.session.get("bag", {})),
                 "username": str(request.user),
+                "email": request.POST.get("email"),
+                "shipping": request.POST.get("shipping"),
+                "billing": request.POST.get("billing")
             },
         )
         return HttpResponse(status=200)
@@ -46,6 +49,7 @@ def place_order(request):
     e = json_body['email']
     s = json.loads(json_body['shipping'])
     bi = json_body['billing']
+    pid = json_body['stripe_pid']
     if json_body['billing'] != "none":
         bi = json.loads(json_body['billing'])
     json_body['bag'] = b
@@ -55,7 +59,8 @@ def place_order(request):
         'bag': b,
         'email': e,
         'shipping': s,
-        'billing': bi
+        'billing': bi,
+        'stripe_pid': pid
     }
     order_form = OrderForm({
         'bag_and_shipping_details': bag_and_shipping_details

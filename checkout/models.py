@@ -2,6 +2,8 @@ import uuid
 from django.db import models
 from django.db.models import Sum
 from django.conf import settings
+from django.core.serializers.json import DjangoJSONEncoder
+import json
 
 from products.models import Product
 
@@ -29,11 +31,38 @@ class Order(models.Model):
         null=False,
         default=0
         )
-    bag_and_shipping_details = models.JSONField()
+    bag_and_shipping_details = models.JSONField(
+        encoder=DjangoJSONEncoder,
+        decoder=json.JSONDecoder
+        )
+    full_name = models.CharField(max_length=254, null=True, editable=False)
+    email = models.EmailField(max_length=254, null=True, editable=False)
+    shipping = models.CharField(max_length=254, null=True, editable=False)
+    billing = models.CharField(max_length=254, null=True, editable=False)
 
     def _generate_order_number(self):
         """Generate a random unique order number"""
         return uuid.uuid4().hex.upper()
+    
+    def _generate_order_details(self):
+        """Generate content for email, shipping and billing fields"""
+        details = self.bag_and_shipping_details
+        self.full_name = details['shipping']['name']
+        self.email = details['email']
+        shipping = details['shipping']['address']['line1']
+        if details['shipping']['address']['line2'] is not None:
+            shipping_line_2 = details['shipping']['address']['line2']
+        else:
+            shipping_line_2 = ""
+        shipping_locality = details['shipping']['address']['city']
+        shipping_postcode = details['shipping']['address']['postal_code']
+        shipping_county = details['shipping']['address']['state']
+        shipping_country = details['shipping']['address']['country']
+        shipping = shipping + " " + shipping_line_2 + " - "
+        shipping = shipping + shipping_postcode + " - " + shipping_locality
+        shipping = shipping + " - (" + shipping_county + " - " + shipping_country + ")"
+        print(shipping)
+        self.shipping = shipping
 
     def save(self, *args, **kwargs):
         """
@@ -42,6 +71,8 @@ class Order(models.Model):
         """
         if not self.order_number:
             self.order_number = self._generate_order_number()
+        
+        self._generate_order_details()
         super().save(*args, **kwargs)
 
     def update_total(self):

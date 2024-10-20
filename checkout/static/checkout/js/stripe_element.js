@@ -30,6 +30,7 @@ form.addEventListener('submit', async (event) => {
     var postData = {
       'csrfmiddlewaretoken': csrfToken,
       'client_secret': clientSecret,
+      'email': $("#email").val()
     };
     var url = '/checkout/cache_checkout_data/';
 
@@ -65,8 +66,8 @@ form.addEventListener('submit', async (event) => {
                         "bag": JSON.parse(bag),
                         "stripe_pid": JSON.stringify(await data["paymentIntent"]["id"]),
                         "shipping": JSON.stringify(await data["paymentIntent"]["shipping"]),
-                        "email": $("#email").val(),
-                        "billing": "none"
+                        "billing": "none",
+                        "email": $("#email").val()
                     }
                 }
                 console.log(details)
