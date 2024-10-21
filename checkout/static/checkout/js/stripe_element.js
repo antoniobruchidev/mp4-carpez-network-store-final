@@ -7,6 +7,8 @@
 var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
 var stripePublicKey = $('#id_stripe_public_key').text().slice(1, -1);
 var clientSecret = $('#id_client_secret').text().slice(1, -1);
+var bag = $('#bag').text()
+var userId = $('#user_id').text();
 const stripe = Stripe(stripePublicKey);
 const appearance = { /* appearance */ };
 const options = { mode: 'shipping'};
@@ -15,7 +17,6 @@ const optionsb = {
 };
 const elements = stripe.elements({ clientSecret, appearance });
 const addressElement = elements.create('address', options);
-var bag = $.trim($('#bag').html())
 
 const paymentElement = elements.create('payment', optionsb);
 addressElement.mount('#address-element');
@@ -23,7 +24,7 @@ paymentElement.mount('#payment-element');
 
 
 const form = document.getElementById('payment-form');
-let detailss;
+
 form.addEventListener('submit', async (event) => {
     event.preventDefault();
     $('.loading').removeClass('invisible')
@@ -33,7 +34,8 @@ form.addEventListener('submit', async (event) => {
     var postData = {
       'csrfmiddlewaretoken': csrfToken,
       'client_secret': clientSecret,
-      'email': $("#email").val()
+      'email': $("#email").val(),
+      'user_id': userId
     };
     var url = '/checkout/cache_checkout_data/';
 
@@ -58,8 +60,8 @@ form.addEventListener('submit', async (event) => {
                 
                 console.log(await data)
                 var details = {
-                        "bag": bag,
-                        "stripe_pid":JSON.stringify(await data["paymentIntent"]["id"]),
+                        "bag": JSON.parse(bag),
+                        "stripe_pid": await data["paymentIntent"]["id"],
                         "shipping": JSON.stringify(await data["paymentIntent"]["shipping"]),
                         "email": $("#email").val()
                         }

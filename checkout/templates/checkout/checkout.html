@@ -83,5 +83,6 @@
 {{ client_secret|json_script:"id_client_secret" }}
 {{ bag|json_script:"bag" }}
 {{ pid|json_script:"pid" }}
+{{ user_id|json_script:"user_id" }}
 <script src="{% static 'checkout/js/stripe_element.js' %}"></script>
 {% endblock %}

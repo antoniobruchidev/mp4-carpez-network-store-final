@@ -3,11 +3,13 @@ import socket
 import time
 from django.http import HttpResponse
 from checkout.models import Order, OrderLineItem
+from dashboard.models import Dashboard
 from products.models import Product
 import stripe
 from django.conf import settings
 from django.template.loader import render_to_string
 from django.core.mail import EmailMultiAlternatives
+from django.contrib.auth.models import User
 
 
 class StripeWH_Handler:
@@ -52,10 +54,15 @@ class StripeWH_Handler:
         """
         intent = event.data.object
         pid = intent.id
-        print(pid)
         bag = json.loads(intent.metadata.bag)
         email = intent.metadata.email
         shipping = dict(intent.shipping)
+        user_id = intent.metadata.user_id
+        if user_id == "ul":
+            profile = None
+        else:
+            user = User.objects.get(id=int(user_id))
+            profile = Dashboard.objects.get(user=user)
         stripe.api_key = settings.STRIPE_SECRET_KEY
         stripe_charge = stripe.Charge.retrieve(
             intent.latest_charge
@@ -65,16 +72,16 @@ class StripeWH_Handler:
         order_exists = False
         attempt = 1
         while attempt <= 5:
-            print(attempt, pid, amount)
             try:
                 order = Order.objects.get(
                     stripe_pid=pid,
                     grand_total=amount
                     )
                 order.billing_details = billing_details
-                print(order, order_exists)
                 if order:
                     order_exists = True
+                    order.user = profile
+                    order.save()
                     break
             except Order.DoesNotExist:
                 pass
@@ -97,7 +104,8 @@ class StripeWH_Handler:
                         "stripe_pid": pid
                     }
                 )
-                order.save(pid)
+                order.user = user
+                order.save()
                 for item_id, quantity in bag.items():
                     product = Product.objects.get(id=item_id)
                     order_line_item = OrderLineItem(

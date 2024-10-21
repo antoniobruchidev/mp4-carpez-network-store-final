@@ -5,6 +5,7 @@ from django.conf import settings
 from django.core.serializers.json import DjangoJSONEncoder
 import json
 
+from dashboard.models import Dashboard
 from products.models import Product
 
 # Create your models here.
@@ -18,23 +19,23 @@ class Order(models.Model):
         decimal_places=2,
         null=False,
         default=0
-        )
+    )
     order_total = models.DecimalField(
         max_digits=10,
         decimal_places=2,
         null=False,
         default=0
-        )
+    )
     grand_total = models.DecimalField(
         max_digits=10,
         decimal_places=2,
         null=False,
         default=0
-        )
+    )
     bag_and_shipping_details = models.JSONField(
         encoder=DjangoJSONEncoder,
         decoder=json.JSONDecoder
-        )
+    )
     full_name = models.CharField(max_length=254, null=True, editable=False)
     email = models.EmailField(max_length=254, null=True, editable=False)
     shipping = models.CharField(max_length=254, null=True, editable=False)
@@ -45,8 +46,15 @@ class Order(models.Model):
         blank=False,
         editable=False,
         default="before migration"
-        )
-
+    )
+    user = models.ForeignKey(
+        Dashboard,
+        null=True,
+        blank=True,
+        related_name="orders",
+        on_delete=models.SET_NULL
+    )
+    
     def _generate_order_number(self):
         """Generate a random unique order number"""
         return uuid.uuid4().hex.upper()
