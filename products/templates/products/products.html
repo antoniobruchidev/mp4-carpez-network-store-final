@@ -3,7 +3,55 @@
 {% block content %}
 
 <div class="container mt-10">
-    <div class="grid grid-cols-1 justify-center md:grid-cols-3 gap-4">
+    <form class="w-full mx-auto mb-10" method="GET" action="{% url 'get_products' %}">
+        <input type="hidden" name="category" value="" id="category">
+        <div class="flex">
+            <button id="category-button" data-dropdown-toggle="categories" class="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-900 bg-gray-100 border border-gray-300 rounded-s-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600" type="button">
+                All categories 
+                <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                </svg>
+                </button>
+            <div id="categories" class="z-100 hidden bg-gray-200 opacity-75 divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="category-button">
+                    {% for category in categories %}
+                        <li>
+                            <button type="button" class="category-option w-full h-full rounded-md bg-gray-200 hover:bg-gray-700 hover:text-gray-100 hover:opacity-100 px-4 py-2 text-black dark:hover:bg-gray-600 dark:hover:text-white">
+                                {{ category.friendly_name }}
+                            </button>
+                            <input type="hidden" value="{{ category.name }}">
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="relative w-full">
+                <label for="search-dropdown" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Youqr Email</label>
+                <input type="search" name="q" id="search-dropdown" class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-e-lg border-s-gray-50 border-s-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-s-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500" placeholder="Search Mockups, Logos, Design Templates..." required />
+                <button type="submit" class="absolute top-0 end-0 p-2.5 text-sm font-medium h-full text-white bg-blue-700 rounded-e-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                    </svg>
+                    <span class="sr-only">Search</span>
+                </button>
+            </div>
+        </div>
+        <div class="w-full mt-4 mb-20">
+            <select id="sort-selector" class="mr-20 mb-20 float-right w-full max-w-sm text-{% if current_sorting != 'None_None' %}yellow-700{% else %}black{% endif %} block py-2.5 px-0 text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+                <option value="reset" {% if current_sorting == 'None_None' %}selected{% endif %}>Sort by...</option>
+                <option value="price_asc" {% if current_sorting == 'price_asc' %}selected{% endif %}>Price (low to high)</option>
+                <option value="price_desc" {% if current_sorting == 'price_desc' %}selected{% endif %}>Price (high to low)</option>
+                <option value="rating_asc" {% if current_sorting == 'rating_asc' %}selected{% endif %}>Rating (low to high)</option>
+                <option value="rating_desc" {% if current_sorting == 'rating_desc' %}selected{% endif %}>Rating (high to low)</option>
+                <option value="name_asc" {% if current_sorting == 'name_asc' %}selected{% endif %}>Name (A-Z)</option>
+                <option value="name_desc" {% if current_sorting == 'name_desc' %}selected{% endif %}>Name (Z-A)</option>
+                <option value="category_asc" {% if current_sorting == 'category_asc' %}selected{% endif %}>Category (A-Z)</option>
+                <option value="category_desc" {% if current_sorting == 'category_desc' %}selected{% endif %}>Category (Z-A)</option>
+            </select>
+        </div>
+        
+    </form>
+
+    <div class="w-full grid grid-cols-1 justify-center md:grid-cols-3 gap-4 mt-20">
         {% for product in products %}
 
             <div class="max-w-md mx-auto bg-white border border-gray-200 rounded-lg shadow grid grid-cols-1 gap-4 content-between dark:bg-gray-800 dark:border-gray-700">
@@ -95,7 +143,7 @@
                         </form>
                     </div>
                     {% if request.user.is_superuser %}
-                        <p class="text-end mb-5">
+                        <p class="text-end mb-2">
                             <a href="{% url 'edit_product_details' product.id %}" class="mb-8 text-black bg-trasparent hover:bg-yellow-100 hover:text-yellow-700 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Edit</a>
                             <button hx-confirm="Are you sure you wish to delete {{ product.name }}?" class="mb-8 text-red-600 bg-trasparent hover:bg-red-100 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Delete</button>
                         </p>
@@ -107,4 +155,46 @@
 </div>
 
 
+{% endblock %}
+
+{% block postloadjs %}
+{{ block.super }}
+<script type="text/javascript">
+    $("#sort-selector").change(function() {
+        var selector = $(this);
+        var currentUrl = new URL(window.location);
+
+        var selectedVal = selector.val();
+        if (selectedVal != "reset") {
+            var sort = selectedVal.split("_")[0];
+            var direction = selectedVal.split("_")[1];
+
+            currentUrl.searchParams.set("sort", sort);
+            currentUrl.searchParams.set("direction", direction);
+
+            window.location.replace(currentUrl);
+        } else {
+            currentUrl.searchParams.delete("sort");
+            currentUrl.searchParams.delete("direction");
+
+            window.location.replace(currentUrl);
+        }
+    })
+
+    var svgIcon = `
+                <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                </svg>
+                `
+
+    $('.category-option').on('click', function(){
+        var categoryInput = $(this).next('input')
+        var category = $(categoryInput).val()
+        $('#category').val(category)
+        console.log($('#category'))
+        var buttonNewText = $(this).text() + svgIcon
+        $('#category-button').html(buttonNewText)
+        $('#category-button').click()
+    })
+</script>
 {% endblock %}

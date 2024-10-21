@@ -1,8 +1,10 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from products.forms import ProductForm
-from products.models import Product
+from products.models import Category, Product
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
+from django.db.models.functions import Lower
 from django.contrib import messages
 
 # Create your views here.
@@ -11,11 +13,54 @@ from django.contrib import messages
 def get_products(request):
     """View to return all products"""
     products = Product.objects.all()
-    template = 'products/products.html'
+    categories = Category.objects.all()
+    category = None
+    sort = None
+    direction = None
+    query = None
+
+    if request.GET:
+        if 'category' in request.GET:
+            if request.GET['category'] != "":
+                category = get_object_or_404(Category, name=request.GET['category'])
+                products = products.filter(category=category)
+            
+        if 'sort' in request.GET:
+            sortkey = request.GET['sort']
+            sort = sortkey
+            if sortkey == 'name':
+                sortkey = 'lower_name'
+                products = products.annotate(lower_name=Lower('name'))
+
+            if 'direction' in request.GET:
+                direction = request.GET['direction']
+                if direction == 'desc':
+                    sortkey = f'-{sortkey}'
+                    products = products.order_by(sortkey)
+
+        if 'q' in request.GET:
+            query = request.GET['q']
+            if not query:
+                messages.error(
+                    request, "You didn't enter any search criterial"
+                    )
+                return redirect(reverse('products'))
+            queries = (
+                Q(name__icontains=query) | Q(description__icontains=query)
+                )
+            products = products.filter(queries)
+
+    current_sorting = f'{sort}_{direction}'
+    print(categories)
+
     context = {
-        'products': products
+        'products': products,
+        'search-term': query,
+        'category': category,
+        'categories': categories,
+        'current_sorting': current_sorting,
     }
-    return render(request, template, context)
+    return render(request, 'products/products.html', context)
 
 
 def get_product_details(request, product_id):

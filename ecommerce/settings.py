@@ -31,6 +31,7 @@ ALLOWED_HOSTS = [
     'antoniobruchidev.uk.to',
     'localhost',
     config('HREOKU_DOMAIN'),
+    '141.0.153.251',
 ]
 
 
@@ -168,7 +169,6 @@ STATICFILES_DIRS = [
     ("css", "/home/carpez/dev/ecommerce/mp4-ecommerce-app/static/css"),
     ("images", "/home/carpez/dev/ecommerce/mp4-ecommerce-app/static/images"),
     ("tailwind", "/home/carpez/dev/ecommerce/mp4-ecommerce-app/static/tailwind"),
-    ("vendor", "/home/carpez/dev/ecommerce/mp4-ecommerce-app/static/vendor"),
 ]
 
 if USE_AWS:
