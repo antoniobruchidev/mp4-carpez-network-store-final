@@ -9,7 +9,7 @@
                 {{ product.name }}
             </h1>
             <hr class="h-px my-4 bg-gray-200 border-0 dark:bg-gray-700">
-            <p class="product-description text-gray-800 p-4 md:ml-4 lg:my-auto">{{ product.description }}</p>
+            <p class="product-description text-gray-800 p-4 mx-5 mx-5 lg:mx-30">{{ product.description }}</p>
             <div class="flex items-center mt-2.5 mb-5 my-auto mx-auto">
                 <div class="flex items-center space-x-1 rtl:space-x-reverse">
                     {% if product.rating %}
@@ -81,7 +81,8 @@
             <form method="POST" action="{% url 'add_to_bag' product.id %}">
                 {% csrf_token %}
                 <input type="hidden" name="redirect_url" value="{{ request.path }}">
-                <div class="flex rounded-md mx-auto shadow-sm">
+                <span class="inline-block ml-5 mt-5 text-3xl font-semibold text-gray-900 mb-0 float left">£ {{ product.price }}</span>
+                <div class="flex mr-5 mt-5 rounded-md float-right shadow-sm">
                     {% if request.user.is_superuser %}
                         <a href="" aria-current="page" class="self-auto md:self-start px-4 py-2 text-sm font-medium text-black bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
                             Reviews
@@ -93,10 +94,7 @@
                             Delete
                         </a>
                     {% else %}
-                        <a href="" aria-current="page" class="self-auto md:self-start px-4 py-2 text-sm font-medium text-blue-700 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
-                            Reviews
-                        </a>
-                        <a href="" class="self-auto md:self-start px-4 py-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
+                        <a href="" class="self-auto md:self-start px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
                             Support
                         </a>
                         <button hx-post="{% url 'add_to_bag' product.id %}" hx-swap="outerHTML" hx-target="#body" class="self-auto md:self-start px-4 py-2 text-sm font-medium bg-yellow-300 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
@@ -105,9 +103,34 @@
                     {% endif %}
                 </div>
             </form>
-            <p class="mt-5 text-center text-3xl font-semibold text-gray-900 mx-10">£ {{ product.price }}</p>
         </div>
     </div>
+</div>
+<div class="container grid grid-cols-1 items-center mt-10">
+    <h2 class="text-center text-xl font-semibold">Reviews</h2>
+    {% if product_reviews %}
+        <div id="accordion-flush" class="w-full max-w-lg mx-auto p-4" data-accordion="collapse" data-active-classes="bg-white dark:bg-gray-900 text-gray-900 dark:text-white" data-inactive-classes="text-gray-500 dark:text-gray-400">   
+            {% for review, username in product_reviews %}
+                <h2 id="accordion-flush-heading-{{ review.id }}" class="w-full">
+                <button type="button" class="w-full flex items-center justify-between py-5 font-medium rtl:text-right text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400 gap-3" data-accordion-target="#accordion-flush-body-{{ review.id }}" aria-expanded="true" aria-controls="accordion-flush-body-{{ review.id }}">
+                    <span>Review by {{ username }} - {{ review.title }} - Rate: {{ review.rating }}</span>
+                    <svg data-accordion-icon class="w-3 h-3 rotate-180 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5 5 1 1 5"/>
+                    </svg>
+                </button>
+                </h2>
+                <div id="accordion-flush-body-{{ review.id }}" class="hidden" aria-labelledby="accordion-flush-heading-{{ review.id }}">
+                <div class="py-5 border-b border-gray-200 dark:border-gray-700">
+                    <p class="mb-2 text-gray-500 dark:text-gray-400">{{ review.content }}</p>
+                    {% if review.store_answer != None %}
+                    <p class="ml-20 text-gray-500 dark:text-gray-400">Store answer: {{ review.store_anser }}</p>
+                    {% endif %}
+                </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
 </div>
    
 {% endblock %}

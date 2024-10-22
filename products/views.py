@@ -1,11 +1,16 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
+from checkout.models import Order, OrderLineItem
+from dashboard.models import Dashboard
 from products.forms import ProductForm
 from products.models import Category, Product
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.db.models.functions import Lower
 from django.contrib import messages
+
+from django.contrib.auth.models import User
+from reviews.models import Review
 
 # Create your views here.
 
@@ -51,7 +56,6 @@ def get_products(request):
             products = products.filter(queries)
 
     current_sorting = f'{sort}_{direction}'
-    print(categories)
 
     context = {
         'products': products,
@@ -66,9 +70,20 @@ def get_products(request):
 def get_product_details(request, product_id):
     """View to return the details of a given product"""
     product = get_object_or_404(Product, id=product_id)
+    order_lineitems = OrderLineItem.objects.filter(product=product_id)
+    usernames = []
+    reviews = []
+    for lineitem in order_lineitems:
+        review = Review.objects.get(order=lineitem)
+        order = Order.objects.get(id=lineitem.order.id)
+        user = User.objects.get(id=order.user.user.id)
+        usernames.append(user.username)
+        reviews.append(review)
+    product_reviews = zip(reviews, usernames)
     template = 'products/product_details.html'
     context = {
-        'product': product
+        'product': product,
+        'product_reviews': product_reviews
     }
     return render(request, template, context)
 

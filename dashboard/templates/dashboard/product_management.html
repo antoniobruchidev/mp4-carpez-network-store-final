@@ -66,16 +66,35 @@
                 </table>
             </div>
             
-            
-            
-            </div>
         </div>
-        <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
-            <p class="text-sm text-gray-500 dark:text-gray-400">This is some placeholder content the <strong class="font-medium text-gray-800 dark:text-white">Dashboard tab's associated content</strong>. Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to control the content visibility and styling.</p>
+        <div class="hidden p-4 dark:bg-gray-800" id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
+            <div class="grid grid-cols-1 justify-items-center">
+                {% for review, product in product_reviews %}
+                    <div class="w-full max-w-lg mb-4 shadow-sm">
+                        <h5 class="w-full text-center mt-4 mb-2 text-md text-black font-semibold">{{ review }}</h5>
+                        <p class="w-full mt-2 text sm text-gray-900 font-normal mx-5 p-2">
+                            {{ review.content }}
+                        </p>
+                    </div>
+                    <div class="relative w-full max-w-lg mb-4 shadow-sm">{% if review.store_answer == None %}
+                            <form method="POST" action="{% url 'answer_review' review.id %}" class="w-full max-w-lg">
+                                {% csrf_token %}
+                                <button type="submit" class="absolute bottom-0 right-0 w-6 h-6 p-0 rounded-full bg-yellow-300 text.black hover:bg-yellow-700 hover:text-white">
+                                    <i class="fa-solid fa-paper-plane w-4 h-4"></i>
+                                </button>
+                                <textarea id="content" name="content" rows="2" class="block p-2.5 w-full max-w-lg text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Write your answer here..."></textarea>
+                            </form>
+                        {% else %}
+                            <h5 class="w-full text-center mt-4 mb-2 text-md text-black font-semibold">Answer</h5>
+                            <p class="w-full mt-2 text sm text-gray-900 font-normal mx-5 p-2">
+                                {{ review.store_answer }}
+                            </p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>    
         </div>
     </div>
-
-
 </div>
 
 

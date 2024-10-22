@@ -13,10 +13,12 @@ class Review(models.Model):
     content = models.TextField(null=True, blank=True)
     order = models.OneToOneField(OrderLineItem, on_delete=models.CASCADE)
     rating = models.IntegerField(null=True, blank=True)
+    store_answer = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return self.order.product.name
+        return f"Review for {self.order.product.name} - Rating: {self.rating}"
 
+    
 
 @receiver(post_save, sender=OrderLineItem)
 def create_or_update_review(sender, instance, created, **kwargs):

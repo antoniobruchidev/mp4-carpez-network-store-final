@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 
-from checkout.models import Order
+from checkout.models import Order, OrderLineItem
 from dashboard.models import Dashboard
 from products.models import Product
 from django.contrib import messages
@@ -27,8 +27,16 @@ def dashboard(request):
                         "The SKU {sku} was not found in the database")
                 return redirect('get_product_details', product.id)
         orders = Order.objects.all()
+        reviews = Review.objects.all()
+        review_related_products = []
+        for review in reviews:
+            order_lineitem = OrderLineItem.objects.get(review=review)
+            product = Product.objects.get(id=order_lineitem.product.id)
+            review_related_products.append(product)
+        product_reviews = zip(reviews, review_related_products)
         context = {
             'orders': orders,
+            'product_reviews': product_reviews
         }
     else:
         template = 'dashboard/profile.html'
