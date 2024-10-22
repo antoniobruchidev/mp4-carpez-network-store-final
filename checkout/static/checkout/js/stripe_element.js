@@ -38,7 +38,7 @@ form.addEventListener('submit', async (event) => {
       'user_id': userId
     };
     var url = '/checkout/cache_checkout_data/';
-
+    console.log(postData)
     $.post(url, postData).done(async function(e) {
         
         try {

@@ -19,6 +19,22 @@
         <p class="mt-10 mb-3 text-gray-500 dark:text-gray-400">
             Check your orders or contact us for any enquiries.
         </p>
+
+
+
+        <form id="add-review-form" class="w-full max-w-md mx-auto" method="GET" action="{% url 'add_review' %}">
+            {% csrf_token %}
+            <select id="lineitem" name="lineitem" class="w-full max-w-sm mx-auto text-center form control form-select">
+              <option selected>Select a product to review</option>
+                {% for lineitem in lineitems %}
+              <option value="{{ lineitem.id }}">{{ lineitem.product.name }}</option>
+                {% endfor %}
+            </select>
+        </form>
+          
+          
+
+
         <div class="mt-20 flex rounded-md shadow-sm mx-auto">
             <a href="" aria-current="page" class="self-auto md:self-start px-4 py-2 text-sm font-medium text-black bg-white border border-gray-200 rounded-md hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
                 Order History
@@ -79,5 +95,16 @@
 
 
 </div>
+
+{% endblock %}
+
+{% block postloadjs %}
+{{ block.super }}
+<script type="text/javascript">
+    $('#lineitem').on('change', function() {
+        var form = $('#add-review-form')
+        form.submit()
+    })
+</script>
 
 {% endblock %}

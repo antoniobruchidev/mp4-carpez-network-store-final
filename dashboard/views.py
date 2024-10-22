@@ -5,6 +5,9 @@ from checkout.models import Order
 from dashboard.models import Dashboard
 from products.models import Product
 from django.contrib import messages
+from django.db.models.query import QuerySet
+
+from reviews.models import Review
 
 # Create your views here.
 
@@ -31,8 +34,16 @@ def dashboard(request):
         template = 'dashboard/profile.html'
         profile = get_object_or_404(Dashboard, user=request.user.id)
         orders = profile.orders.all()
+        lineitems = []
+        for order in orders:
+            order_lineitems = order.lineitems.all()
+            for order_lineitem in order_lineitems:
+                review = Review.objects.get(order=order_lineitem)
+                if review.rating is None:
+                    lineitems.append(order_lineitem)
         context = {
             'orders': orders,
             'profile': profile,
+            'lineitems': lineitems
         }
     return render(request, template, context)
