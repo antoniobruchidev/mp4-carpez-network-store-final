@@ -11,6 +11,13 @@
             <hr class="h-px my-4 bg-gray-200 border-0 dark:bg-gray-700">
             <p class="product-description text-gray-800 p-4 mx-5 mx-5 lg:mx-30">{{ product.description }}</p>
             <div class="flex items-center mt-2.5 mb-5 my-auto mx-auto">
+                <span class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-500">{{ brand.brand|upper }}</span>
+                <span class="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-indigo-400 border border-indigo-400">{{ category.friendly_name }}</span>
+                {% for tag in tags %}
+                <span class="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-yellow-300 border border-yellow-300">{{ tag.friendly_tag }}</span>
+                {% endfor %}
+            </div>
+            <div class="flex items-center mt-2.5 mb-5 my-auto mx-auto">
                 <div class="flex items-center space-x-1 rtl:space-x-reverse">
                     {% if product.rating %}
                         {% if product.rating >= 0.5 %}
@@ -84,20 +91,20 @@
                 <span class="inline-block ml-5 mt-5 text-3xl font-semibold text-gray-900 mb-0 float left">£ {{ product.price }}</span>
                 <div class="flex mr-5 mt-5 mb-5 rounded-md float-right shadow-sm">
                     {% if request.user.is_superuser %}
-                        <a href="" aria-current="page" class="self-auto md:self-start px-4 py-2 text-sm font-medium text-black bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
+                        <button type="button" class="product-reviews self-auto md:self-start px-4 py-2 text-sm font-medium text-black bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
                             Reviews
-                        </a>
+                        </button>
                         <a href="" class="self-auto md:self-start px-4 py-2 text-sm font-medium text-black bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
                             Edit
                         </a>
-                        <a data-hx-get="{% url 'delete_product' product.id %}" hx-confirm="Are you sure you wish to delete {{ product.name }}?" hx-swap="outerHTML" hx-target="#body" class="self-auto md:self-start px-4 py-2 text-sm font-medium text black bg-red-100 border-t border-b border-red-200 hover:bg-red-700 hover:text-red-100 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
+                        <button type="button" data-product-id="{{ product.id }}" id="delete-button" data-modal-target="popup-modal" data-modal-toggle="popup-modal" class="self-auto md:self-start px-4 py-2 text-sm font-medium text black bg-red-100 border-t border-b border-red-200 hover:bg-red-700 hover:text-red-100 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
                             Delete
                         </a>
                     {% else %}
-                        <button type="button" id="product-reviews" class="self-auto md:self-start px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
+                        <button type="button" class="product-reviews self-auto md:self-start px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
                             Reviews
                         </button>
-                        <button hx-post="{% url 'add_to_bag' product.id %}" hx-swap="outerHTML" hx-target="#body" class="self-auto md:self-start px-4 py-2 text-sm font-medium bg-yellow-300 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
+                        <button type="submit" class="self-auto md:self-start px-4 py-2 text-sm font-medium bg-yellow-300 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
                             Add to cart
                         </button>
                     {% endif %}
@@ -132,22 +139,51 @@
     {% endif %}
 </div>
 </div>
+
+
+<div id="popup-modal" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-full max-w-md max-h-full">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <button type="button" class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="popup-modal">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="p-4 md:p-5 text-center">
+                <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                </svg>
+                <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Are you sure you want to delete this product?</h3>
+                <button data-modal-hide="popup-modal" id="delete-confirm" type="button" class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                    Yes, I'm sure
+                </button>
+                <button data-modal-hide="popup-modal" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">No, cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
    
 {% endblock %}
 
 {% block postloadjs %}
 {{ block.super }}
 <script type="text/javascript">
-    $('#product-reviews').on('click', function(){
+    $('.product-reviews').on('click', function(){
         var changed = false;
         if ($('#reviews').hasClass('hidden')) {
-            $('#reviews').removeClass('hidden')
+            $('#reviews').removeClass('hidden');
             changed = true
         }
         if ($('#reviews').hasClass('hidden') == false && !changed) {
-            $('#reviews').addClass('hidden')
+            $('#reviews').addClass('hidden');
 
         }
+    })
+
+    $('#delete-confirm').on('click', function () {
+        var productId = $('#delete-button').data('product-id');
+        window.location.href = `/products/delete_product/${productId}`;
     })
 </script>
 {% endblock %}

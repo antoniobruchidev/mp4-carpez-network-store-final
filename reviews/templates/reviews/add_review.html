@@ -12,13 +12,14 @@
                     {% for field in form %}
                         {% if field.name == 'line_item' %}
                             <input type="hidden" value="{{ lineitem.id }}" name="lineitem" id="lineitem">
+                        {% elif field.name == 'store_answer' %}
                         {% else %}
                             {{ field | as_crispy_field }}
                         {% endif %}
                     {% endfor %}
                     <div class="text-end">
                         <button type="reset" class="btn btn-reset">Cancel</a>
-                        <button class="btn btn-submit" type="submit">Add Product</button>
+                        <button class="btn btn-submit" type="submit">Submit review</button>
                     </div>
                 </form>
     

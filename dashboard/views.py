@@ -1,9 +1,10 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 
 from checkout.models import Order, OrderLineItem
 from dashboard.models import Dashboard
-from products.models import Product
+from products.models import Brand, Category, Product, Tag
 from django.contrib import messages
 from django.db.models.query import QuerySet
 
@@ -29,6 +30,9 @@ def dashboard(request):
         orders = Order.objects.all()
         reviews = Review.objects.all()
         review_related_products = []
+        categories = Category.objects.all()
+        tags = Tag.objects.all()
+        brands = Brand.objects.all()
         for review in reviews:
             order_lineitem = OrderLineItem.objects.get(review=review)
             product = Product.objects.get(id=order_lineitem.product.id)
@@ -36,7 +40,10 @@ def dashboard(request):
         product_reviews = zip(reviews, review_related_products)
         context = {
             'orders': orders,
-            'product_reviews': product_reviews
+            'product_reviews': product_reviews,
+            'categories': categories,
+            'brands': brands,
+            'tags': tags
         }
     else:
         template = 'dashboard/profile.html'
@@ -55,3 +62,45 @@ def dashboard(request):
             'lineitems': lineitems
         }
     return render(request, template, context)
+
+
+@require_POST
+def add_tag(request):
+    if 'tag' in request.POST and 'friendly_name':
+        Tag.objects.create(
+            tag=request.POST.get('tag'),
+            friendly_name=request.POST.get('friendly_name')
+        )
+        messages.success(request, 'Tag added successfully')
+        return redirect('dashboard')
+    else:
+        messages.error(request, 'Tag could not be added')
+        return redirect('dashboard')
+
+
+@require_POST
+def add_category(request):
+    if 'category' in request.POST and 'friendly_name':
+        Category.objects.create(
+            category=request.POST.get('tag'),
+            friendly_name=request.POST.get('friendly_name')
+        )
+        messages.success(request, 'Tag added successfully')
+        return redirect('dashboard')
+    else:
+        messages.error(request, 'Tag could not be added')
+        return redirect('dashboard')
+
+
+@require_POST
+def add_brand(request):
+    if 'brand' in request.POST and 'friendly_name':
+        Brand.objects.create(
+            brand=request.POST.get('brand'),
+            support_page=request.POST.get('support_page')
+        )
+        messages.success(request, 'Tag added successfully')
+        return redirect('dashboard')
+    else:
+        messages.error(request, 'Tag could not be added')
+        return redirect('dashboard')

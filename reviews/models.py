@@ -1,3 +1,4 @@
+import datetime
 from django.db import models
 
 from checkout.models import OrderLineItem
@@ -14,6 +15,11 @@ class Review(models.Model):
     order = models.OneToOneField(OrderLineItem, on_delete=models.CASCADE)
     rating = models.IntegerField(null=True, blank=True)
     store_answer = models.TextField(null=True, blank=True)
+    date = models.DateTimeField(null=True, blank=True)
+    
+    def add_date(self):
+        self.date = datetime.datetime.now()
+        self.save()
 
     def __str__(self):
         return f"Review for {self.order.product.name} - Rating: {self.rating}"

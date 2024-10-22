@@ -35,8 +35,14 @@ def add_review(request):
         review = Review.objects.get(order=lineitem)
         review.title = request.POST.get('title')
         review.content = request.POST.get('content')
-        review.rating = request.POST.get('rating')
-        review.save()
+        if int(request.POST.get('rating')) < 0:
+            rating = 0
+        elif int(request.POST.get('rating')) > 5:
+            rating = 5
+        else:
+            rating = int(request.POST.get('rating'))
+        review.rating = rating
+        review.add_time()
         reviews = Review.objects.all()
         reviews_count = 0
         reviews_total = 0

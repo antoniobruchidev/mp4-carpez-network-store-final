@@ -3,7 +3,7 @@ from django.urls import reverse
 from checkout.models import Order, OrderLineItem
 from dashboard.models import Dashboard
 from products.forms import ProductForm
-from products.models import Category, Product
+from products.models import Category, Product, Tag
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.db.models.functions import Lower
@@ -73,6 +73,13 @@ def get_product_details(request, product_id):
     order_lineitems = OrderLineItem.objects.filter(product=product_id)
     usernames = []
     reviews = []
+    product_badges = []
+    product_badges
+    tags = Tag.objects.all()
+    for tag in tags:
+        if tag in product.tags.all():
+            product_badges.append(tag)
+            print(tag)
     for lineitem in order_lineitems:
         review = Review.objects.get(order=lineitem)
         order = Order.objects.get(id=lineitem.order.id)
@@ -83,7 +90,10 @@ def get_product_details(request, product_id):
     template = 'products/product_details.html'
     context = {
         'product': product,
-        'product_reviews': product_reviews
+        'product_reviews': product_reviews,
+        'tags': product_badges,
+        'brand': product.brand,
+        'category': product.category
     }
     return render(request, template, context)
 

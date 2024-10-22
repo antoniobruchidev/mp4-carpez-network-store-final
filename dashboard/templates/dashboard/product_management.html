@@ -24,10 +24,13 @@
     <div class="mb-4 border-b border-gray-200 dark:border-gray-700">
         <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="default-tab" data-tabs-toggle="#tab-content" role="tablist">
             <li class="me-2" role="presentation">
-                <button class="inline-block p-4 rounded-t-lg border-b-2 border-yellow-700 text-yellow-700" id="profile-tab" data-tabs-target="#orders" type="button" role="tab" aria-controls="orders" aria-selected="false">Profile</button>
+                <button class="inline-block p-4 rounded-t-lg border-b-2 border-yellow-700 text-yellow-700 hover:text-yellow-900 hover:border-yellow-900" id="profile-tab" data-tabs-target="#orders" type="button" role="tab" aria-controls="orders" aria-selected="false">Profile</button>
             </li>
             <li class="me-2" role="presentation">
-                <button class="inline-block p-4 rounded-t-lg border-b-2 border-gray-700 text-gray-700 hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="dashboard-tab" data-tabs-target="#dashboard" type="button" role="tab" aria-controls="dashboard" aria-selected="false">Dashboard</button>
+                <button class="inline-block p-4 rounded-t-lg border-b-2 border-yellow-700 text-yellow-700 hover:text-yellow-900 hover:border-yellow-900 dark:hover:text-gray-300" id="dashboard-tab" data-tabs-target="#reviews" type="button" role="tab" aria-controls="reviews" aria-selected="false">Reviews</button>
+            </li>
+            <li class="me-2" role="presentation">
+                <button class="inline-block p-4 rounded-t-lg border-b-2 border-yellow-700 text-yellow-700 hover:text-yellow-900 hover:border-yellow-900 dark:hover:text-gray-300" id="dashboard-tab" data-tabs-target="#keywords" type="button" role="tab" aria-controls="keywords" aria-selected="false">Tags, Brands, Categories</button>
             </li>
         </ul>
     </div>
@@ -67,7 +70,7 @@
             </div>
             
         </div>
-        <div class="hidden p-4 dark:bg-gray-800" id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
+        <div class="hidden p-4 dark:bg-gray-800" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
             <div class="grid grid-cols-1 justify-items-center">
                 {% for review, product in product_reviews %}
                     <div class="w-full max-w-lg mb-4 shadow-sm">
@@ -92,6 +95,88 @@
                         {% endif %}
                     </div>
                 {% endfor %}
+            </div>    
+        </div>
+        <div class="hidden p-4 dark:bg-gray-800" id="keywords" role="tabpanel" aria-labelledby="keywords-tab">
+            <div class="grid grid-cols-1 justify-items-center">
+                
+
+                <div class="w-full py-20 flex p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
+                    <div class="form-container flex flex-1">
+                        <form class="w-full max-w-md p-4 space-y-6" action="{% url 'add_tag' %}" method="POST">
+                            {% csrf_token %}
+                            <h5 class="text-xl font-medium text-gray-900 dark:text-white">Add a tag</h5>
+                                <div>
+                                    <label for="friendly_tag" class="w-full block mb-2 text-sm font-medium text-gray-900 dark:text-white">User friendly tag (ex: Socket LGA 1700)</label>
+                                    <input type="text" name="friendly_tag" id="friendly_tag" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="Enter a user friendly tag name" required />
+                                </div>
+                                <div>
+                                    <label for="tag" class="w-full block mb-2 text-sm font-medium text-gray-900 dark:text-white">machine friendly tag (ex: lga_1700)</label>
+                                    <input type="text" name="tag" id="tag" placeholder="enter a tag name with no special characters" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
+                                </div>
+                            <button type="submit" class="btn btn-submit">Add Tag</button>
+                        </form>
+                    </div>
+                    <div class="tags-container float-right mt-10 mr-10 grid grid-cols-2 justify-items-center">
+                        {% for tag in tags %}
+                            <div class="div">
+                                <span class="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-yellow-300 border border-yellow-300">{{ tag.friendly_tag }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="w-full flex p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
+                    <div class="form-container flex flex-1">
+                        <form class="w-full max-w-md p-4 space-y-6" action="{% url 'add_category' %}" method="POST">
+                            {% csrf_token %}
+                            <h5 class="text-xl font-medium text-gray-900 dark:text-white">Add a category</h5>
+                            <div>
+                                <label for="friendly_tag" class="w-full block mb-2 text-sm font-medium text-gray-900 dark:text-white">User friendly category (ex: Graphic Card)</label>
+                                <input type="text" name="friendly_tag" id="friendly_tag" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="Enter a user friendly category name" required />
+                            </div>
+                            <div>
+                                <label for="tag" class="w-full block mb-2 text-sm font-medium text-gray-900 dark:text-white">machine friendly category (ex: graphic_card)</label>
+                                <input type="text" name="tag" id="tag" placeholder="enter a cateogry name with no special characters" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
+                            </div>
+                            <button type="submit" class="btn btn-submit">Add Tag</button>
+                        </form>
+                    </div>
+                    <div class="category-container float-right mt-10 mr-10 grid grid-cols-2 justify-items-center">
+                        {% for category in categories %}
+                            <div class="div">
+                                <span class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-500">{{ category.friendly_name }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="w-full flex p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
+                    <div class="form-container flex flex-1">
+                        <form class="w-full max-w-md p-4 space-y-6" action="{% url 'add_brand' %}" method="POST">
+                            {% csrf_token %}
+                            <h5 class="text-xl font-medium text-gray-900 dark:text-white">Add a brand</h5>
+                            <div>
+                                <label for="friendly_tag" class="w-full block mb-2 text-sm font-medium text-gray-900 dark:text-white">Enter a brand name</label>
+                                <input type="text" name="friendly_tag" id="friendly_tag" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="Enter a user friendly brand name" required />
+                            </div>
+                            <div>
+                                <label for="support_page" class="w-full block mb-2 text-sm font-medium text-gray-900 dark:text-white">Brand support webpage url</label>
+                                <input type="text" name="support_page" id="support_page" placeholder="enter brand support page url" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
+                            </div>
+                            <button type="submit" class="btn btn-submit">Add Brand</button>
+                        </form>
+                    </div>
+                    <div class="brand-container float-right mt-10 mr-10 grid grid-cols-2 justify-items-center">
+                        {% for brand in brands %}
+                            <div class="div">
+                                <span class="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-indigo-400 border border-indigo-400">{{ brand.brand|upper }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+
             </div>    
         </div>
     </div>
