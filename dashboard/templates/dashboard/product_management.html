@@ -51,14 +51,14 @@
                     <tbody>
                         {% for order in orders %}
                             <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    <a href="{% url 'checkout_success' order.order_number %}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">{{ order.order_number}}</a>
+                                <th scope="row" class="px-6 py-4 text-sm md:text-md font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    <a href="{% url 'checkout_success' order.order_number %}" class="text-sm md:text-md font-medium text-yellow-700 dark:text-blue-500 hover:underline">{{ order.order_number|truncatechars:10}}</a>
                                 </th>
-                                <td class="px-6 py-4">
-                                    {{ order.date }}
+                                <td class="px-6 py-4 text-xs md:text-md">
+                                    <span class="text-sm md:text-md">{{ order.date }}</span>
                                 </td>
-                                <td class="px-6 py-4">
-                                    £ {{ order.grand_total }}
+                                <td class="px-6 py-4 text-xs md:text-md">
+                                    <span class="text-sm md:text-md">£ {{ order.grand_total }}</span>
                                 </td>
                             </tr>
                         {% endfor %}

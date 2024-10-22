@@ -82,7 +82,7 @@
                 {% csrf_token %}
                 <input type="hidden" name="redirect_url" value="{{ request.path }}">
                 <span class="inline-block ml-5 mt-5 text-3xl font-semibold text-gray-900 mb-0 float left">£ {{ product.price }}</span>
-                <div class="flex mr-5 mt-5 rounded-md float-right shadow-sm">
+                <div class="flex mr-5 mt-5 mb-5 rounded-md float-right shadow-sm">
                     {% if request.user.is_superuser %}
                         <a href="" aria-current="page" class="self-auto md:self-start px-4 py-2 text-sm font-medium text-black bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
                             Reviews
@@ -94,9 +94,9 @@
                             Delete
                         </a>
                     {% else %}
-                        <a href="" class="self-auto md:self-start px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
-                            Support
-                        </a>
+                        <button type="button" id="product-reviews" class="self-auto md:self-start px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
+                            Reviews
+                        </button>
                         <button hx-post="{% url 'add_to_bag' product.id %}" hx-swap="outerHTML" hx-target="#body" class="self-auto md:self-start px-4 py-2 text-sm font-medium bg-yellow-300 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
                             Add to cart
                         </button>
@@ -106,7 +106,7 @@
         </div>
     </div>
 </div>
-<div class="container grid grid-cols-1 items-center mt-10">
+<div class="container grid grid-cols-1 items-center mt-10 hidden" id="reviews">
     <h2 class="text-center text-xl font-semibold">Reviews</h2>
     {% if product_reviews %}
         <div id="accordion-flush" class="w-full max-w-lg mx-auto p-4" data-accordion="collapse" data-active-classes="bg-white dark:bg-gray-900 text-gray-900 dark:text-white" data-inactive-classes="text-gray-500 dark:text-gray-400">   
@@ -123,7 +123,7 @@
                 <div class="py-5 border-b border-gray-200 dark:border-gray-700">
                     <p class="mb-2 text-gray-500 dark:text-gray-400">{{ review.content }}</p>
                     {% if review.store_answer != None %}
-                    <p class="ml-20 text-gray-500 dark:text-gray-400">Store answer: {{ review.store_anser }}</p>
+                    <p class="pl-20 text-gray-500 dark:text-gray-400">Store answer: {{ review.store_anser }}</p>
                     {% endif %}
                 </div>
                 </div>
@@ -133,4 +133,21 @@
 </div>
 </div>
    
+{% endblock %}
+
+{% block postloadjs %}
+{{ block.super }}
+<script type="text/javascript">
+    $('#product-reviews').on('click', function(){
+        var changed = false;
+        if ($('#reviews').hasClass('hidden')) {
+            $('#reviews').removeClass('hidden')
+            changed = true
+        }
+        if ($('#reviews').hasClass('hidden') == false && !changed) {
+            $('#reviews').addClass('hidden')
+
+        }
+    })
+</script>
 {% endblock %}

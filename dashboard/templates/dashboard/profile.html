@@ -2,10 +2,10 @@
 
 {% block content %}
 
-<div class="container grid grid-cols-1 lg:grid-cols-2 mt-20">
+<div class="container grid grid-cols-1 lg:grid-cols-2 mt-20 gap-4">
     
 
-<div class="w-full max-w-md bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+<div class="w-full mx-auto max-w-md bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
     <div class="flex flex-col items-center pb-10">
         <h5 class="mt-10 mb-5 text-xl font-medium text-gray-900 dark:text-white">
             Welcome, {{ request.user.username }}
@@ -63,16 +63,15 @@
                 <th scope="col" class="px-6 py-3">
                     Grand total
                 </th>
-                <th scope="col" class="px-6 py-3">
-                    Action
-                </th>
             </tr>
         </thead>
         <tbody>
             {% for order in orders %}
                 <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                        {{ order.order_number}}
+                        <a href="{% url 'checkout_success' order.order_number %}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                            {{ order.order_number|truncatechars:12}}
+                        </a>
                     </th>
                     <td class="px-6 py-4">
                         {{ order.date }}
@@ -82,9 +81,6 @@
                     </td>
                     <td class="px-6 py-4">
                         £ {{ order.grand_total }}
-                    </td>
-                    <td class="px-6 py-4">
-                        <a href="{% url 'checkout_success' order.order_number %}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
                     </td>
                 </tr>
             {% endfor %}

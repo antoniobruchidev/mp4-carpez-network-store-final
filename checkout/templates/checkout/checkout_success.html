@@ -3,33 +3,33 @@
 
 {% block content %}
 <div class="container">
-    <h2 class="font-xl text-gray-900 mb-5 mt-20">
+    <h2 class="font-xl text-gray-900 mb-5 mt-20 text-center">
       Order Summary
     </button>
     </h2>
     <hr>
             
     {% for lineitem in line_items %}
-        <p class="mb-4 mt-2 font-large text-gray-500 dark:text-gray-400">
-            {{ lineitem.quantity }} x {{ lineitem.product.name }} @ {{ lineitem.product.price }}<span class="float-end mr-5">£ {{ lineitem.product.price|calc_subtotal:lineitem.quantity }} </span></p>
+        <p class="mb-4 mt-2 p-4 font-large text-gray-500 dark:text-gray-400">
+            {{ lineitem.quantity }} x {{ lineitem.product.name|truncatechars:21 }} @ {{ lineitem.product.price }}<span class="float-end mr-5">£ {{ lineitem.product.price|calc_subtotal:lineitem.quantity }} </span></p>
         </p>    
     {% endfor %}
-    <p class="mt-4 bg-gray-900 rounded-md shadow-sm text-yellow-300 p-4 text-end">
+    <p class="mt-4 p-4 bg-gray-900 rounded-md shadow-sm text-yellow-300 p-4 text-end">
         <strong>
             Total:  £ {{ order.grand_total|floatformat:2 }}
         </strong>
     </p>
     <hr class="mt-5 mb-5">
-    <h2 id="font-large text-gray-900 mb-5 mt-10">
+    <h2 class="font-large text-gray-900 mb-5 mt-10 text-center">
       Shipping details
     </h2>
-    <p class="mb-4 text-gray-500 dark:text-gray-400">{{ order.shipping }}</p>
+    <p class="mb-4 p-4 text-gray-500 dark:text-gray-400">{{ order.shipping }}</p>
     <hr class="mt-5 mb-5">
-    <h2 id="font-large text-gray-900 mb-5 mt-10">
+    <h2 class="font-large text-gray-900 mb-5 mt-10 text-center">
       Order Number
     </h2>
-    <p class="mb-4 text-gray-500 dark:text-gray-400">{{ order.order_number }}</p>
-    <a href="{% url 'home' %}" class="btn btn-submit mt-20 float-end">Back to Home</a>
+    <p class="mb-4 p-4 text-gray-500 dark:text-gray-400">{{ order.order_number }}</p>
+    <a href="{% url 'home' %}" class="btn btn-submit mr-5 float-end">Back to Home</a>
 </div>
 {% endblock %}
 
