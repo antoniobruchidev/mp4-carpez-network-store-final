@@ -59,12 +59,12 @@ class StripeWH_Handler:
         email = intent.metadata.email
         shipping = dict(intent.shipping)
         user_id = intent.metadata.user_id
-        stripe.api_key = settings.STRIPE_SECRET_KEY
-        stripe_charge = stripe.Charge.retrieve(
-             intent.latest_charge
-        )
-        amount = round(intent.amount / 100, 2)
-        billing_details = stripe_charge.billing_details
+        # stripe.api_key = settings.STRIPE_SECRET_KEY
+        # stripe_charge = stripe.Charge.retrieve(
+        #      intent.latest_charge
+        # )
+        amount = round(int(intent.amount) / 100, 2)
+        # billing_details = stripe_charge.billing_details
         order_exists = False
         attempt = 1
         while attempt <= 5:
@@ -76,7 +76,7 @@ class StripeWH_Handler:
                 if order:
                     order_exists = True
                     order.status = 'confirmed'
-                    order.billing_details = billing_details
+                    # order.billing_details = billing_details
                     if user_id == "ul" or user_id == 'null':
                         profile = None
                         user = None
@@ -110,7 +110,17 @@ class StripeWH_Handler:
                         },
                         user=profile,
                         status='confirmed'
-                )
+                    )
+                else:
+                    order = Order.objects.create(
+                        bag_and_shipping_details={
+                            "bag": bag,
+                            "shipping": shipping,
+                            "email": email,
+                            "stripe_pid": pid
+                        },
+                        status='confirmed'
+                    )
                 order.save()
                 for item_id, quantity in bag.items():
                     product = Product.objects.get(id=item_id)
