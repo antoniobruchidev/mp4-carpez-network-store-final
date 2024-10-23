@@ -59,7 +59,7 @@ class StripeWH_Handler:
         email = intent.metadata.email
         shipping = dict(intent.shipping)
         user_id = intent.metadata.user_id
-        if user_id == "ul":
+        if user_id == "ul" or user_id == 'null':
             profile = None
         else:
             user = User.objects.get(id=int(user_id))

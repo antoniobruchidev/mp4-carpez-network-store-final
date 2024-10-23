@@ -7,7 +7,6 @@ from checkout.models import Order, OrderLineItem
 from dashboard.models import Dashboard
 from products.models import Brand, Category, Product, Tag
 from django.contrib import messages
-from django.db.models.query import QuerySet
 
 from reviews.models import Review
 
