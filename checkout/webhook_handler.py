@@ -112,6 +112,8 @@ class StripeWH_Handler:
                         user=profile,
                         status='confirmed'
                     )
+                    profile.points += order.grand_total
+                    profile.save()
                 else:
                     order = Order.objects.create(
                         bag_and_shipping_details={
