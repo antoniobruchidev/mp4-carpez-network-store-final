@@ -83,27 +83,25 @@ class StripeWH_Handler:
                     order_exists = True
                     order.status = 'confirmed'
                     order.billing_details = billing_details
-                    if profile is not None:   
+                    if profile:
+                        profile.points += round(amount / 100) * 100
+                        profile.save()
                         order.user = profile
                     order.save()
                     break
             except Order.DoesNotExist:
                 pass
-            
             attempt += 1
             time.sleep(1)
         if order_exists:
             res = request_email_order_confirmation(order.id)
-            if res:
-                profile.points += round(order.grand_total)
-                profile.save()
-                return HttpResponse(
-                        content=f'Webhook received: {event["type"]} | SUCCESS: \
-                            Verified order already in database',
-                        status=200)
+            return HttpResponse(
+                content=f'Webhook received: {event["type"]} | SUCCESS: \
+                    Verified order already in database',
+                status=200)
         else:
             try:
-                if user is not None:
+                if user:
                     order = Order.objects.create(
                         bag_and_shipping_details={
                             "bag": bag,
@@ -114,6 +112,8 @@ class StripeWH_Handler:
                         user=profile,
                         status='confirmed'
                     )
+                    profile.points += round(amount / 100) * 100
+                    profile.save()
                 else:
                     order = Order.objects.create(
                         bag_and_shipping_details={
@@ -140,9 +140,6 @@ class StripeWH_Handler:
                         {event["type"]} | ERROR: {e}', status=500)
 
         res = request_email_order_confirmation(order.id)
-        if res:
-            profile.points += round(order.grand_total)
-            profile.save()
         return HttpResponse(
             content=f'Webhook received: {event["type"]} | SUCCESS: Created\
                 order in webhook',
