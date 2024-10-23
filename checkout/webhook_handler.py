@@ -59,12 +59,18 @@ class StripeWH_Handler:
         email = intent.metadata.email
         shipping = dict(intent.shipping)
         user_id = intent.metadata.user_id
-        # stripe.api_key = settings.STRIPE_SECRET_KEY
-        # stripe_charge = stripe.Charge.retrieve(
-        #      intent.latest_charge
-        # )
+        stripe.api_key = settings.STRIPE_SECRET_KEY
+        stripe_charge = stripe.Charge.retrieve(
+             intent.latest_charge
+        )
+        if user_id == "ul" or user_id == 'null':
+            profile = None
+            user = None
+        else:
+            user = User.objects.get(id=int(user_id))
+            profile = Dashboard.objects.get(user=user)
         amount = round(int(intent.amount) / 100, 2)
-        # billing_details = stripe_charge.billing_details
+        billing_details = stripe_charge.billing_details
         order_exists = False
         attempt = 1
         while attempt <= 5:
@@ -76,14 +82,9 @@ class StripeWH_Handler:
                 if order:
                     order_exists = True
                     order.status = 'confirmed'
-                    # order.billing_details = billing_details
-                    if user_id == "ul" or user_id == 'null':
-                        profile = None
-                        user = None
-                    else:
-                        user = User.objects.get(id=int(user_id))
-                        profile = Dashboard.objects.get(user=user)
-                    order.user = profile
+                    order.billing_details = billing_details
+                    if profile is not None:   
+                        order.user = profile
                     order.save()
                     break
             except Order.DoesNotExist:
@@ -100,7 +101,7 @@ class StripeWH_Handler:
                         status=200)
         else:
             try:
-                if user:
+                if user is not None:
                     order = Order.objects.create(
                         bag_and_shipping_details={
                             "bag": bag,
@@ -108,6 +109,7 @@ class StripeWH_Handler:
                             "email": email,
                             "stripe_pid": pid
                         },
+                        user=profile,
                         status='confirmed'
                     )
                 else:
@@ -118,7 +120,6 @@ class StripeWH_Handler:
                             "email": email,
                             "stripe_pid": pid
                         },
-                        user=profile,
                         status='confirmed'
                     )
                 order.save()
