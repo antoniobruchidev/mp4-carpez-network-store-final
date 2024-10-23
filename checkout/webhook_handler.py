@@ -59,6 +59,7 @@ class StripeWH_Handler:
         email = intent.metadata.email
         shipping = dict(intent.shipping)
         user_id = intent.metadata.user_id
+        print(user_id, pid)
         if user_id == "ul" or user_id == 'null':
             profile = None
         else:
@@ -70,6 +71,7 @@ class StripeWH_Handler:
         )
         amount = round(stripe_charge.amount / 100, 2)
         billing_details = stripe_charge.billing_details
+        print(billing_details)
         order_exists = False
         attempt = 1
         while attempt <= 5:
