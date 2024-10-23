@@ -219,7 +219,7 @@ else:
     USE_TLS = config(str('EMAIL_USE_TLS'), cast=bool, default=False)
     USE_SSL = config(str('EMAIL_USE_SSL'), cast=bool, default=False)
     # default backend
-    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
     EMAIL_HOST = config(str("EMAIL_HOST"))
     EMAIL_HOST_PORT = int(config(str('EMAIL_HOST_PORT')))
     EMAIL_HOST_USER = config(str("EMAIL_HOST_USER"))
@@ -232,7 +232,7 @@ else:
 
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_EMAIL_VERIFICATION = 'none'
 ACCOUNT_SIGNUP_EMAIL_ENTER_TWICE = True
 ACCOUNT_USERNAME_MIN_LENGTH = 4
 LOGIN_URL = '/accounts/login/'
