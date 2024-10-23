@@ -36,5 +36,5 @@ def create_or_update_user_profile(sender, instance, created, **kwargs):
         Create or Update the user profile
     """
     if created:
-        dashboard = Dashboard.objects.create(user=instance)
+        dashboard = Dashboard.objects.get(user=instance)
         dashboard.generate_activation_url()
