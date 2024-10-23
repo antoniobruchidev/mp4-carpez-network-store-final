@@ -92,8 +92,6 @@ def place_order(request):
                 order.delete()
                 return redirect(reverse("view_bag"))
         order = Order.objects.get(stripe_pid=pid,)
-        profile.points += math.floor(order.grand_total)
-        profile.save()
         messages.success(
             request,
             f"Order successfully processed! \
