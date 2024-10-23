@@ -65,7 +65,6 @@ class StripeWH_Handler:
         )
         amount = round(intent.amount / 100, 2)
         billing_details = stripe_charge.billing_details
-        order.billing_details = billing_details
         order_exists = False
         attempt = 1
         while attempt <= 5:
@@ -77,6 +76,7 @@ class StripeWH_Handler:
                 if order:
                     order_exists = True
                     order.status = 'confirmed'
+                    order.billing_details = billing_details
                     if user_id == "ul" or user_id == 'null':
                         profile = None
                     else:
