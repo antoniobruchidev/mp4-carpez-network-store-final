@@ -30,7 +30,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     'antoniobruchidev.uk.to',
     'localhost',
-    config('HREOKU_DOMAIN'),
+    config('HEROKU_DOMAIN'),
     '141.0.153.251',
 ]
 
@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'checkout',
     'dashboard',
     'reviews',
+    'email_relay',
     'crispy_forms',
     'crispy_tailwind',
 ]

@@ -11,3 +11,4 @@ gunicorn
 django-crispy-forms
 crispy-tailwind
 django-countries
+requests

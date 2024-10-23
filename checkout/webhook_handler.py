@@ -10,6 +10,7 @@ from django.conf import settings
 from django.template.loader import render_to_string
 from django.core.mail import EmailMultiAlternatives
 from django.contrib.auth.models import User
+from email_relay.views import request_email_order_confirmation
 
 
 class StripeWH_Handler:
@@ -81,6 +82,7 @@ class StripeWH_Handler:
                 if order:
                     order_exists = True
                     order.user = profile
+                    order.status = ('confirmed', 'Confirmed')
                     order.save()
                     break
             except Order.DoesNotExist:
@@ -89,11 +91,12 @@ class StripeWH_Handler:
             attempt += 1
             time.sleep(1)
         if order_exists:
-            self._send_confirmation_email(order)
-            return HttpResponse(
-                    content=f'Webhook received: {event["type"]} | SUCCESS: \
-                        Verified order already in database',
-                    status=200)
+            res = request_email_order_confirmation(order.id)
+            if res:
+                return HttpResponse(
+                        content=f'Webhook received: {event["type"]} | SUCCESS: \
+                            Verified order already in database',
+                        status=200)
         else:
             try:
                 order = Order.objects.create(
