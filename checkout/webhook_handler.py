@@ -59,18 +59,13 @@ class StripeWH_Handler:
         email = intent.metadata.email
         shipping = dict(intent.shipping)
         user_id = intent.metadata.user_id
-        if user_id == "ul" or user_id == 'null':
-            profile = None
-        else:
-            user = User.objects.get(id=int(user_id))
-            profile = Dashboard.objects.get(user=user)
-        # stripe.api_key = settings.STRIPE_SECRET_KEY
-        # stripe_charge = stripe.Charge.retrieve(
-        #     intent.latest_charge
-        # )
+        stripe.api_key = settings.STRIPE_SECRET_KEY
+        stripe_charge = stripe.Charge.retrieve(
+             intent.latest_charge
+        )
         amount = round(intent.amount / 100, 2)
-        # billing_details = stripe_charge.billing_details
-        billing_details = {}
+        billing_details = stripe_charge.billing_details
+        order.billing_details = billing_details
         order_exists = False
         attempt = 1
         while attempt <= 5:
@@ -78,12 +73,16 @@ class StripeWH_Handler:
                 order = Order.objects.get(
                     stripe_pid=pid,
                     grand_total=amount
-                    )
-                order.billing_details = billing_details
+                )
                 if order:
                     order_exists = True
-                    order.user = profile
                     order.status = 'confirmed'
+                    if user_id == "ul" or user_id == 'null':
+                        profile = None
+                    else:
+                        user = User.objects.get(id=int(user_id))
+                        profile = Dashboard.objects.get(user=user)
+                    order.user = profile
                     order.save()
                     break
             except Order.DoesNotExist:
@@ -108,7 +107,6 @@ class StripeWH_Handler:
                         "stripe_pid": pid
                     }
                 )
-                order.user = user
                 order.save()
                 for item_id, quantity in bag.items():
                     product = Product.objects.get(id=item_id)
