@@ -100,7 +100,7 @@ class StripeWH_Handler:
                         status=200)
         else:
             try:
-                if user is not None:
+                if user:
                     order = Order.objects.create(
                         bag_and_shipping_details={
                             "bag": bag,
@@ -108,7 +108,6 @@ class StripeWH_Handler:
                             "email": email,
                             "stripe_pid": pid
                         },
-                        user=profile,
                         status='confirmed'
                     )
                 else:
@@ -119,6 +118,7 @@ class StripeWH_Handler:
                             "email": email,
                             "stripe_pid": pid
                         },
+                        user=profile,
                         status='confirmed'
                     )
                 order.save()
