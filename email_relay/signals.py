@@ -2,16 +2,14 @@ from django.db.models.signals import post_save
 
 from django.dispatch import receiver
 
-from dashboard.models import Dashboard
+from dashboard.models import User
 from .views import request_email_signup
 
 
-@receiver(post_save, sender=Dashboard)
+@receiver(post_save, sender=User)
 def send_email_confirmation(sender, instance, created, **kwargs):
     """
         Send email signup confirmation
     """
     if created:
-        user = sender.user
-        print(sender)
-        request_email_signup(user.id)
+        request_email_signup(sender.id)
