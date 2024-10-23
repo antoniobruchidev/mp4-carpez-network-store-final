@@ -219,7 +219,7 @@ else:
     USE_TLS = config(str('EMAIL_USE_TLS'), cast=bool, default=False)
     USE_SSL = config(str('EMAIL_USE_SSL'), cast=bool, default=False)
     # default backend
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     EMAIL_HOST = config(str("EMAIL_HOST"))
     EMAIL_HOST_PORT = int(config(str('EMAIL_HOST_PORT')))
     EMAIL_HOST_USER = config(str("EMAIL_HOST_USER"))
