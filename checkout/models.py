@@ -39,7 +39,7 @@ class Order(models.Model):
     full_name = models.CharField(max_length=254, null=True, editable=False)
     email = models.EmailField(max_length=254, null=True, editable=False)
     shipping = models.CharField(max_length=254, null=True, editable=False)
-    billing_details = models.JSONField(null=True, editable=False)
+    billing_details = models.JSONField(null=True, blank=True)
     stripe_pid = models.CharField(
         max_length=32,
         null=False,

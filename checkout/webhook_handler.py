@@ -79,6 +79,7 @@ class StripeWH_Handler:
                     order.billing_details = billing_details
                     if user_id == "ul" or user_id == 'null':
                         profile = None
+                        user = None
                     else:
                         user = User.objects.get(id=int(user_id))
                         profile = Dashboard.objects.get(user=user)
@@ -99,13 +100,16 @@ class StripeWH_Handler:
                         status=200)
         else:
             try:
-                order = Order.objects.create(
-                    bag_and_shipping_details={
-                        "bag": bag,
-                        "shipping": shipping,
-                        "email": email,
-                        "stripe_pid": pid
-                    }
+                if user is not None:
+                    order = Order.objects.create(
+                        bag_and_shipping_details={
+                            "bag": bag,
+                            "shipping": shipping,
+                            "email": email,
+                            "stripe_pid": pid
+                        },
+                        user=profile,
+                        status='confirmed'
                 )
                 order.save()
                 for item_id, quantity in bag.items():
