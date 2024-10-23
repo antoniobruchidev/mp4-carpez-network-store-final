@@ -1,16 +1,12 @@
-{% extends "account/base_entrance.html" %}
+{% extends "base.html" %}
 {% load i18n %}
 {% load allauth account %}
-{% block head_title %}
-    {% trans "Sign In" %}
-{% endblock head_title %}
-{% block header %}
-Sign in
-{% endblock header %}
-{% block inner_content %}
+{% block content %}
+<div class="container mt-20">
+    <div class="grid grid-cols-1 gap-4 w-full max-w-md mx-auto">
     {% if not SOCIALACCOUNT_ONLY %}
         {% setvar link %}
-            <a class="text-blue" href="{{ signup_url }}">
+            <a class="text-yellow-700" href="{{ signup_url }}">
             {% endsetvar %}
             {% setvar end_link %}
             </a>
@@ -18,20 +14,33 @@ Sign in
         {% element p %}
             {% blocktranslate %}If you have not created an account yet, then please {{ link }}sign up{{ end_link }} first.{% endblocktranslate %}
         {% endelement %}
-        {% url 'account_login' as login_url %}
-        {% element form form=form method="post" action=login_url tags="entrance,login" %}
-            {% slot body %}
-                {% csrf_token %}
-                {% element fields form=form unlabeled=True%}
-                {% endelement %}
-                {{ redirect_field }}
-            {% endslot %}
-            {% slot actions %}
-                {% element button type="submit" tags="prominent,login" %}
-                    {% trans "Sign In" %}
-                {% endelement %}
-            {% endslot %}
-        {% endelement %}
+                <form action="{% url 'account_login' %}" method="post">
+                    {% csrf_token %}
+                    <h5 class="text-xl font-medium text-gray-900 dark:text-white">Sign in to our platform</h5>
+        <div>
+            <label for="id_login" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email</label>
+            <input type="text" name="login" id="id_login" class="mt-5 mb-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="Username or email" required />
+        </div>
+        <div>
+            <label for="id_password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your password</label>
+            <input type="password" name="password" id="id_password" placeholder="••••••••" class="mt-3 mb-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
+        </div>
+        <div class="flex items-start">
+            <div class="flex items-start">
+                <div class="flex items-center h-5">
+                    <input id="id_remember" type="checkbox" value="" class="mt-2 mb-2 w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800" />
+                </div>
+                <label for="remember" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Remember me</label>
+            </div>
+            <a href="/accounts/password/reset" class="mb-2 mt-2 ms-auto text-sm text-yellow-700 hover:underline dark:text-blue-500">Lost Password?</a>
+        </div>
+        <button type="submit" class="mt-2 mb-2 w-full text-black bg-yellow-300 hover:text-white hover:bg-yellow-900 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Login to your account</button>
+        <div class="text-sm font-medium text-gray-500 dark:text-gray-300">
+            Not registered? <a href="{% url 'account_signup' %}" class="mt-2 text-yellow-700 hover:underline dark:text-blue-500">Create account</a>
+        </div>
+                </form>
+            </div>
+        </div>
     {% endif %}
     {% if LOGIN_BY_CODE_ENABLED or PASSKEY_LOGIN_ENABLED %}
         {% element hr %}
@@ -52,7 +61,7 @@ Sign in
     {% if SOCIALACCOUNT_ENABLED %}
         {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
     {% endif %}
-{% endblock inner_content %}
+{% endblock content %}
 {% block extra_body %}
     {{ block.super }}
     {% if PASSKEY_LOGIN_ENABLED %}
