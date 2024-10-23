@@ -202,9 +202,9 @@ else:
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-DEVELOPMENT = config(str('DEVELOPMENT'), cast=bool, default=False)
+MY_DEVELOPMENT = config(str('MY_DEVELOPMENT'), cast=bool, default=False)
 
-if DEVELOPMENT:
+if MY_DEVELOPMENT:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
     EMAIL_HOST_USER = 'info@carpez-network.com'
 else:
@@ -220,12 +220,11 @@ else:
     EMAIL_USE_SSL = config(str('EMAIL_USE_SSL'), cast=bool, default=False)
     DEFAULT_FROM_MAIL = EMAIL_HOST_USER
     
-    DEBUG = False
-
+    DEBUG = MY_DEVELOPMENT
 
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_EMAIL_VERIFICATION = 'none'
 ACCOUNT_SIGNUP_EMAIL_ENTER_TWICE = True
 ACCOUNT_USERNAME_MIN_LENGTH = 4
 LOGIN_URL = '/accounts/login/'

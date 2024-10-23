@@ -13,6 +13,5 @@ def send_email_confirmation(sender, instance, created, **kwargs):
     """
     if created:
         user = sender.user
+        print(sender)
         request_email_signup(user.id)
-
-   
