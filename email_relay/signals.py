@@ -12,4 +12,4 @@ def send_email_confirmation(sender, instance, created, **kwargs):
         Send email signup confirmation
     """
     if created:
-        request_email_signup(sender.id)
+        request_email_signup(instance.id)
