@@ -69,6 +69,7 @@ class StripeWH_Handler:
         else:
             user = User.objects.get(id=int(user_id))
             profile = Dashboard.objects.get(user=user)
+        print(user,profile,"1")
         amount = round(int(intent.amount) / 100, 2)
         billing_details = stripe_charge.billing_details
         order_exists = False
@@ -87,14 +88,18 @@ class StripeWH_Handler:
                         profile.points += round(amount / 100) * 100
                         profile.save()
                         order.user = profile
+                        print(order.user,"2")
                     order.save()
                     break
             except Order.DoesNotExist:
                 pass
             attempt += 1
+            print(attempt,"2")
             time.sleep(1)
         if order_exists:
-            request_email_order_confirmation(order.id)
+            
+            res = request_email_order_confirmation(order.id)
+            print(res,"1")
             return HttpResponse(
                 content=f'Webhook received: {event["type"]} | SUCCESS: \
                     Verified order already in database',

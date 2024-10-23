@@ -16,7 +16,6 @@ class Dashboard(models.Model):
     def generate_activation_url(self):
         """Generate a random unique order number"""
         self.activation_url = uuid.uuid4().hex.upper()
-        self.save()
     
     def save(self, *args, **kwargs):
         """
@@ -28,8 +27,8 @@ class Dashboard(models.Model):
         
     def __str__(self):
         return self.user.username
-    
-    
+
+
 @receiver(post_save, sender=User)
 def create_or_update_user_profile(sender, instance, created, **kwargs):
     """
@@ -38,3 +37,4 @@ def create_or_update_user_profile(sender, instance, created, **kwargs):
     if created:
         Dashboard.objects.create(user=instance)
     instance.dashboard.save()
+
