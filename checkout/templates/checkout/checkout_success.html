@@ -26,9 +26,10 @@
     <p class="mb-4 p-4 text-gray-500 dark:text-gray-400">{{ order.shipping }}</p>
     <hr class="mt-5 mb-5">
     <h2 class="font-large text-gray-900 mb-5 mt-10 text-center">
-      Order Number
+      Order Number and Status
     </h2>
     <p class="mb-4 p-4 text-gray-500 dark:text-gray-400">{{ order.order_number }}</p>
+    <p class="mb-4 p-4 text-gray-500 dark:text-gray-400">{{ order.get_status_display }}</p>
     <a href="{% url 'home' %}" class="btn btn-submit mr-5 float-end">Back to Home</a>
 </div>
 {% endblock %}

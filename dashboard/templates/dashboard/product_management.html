@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 
 {% block content %}
 
@@ -14,7 +15,7 @@
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
                     </svg>
                 </div>
-                <input type="search" name="sku" id="default-search" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search SKU" required />
+                <input type="search" name="sku" id="default-search" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search SKU or order number" required />
                 <button type="submit" class="text-black absolute w-16 h-full end-0 bottom-0 bg-yellow-300 hover:bg-yellow-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Search</button>
             </div>
         </form>
@@ -47,12 +48,17 @@
                                 Date
                             </th>
                             <th scope="col" class="px-6 py-3">
+                                Status
+                            </th>
+                            <th scope="col" class="px-6 py-3">
                                 Grand total
                             </th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for order in orders %}
+                        <form id="status-{{ order.id }}" action="{% url 'edit_order' order.id %}" method="POST">
+                            {% csrf_token %}
                             <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                                 <th scope="row" class="px-6 py-4 text-sm md:text-md font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                     <a href="{% url 'checkout_success' order.order_number %}" class="text-sm md:text-md font-medium text-yellow-700 dark:text-blue-500 hover:underline">{{ order.order_number|truncatechars:10}}</a>
@@ -61,9 +67,20 @@
                                     <span class="text-sm md:text-md">{{ order.date }}</span>
                                 </td>
                                 <td class="px-6 py-4 text-xs md:text-md">
+                                    <label for="status" class="sr-only">Change the status</label>
+                                    <select name="status" data-id="{{ order.id }}" class="status-selector block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+                                        <option selected>{{ order.get_status_display }}</option>
+                                        <option value="pending">Pending</option>
+                                        <option value="confirmed">Confirmed</option>
+                                        <option value="dispatched">Dispatched</option>
+                                        <option value="delivered">Delivered</option>
+                                    </select>
+                                </td>
+                                <td class="px-6 py-4 text-xs md:text-md">
                                     <span class="text-sm md:text-md">£ {{ order.grand_total }}</span>
                                 </td>
                             </tr>
+                        </form>
                         {% endfor %}
                     </tbody>
                 </table>
@@ -157,8 +174,8 @@
                             {% csrf_token %}
                             <h5 class="text-xl font-medium text-gray-900 dark:text-white">Add a brand</h5>
                             <div>
-                                <label for="friendly_tag" class="w-full block mb-2 text-sm font-medium text-gray-900 dark:text-white">Enter a brand name</label>
-                                <input type="text" name="friendly_tag" id="friendly_tag" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="Enter a user friendly brand name" required />
+                                <label for="brand" class="w-full block mb-2 text-sm font-medium text-gray-900 dark:text-white">Enter a brand name</label>
+                                <input type="text" name="brand" id="brand" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="Enter a user friendly brand name" required />
                             </div>
                             <div>
                                 <label for="support_page" class="w-full block mb-2 text-sm font-medium text-gray-900 dark:text-white">Brand support webpage url</label>
@@ -184,5 +201,16 @@
 
 
 
-  
-{%endblock %}
+{% endblock %}
+
+
+{% block postloadjs %}
+{{ block.super }}
+<script type="text/javascript">
+    $('.status-selector').on('change', function() {
+        var orderId = $(this).data('id')
+        var form = $(`#status-${orderId}`)
+        form.submit()
+    })
+</script>
+{% endblock  %}

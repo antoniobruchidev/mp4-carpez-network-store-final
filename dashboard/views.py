@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse
 from django.views.decorators.http import require_POST
 
 from checkout.models import Order, OrderLineItem
@@ -23,9 +24,16 @@ def dashboard(request):
                 try:
                     product = Product.objects.get(sku=sku)
                 except Product.DoesNotExist:
-                    messages.error(
-                        request,
-                        "The SKU {sku} was not found in the database")
+                    try:
+                        order = Order.objects.get(order_number=sku)
+                        return redirect('checkout_success', order.order_number)
+                    except Order.DoesNotExist:
+                        messages.error(
+                            request,
+                            f"We couldn't find  {sku} either as SKU or as \
+                            Order Number in the database")
+                    return redirect(reverse('dashboard'))
+                        
                 return redirect('get_product_details', product.id)
         orders = Order.objects.all()
         reviews = Review.objects.all()
@@ -66,41 +74,67 @@ def dashboard(request):
 
 @require_POST
 def add_tag(request):
-    if 'tag' in request.POST and 'friendly_name':
-        Tag.objects.create(
-            tag=request.POST.get('tag'),
-            friendly_name=request.POST.get('friendly_name')
-        )
-        messages.success(request, 'Tag added successfully')
-        return redirect('dashboard')
-    else:
-        messages.error(request, 'Tag could not be added')
-        return redirect('dashboard')
+    if request.user.is_superuser:
+        if 'tag' in request.POST and 'friendly_tag' in request.POST:
+            Tag.objects.create(
+                tag=request.POST.get('tag'),
+                friendly_tag=request.POST.get('friendly_tag')
+            )
+            messages.success(request, 'Tag added successfully')
+            return redirect('dashboard')
+        else:
+            messages.error(request, 'Tag could not be added')
+            return redirect('dashboard')
 
 
 @require_POST
 def add_category(request):
-    if 'category' in request.POST and 'friendly_name':
-        Category.objects.create(
-            category=request.POST.get('tag'),
-            friendly_name=request.POST.get('friendly_name')
-        )
-        messages.success(request, 'Tag added successfully')
-        return redirect('dashboard')
+    if request.user.is_superuser:
+        if 'category' in request.POST and 'friendly_name' in request.POST:
+            Category.objects.create(
+                category=request.POST.get('tag'),
+                friendly_name=request.POST.get('friendly_name')
+            )
+            messages.success(request, 'Tag added successfully')
+            return redirect('dashboard')
+        else:
+            messages.error(request, 'Tag could not be added')
+            return redirect('dashboard')
     else:
-        messages.error(request, 'Tag could not be added')
-        return redirect('dashboard')
+        messages.error(request, "Permission denied")
+        return redirect('home')
 
 
 @require_POST
 def add_brand(request):
-    if 'brand' in request.POST and 'friendly_name':
-        Brand.objects.create(
-            brand=request.POST.get('brand'),
-            support_page=request.POST.get('support_page')
-        )
-        messages.success(request, 'Tag added successfully')
-        return redirect('dashboard')
+    if request.user.is_superuser:
+        if 'brand' in request.POST and 'support_page' in request.POST:
+            Brand.objects.create(
+                brand=request.POST.get('brand'),
+                support_page=request.POST.get('support_page')
+            )
+            messages.success(request, 'Tag added successfully')
+            return redirect('dashboard')
+        else:
+            messages.error(request, 'Tag could not be added')
+            return redirect('dashboard')
     else:
-        messages.error(request, 'Tag could not be added')
-        return redirect('dashboard')
+        messages.error(request, "Permission denied")
+        return redirect('home')
+
+
+@require_POST
+def edit_order(request, order_id):
+    if request.user.is_superuser:
+        if 'status' in request.POST:
+            order = Order.objects.get(id=order_id)
+            order.status = request.POST.get('status')
+            order.save()
+            messages.success(request, 'Order status updated successfully')
+            return redirect('dashboard')
+        else:
+            messages.error(request, 'Order status could not be updated')
+            return redirect('dashboard')
+    else:
+        messages.error(request, "Permission denied")
+        return redirect('home')

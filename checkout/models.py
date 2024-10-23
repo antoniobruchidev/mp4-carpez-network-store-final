@@ -54,6 +54,17 @@ class Order(models.Model):
         related_name="orders",
         on_delete=models.SET_NULL
     )
+    status = models.CharField(
+        max_length=10,
+        null=False,
+        default='pending',
+        choices=[
+            ('pending', "Pending"),
+            ('confirmed', "Confirmed"),
+            ('dispatched', "Dispatched"),
+            ('delivered', "delivered")
+        ]
+    )
     
     def _generate_order_number(self):
         """Generate a random unique order number"""

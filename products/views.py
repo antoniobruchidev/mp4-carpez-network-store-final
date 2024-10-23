@@ -3,7 +3,7 @@ from django.urls import reverse
 from checkout.models import Order, OrderLineItem
 from dashboard.models import Dashboard
 from products.forms import ProductForm
-from products.models import Category, Product, Tag
+from products.models import Brand, Category, Product, Tag
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.db.models.functions import Lower
@@ -24,11 +24,37 @@ def get_products(request):
     direction = None
     query = None
 
-    if request.GET:
+    if request.GET:  
+        if 'tag' in request.GET:
+            if request.GET['tag'] != "":
+                print(request.GET['tag'])
+                tag = get_object_or_404(
+                    Tag, tag=request.GET['tag']
+                )
+                tagged_products = []
+                for product in products:
+                    for tag_check in product.tags.all():
+                        if tag == tag_check:
+                            tagged_products.append(product)
+                if len(tagged_products) > 0:
+                    context = {
+                        'products': tagged_products
+                    }
+                    return render(request, 'products/products.html', context)
+        
         if 'category' in request.GET:
             if request.GET['category'] != "":
-                category = get_object_or_404(Category, name=request.GET['category'])
+                category = get_object_or_404(
+                    Category, name=request.GET['category']
+                )
                 products = products.filter(category=category)
+
+        if 'brand' in request.GET:
+            if request.GET['brand'] != "":
+                brand = get_object_or_404(
+                    Brand, brand=request.GET['brand']
+                )
+                products = products.filter(brand=brand)
             
         if 'sort' in request.GET:
             sortkey = request.GET['sort']
