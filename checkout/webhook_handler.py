@@ -64,12 +64,13 @@ class StripeWH_Handler:
         else:
             user = User.objects.get(id=int(user_id))
             profile = Dashboard.objects.get(user=user)
-        stripe.api_key = settings.STRIPE_SECRET_KEY
-        stripe_charge = stripe.Charge.retrieve(
-            intent.latest_charge
-        )
-        amount = round(stripe_charge.amount / 100, 2)
-        billing_details = stripe_charge.billing_details
+        # stripe.api_key = settings.STRIPE_SECRET_KEY
+        # stripe_charge = stripe.Charge.retrieve(
+        #     intent.latest_charge
+        # )
+        amount = round(intent.amount / 100, 2)
+        # billing_details = stripe_charge.billing_details
+        billing_details = {}
         order_exists = False
         attempt = 1
         while attempt <= 5:
