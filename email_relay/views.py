@@ -1,7 +1,7 @@
 import socket
 from django.conf import settings
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 from checkout.models import Order
 from dashboard.models import Dashboard
 from ecommerce.env import config
@@ -127,3 +127,10 @@ def request_email_lost_password(email):
         print("sent")
         return True
 
+
+def try_email(request, order_id):
+    res = request_email_order_confirmation(order_id)
+    if res:
+        return redirect('home')
+    else:
+        return redirect('get_products')
