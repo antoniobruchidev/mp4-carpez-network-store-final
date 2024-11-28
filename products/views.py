@@ -108,10 +108,12 @@ def get_product_details(request, product_id):
             print(tag)
     for lineitem in order_lineitems:
         review = Review.objects.get(order=lineitem)
-        order = Order.objects.get(id=lineitem.order.id)
-        user = User.objects.get(id=order.user.user.id)
-        usernames.append(user.username)
-        reviews.append(review)
+        if review.rating != None:
+            order = Order.objects.get(id=lineitem.order.id)
+            if order.user != None:
+                user = User.objects.get(id=order.user.id)
+                usernames.append(user.username)
+                reviews.append(review)
     product_reviews = zip(reviews, usernames)
     template = 'products/product_details.html'
     context = {
