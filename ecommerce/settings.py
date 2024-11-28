@@ -165,9 +165,9 @@ AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
 AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
 
 STATICFILES_DIRS = [
-    ("css", "/home/carpez/dev/ecommerce/mp4-ecommerce-app/static/css"),
-    ("images", "/home/carpez/dev/ecommerce/mp4-ecommerce-app/static/images"),
-    ("tailwind", "/home/carpez/dev/ecommerce/mp4-ecommerce-app/static/tailwind"),
+    ("css", "/media/storage/dev/mp4-final/mp4-carpez-network-store-final/static/css"),
+    ("images", "/media/storage/dev/mp4-final/mp4-carpez-network-store-final/static/images"),
+    ("tailwind", "/media/storage/dev/mp4-final/mp4-carpez-network-store-final/static/tailwind"),
 ]
 
 if USE_AWS:
