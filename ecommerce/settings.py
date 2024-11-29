@@ -228,7 +228,7 @@ else:
     EMAIL_USE_SSL = config(str('EMAIL_USE_SSL'), cast=bool, default=False)
     DEFAULT_FROM_MAIL = EMAIL_HOST_USER
     
-    DEBUG = MY_DEVELOPMENT
+    DEBUG = config(str("DEBUG"))
 
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 ACCOUNT_EMAIL_REQUIRED = True
