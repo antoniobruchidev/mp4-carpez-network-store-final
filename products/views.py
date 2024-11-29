@@ -100,12 +100,10 @@ def get_product_details(request, product_id):
     usernames = []
     reviews = []
     product_badges = []
-    product_badges
     tags = Tag.objects.all()
     for tag in tags:
         if tag in product.tags.all():
             product_badges.append(tag)
-            print(tag)
     for lineitem in order_lineitems:
         review = Review.objects.get(order=lineitem)
         if review.rating != None:

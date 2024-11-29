@@ -17,7 +17,6 @@ def dashboard(request):
     if request.user.is_superuser:
         template = 'dashboard/product_management.html'
         if request.GET:
-            print(request.GET)
             if 'sku' in request.GET:
                 sku = request.GET['sku'] 
                 try:

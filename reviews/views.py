@@ -7,14 +7,12 @@ from products.models import Product
 from reviews.forms import ReviewForm
 from reviews.models import Review
 from django.contrib import messages
-# Create your views here.
 
 
 @require_http_methods(['GET', 'POST'])
 def add_review(request):
     if request.GET:
         if 'lineitem' in request.GET:
-            print(request.GET['lineitem'])
             order_lineitem_id = int(request.GET['lineitem'])
             lineitem = get_object_or_404(OrderLineItem, id=order_lineitem_id)
             review = Review.objects.get(order=lineitem)
@@ -24,7 +22,6 @@ def add_review(request):
                 'lineitem': lineitem,
                 'form': form
             }
-            print(form)
             return render(request, template, context)
         else:
             messages.error(request, "It was not specisified a product to review")
@@ -42,13 +39,13 @@ def add_review(request):
         else:
             rating = int(request.POST.get('rating'))
         review.rating = rating
-        review.add_time()
+        review.add_date()
+        review.save()
         reviews = Review.objects.all()
         reviews_count = 0
         reviews_total = 0
         for review in reviews:
             order_lineitem = OrderLineItem.objects.get(review=review)
-            print(order_lineitem.product.id, review.rating)
             if order_lineitem.product.id == lineitem.product.id:
                 if review.rating is not None:
                     reviews_count += 1
@@ -65,15 +62,12 @@ def add_review(request):
 
 @require_POST
 def answer_review(request, review_id):
-    print(request.user.is_superuser)
     if request.user.is_superuser:
         review = Review.objects.get(id=review_id)
-        print('content' in request.POST)
         if 'content' in request.POST:
             review.store_answer = request.POST['content']
             review.save()
             review = Review.objects.get(id=review_id)
-            print(review.store_answer)
             messages.success(request, "Successfully answered review")
             return redirect('dashboard')
     else:
