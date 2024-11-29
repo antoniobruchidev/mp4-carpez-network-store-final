@@ -170,6 +170,8 @@ STATICFILES_DIRS = [
     ("tailwind", "/media/storage/dev/mp4-final/mp4-carpez-network-store-final/static/tailwind"),
 ]
 
+ACCOUNT_ADAPTER = 'custom_adapter.MyAllauthAdapter'
+
 if USE_AWS:
     # aws settings should work
     # s3 static settings
@@ -221,7 +223,7 @@ else:
     # default backend
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     EMAIL_HOST = config(str("EMAIL_HOST"))
-    EMAIL_HOST_PORT = int(config(str('EMAIL_HOST_PORT')))
+    EMAIL_HOST_PORT = config(str('EMAIL_HOST_PORT'))
     EMAIL_HOST_USER = config(str("EMAIL_HOST_USER"))
     EMAIL_HOST_PASSWORD = config(str("EMAIL_HOST_PASSWORD"))
     EMAIL_USE_TLS = config(str('EMAIL_USE_TLS'), cast=bool, default=True)
