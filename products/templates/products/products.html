@@ -54,10 +54,10 @@
     <div class="w-full grid grid-cols-1 justify-center md:grid-cols-3 gap-4 mt-20">
         {% for product in products %}
 
-            <div class="max-w-md mx-auto bg-white border border-gray-200 rounded-lg shadow grid grid-cols-1 gap-4 content-between dark:bg-gray-800 dark:border-gray-700">
+            <div class="max-w-md mx-auto bg-white border border-gray-200 rounded-lg shadow grid grid-cols-1 gap-4 content-between dark:bg-gray-800 dark:border-gray-700 w-full">
                 <div class="p-4 self-center">
                     <a href="{% url 'get_product_details' product.id %}">
-                        <img class="rounded-t-lg" src="{{ product.image.url }}" alt="{{ product.name }}" />
+                        <img class="rounded-t-lg w-full" src="{{ product.image.url }}" alt="{{ product.name }}" />
                     </a>
                 </div>                
                 <div class="px-5 pb-5">

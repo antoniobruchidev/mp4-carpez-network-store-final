@@ -38,8 +38,20 @@ class ProductForm(forms.ModelForm):
                 'image'
             ),
             ButtonHolder(HTML(
-                '<button class="btn-reset ml-2" type="reset">Reset</button>'
-                '<button class="btn-submit ml-2" type="submit">Submit</button>'),
+                '<div class="inline-flex rounded-md shadow-sm" role="group">'
+                '<button class="btn-reset" type="reset">Reset</button>'
+                '<button class="btn-add-detail" type="button" id="add_brand">'
+                'Add Brand'
+                '</button>'
+                '<button class="btn-add-detail" type="button" id="add_category">'
+                'Add Category'
+                '</button>'
+                '<button class="btn-add-detail" type="button" id="add_tag">'
+                'Add Tag'
+                '</button>'
+                '<button class="btn-edit" type="submit">Submit</button>'
+                '</div>'
+                ),
                 css_class='text-end' 
             )
         )
