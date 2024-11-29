@@ -12,7 +12,7 @@
     }
 
     .btn-reset {
-        @apply inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-black rounded-lg bg-transparent hover:bg-gray-200 focus:ring-4 focus:ring-yellow-300 dark:focus:ring-yellow-900
+        @apply px-4 py-2 text-sm font-medium text-yellow-900 bg-yellow-100 border border-yellow-900 rounded-s-lg hover:bg-yellow-900 hover:text-yellow-300 focus:z-10 focus:ring-2 focus:ring-yellow-300 focus:text-yellow-300 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white
     }
 
     .form-select {
@@ -21,5 +21,13 @@
 
     .qty-input {
         @apply bg-gray-50 w-14 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block px-2.5 py-1 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500
+    }
+
+    .btn-edit {
+        @apply px-4 py-2 text-sm font-medium text-yellow-900 bg-yellow-300 border border-yellow-900 rounded-e-lg hover:bg-yellow-900 hover:text-yellow-300 focus:z-10 focus:ring-2 focus:ring-yellow-300 focus:text-yellow-300 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white
+    }
+
+    .btn-add-detail {
+        @apply px-4 py-2 text-sm font-medium text-yellow-900 bg-yellow-100 border border-yellow-900 hover:bg-yellow-900 hover:text-yellow-300 focus:z-10 focus:ring-2 focus:ring-yellow-300 focus:text-yellow-300 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white
     }
 }
