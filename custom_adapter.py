@@ -1,12 +1,18 @@
+import os
 from django.conf import settings
+import requests
 from allauth.account.adapter import DefaultAccountAdapter
+from django.template.loader import render_to_string
 from django.template import TemplateDoesNotExist
 from django.core.mail import EmailMessage, EmailMultiAlternatives
 from allauth.account import app_settings
-from django.template.loader import render_to_string
+from django.contrib.sites.shortcuts import get_current_site
+from ecommerce.env import config
+
 
 
 class MyAllauthAdapter(DefaultAccountAdapter):
+
 
     def render_mail(self, template_prefix, email, context, headers=None):
         """
@@ -46,3 +52,20 @@ class MyAllauthAdapter(DefaultAccountAdapter):
             )
             msg.content_subtype = "html"  # Main content is now text/html
         return msg
+    
+
+    def send_mail(self, template_prefix, email, context):
+        ctx = {
+            "email": email,
+        }
+        ctx.update(context)
+        msg = self.render_mail(template_prefix, email, ctx)
+        url = config('EMAIL_RELAY_URL')
+        post_data = [
+            ('subject', msg.subject),
+            ('recipient', msg.to[0]),
+            ('body', msg.body),
+            ('sender', msg.from_email),
+            ('secret', config("FLASK_RELAY_SECRET"))]
+            
+        result = requests.post(url, data=post_data)
