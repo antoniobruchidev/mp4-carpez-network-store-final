@@ -7,10 +7,9 @@ from dashboard.models import Dashboard
 from products.models import Product
 import stripe
 from django.conf import settings
-from django.template.loader import render_to_string
 from django.core.mail import EmailMultiAlternatives
 from django.contrib.auth.models import User
-from email_relay.views import request_email_order_confirmation
+from email_relay.views import send_confirmation_email
 
 
 class StripeWH_Handler:
@@ -18,28 +17,6 @@ class StripeWH_Handler:
 
     def __init__(self, request):
         self.request = request
-
-    def _send_confirmation_email(self, order):
-        """Send the user a confirmation email"""
-        cust_email = order.email
-        subject = "Carpez Network - Order Confirmation"
-        body = render_to_string(
-            'checkout/email/confirmation_email.txt',
-            {'order': order, 'contact_email': settings.EMAIL_HOST_USER}
-        )
-        email = EmailMultiAlternatives(
-            subject,
-            body,
-            settings.EMAIL_HOST_USER,
-            [cust_email]
-        )
-        email.fail_silently = False
-        try:
-            email.send()
-        except socket.gaierror as e:
-            print(e)
-        except Exception as e:
-            print(e)
 
     def handle_event(self, event):
         """
@@ -95,7 +72,7 @@ class StripeWH_Handler:
             time.sleep(1)
         if order_exists:
             
-            res = request_email_order_confirmation(order.id)
+            send_confirmation_email(order)
             return HttpResponse(
                 content=f'Webhook received: {event["type"]} | SUCCESS: \
                     Verified order already in database',
@@ -140,7 +117,7 @@ class StripeWH_Handler:
                     return HttpResponse(content=f'Webhook received: \
                         {event["type"]} | ERROR: {e}', status=500)
 
-        request_email_order_confirmation(order.id)
+        send_confirmation_email(order)
         return HttpResponse(
             content=f'Webhook received: {event["type"]} | SUCCESS: Created\
                 order in webhook',
