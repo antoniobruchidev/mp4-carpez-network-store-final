@@ -143,6 +143,12 @@ class OrderLineItem(models.Model):
         blank=False,
         editable=False
         )
+    discounted_price = models.DecimalField(
+        null=True,
+        blank=True,
+        max_digits=6,
+        decimal_places=2
+        )
 
     def save(self, *args, **kwargs):
         """Override the save method to set the lineitem total before saving"""
