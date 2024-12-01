@@ -38,9 +38,9 @@
                                <p class="text-xs text-end text-gray-900">{{ item.quantity }}</p>
                             </td>
                             <td class="px-1 py-4">
-                                <p class="text-xs text-end text-gray-900">£ {{ item.product.price }}</p>
+                                <p class="text-xs text-end text-gray-900">£ {% if item.discounted_price %}{{ item.discounted_price }}{% else %}{{ item.product.price }}{% endif %}</p>
                             <td class="px-1 py-4">
-                                <p class="text-xs text-end text-gray-900">£ {{ item.product.price|calc_subtotal:item.quantity }}</p>
+                                <p class="text-xs text-end text-gray-900">£ {% if item.discounted_price %}{{ item.discounted_price|calc_subtotal:item.quantity }}{% else %}{{ item.product.price|calc_subtotal:item.quantity }}{% endif %}</p>
                             </td>
                         </tr>
                     {% endfor %}

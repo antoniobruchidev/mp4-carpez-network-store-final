@@ -1,17 +1,24 @@
+{% load bag_tools %}
 Hello {{ order.full_name }}!
 
 This is a confirmation of your order at Carpez Network e-Store. Your information is below:
 
-Order Number: {{ order.order_number }}
-Order Date: {{ order.date }}
-{% for lineitem in line_items %}
-        {{ lineitem.quantity }} X {{ lineitem.product }}
-{% endfor %}
-Order Total: ${{ order.order_total }}
-Delivery: ${{ order.delivery_cost }}
-Grand Total: ${{ order.grand_total }}
+        Order Number: {{ order.order_number }}
+        Order Date: {{ order.date }}
 
-Your order will be shipped to
+{% for line_item in line_items %}
+{% if line_item.discounted_price %}
+        {{ line_item.quantity }} * {{ line_item.product.name }} @ £{{ line_item.discounted_price }} - Total: {{ line_item.discounted_price|calc_subtotal:line_item.quantity }}
+{% else %}
+        {{ line_item.quantity }} * {{ line_item.product.name }} @ £{{ line_item.product.price }} - Total: {{ line_item.product.price|calc_subtotal:line_item.quantity }}
+{% endif %}
+{% endfor %}
+
+        Order Total: ${{ order.order_total }}
+        Delivery: ${{ order.delivery_cost }}
+        Grand Total: ${{ order.grand_total }}
+
+        Your order will be shipped to
 
         {{ order.full_name }}
         {{ order.shipping }}

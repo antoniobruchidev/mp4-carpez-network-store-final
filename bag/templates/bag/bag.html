@@ -61,7 +61,7 @@
                         </div>
                     </td>
                     <td class="pl-6 pr-3 md:px-6 py-4 font-semibold text-gray-900 dark:text-white">
-                    £ {{ bag_item.product.price|calc_subtotal:bag_item.quantity }}
+                    £ {% if bag_item.discounted_price %}{{ bag_item.discounted_price|calc_subtotal:bag_item.quantity }}{% else %}{{ bag_item.product.price|calc_subtotal:bag_item.quantity }}{% endif %}
                     </td>
                 </tr>
                 {% endfor %}

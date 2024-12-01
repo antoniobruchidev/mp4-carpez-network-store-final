@@ -52,7 +52,7 @@
     </form>
 
     <div class="w-full grid grid-cols-1 justify-center md:grid-cols-3 gap-4 mt-20">
-        {% for product in products %}
+        {% for product, discounted_price in products %}
 
             <div class="max-w-md mx-auto bg-white border border-gray-200 rounded-lg shadow grid grid-cols-1 gap-4 content-between dark:bg-gray-800 dark:border-gray-700 w-full">
                 <div class="p-4 self-center">
@@ -133,7 +133,10 @@
                         <span class="bg-yellow-100 text-black text-xs font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800 ms-3">{% if product.rating %}{{ product.rating }}{% else %} N/A{% endif %}</span>
                     </div>
                     <div class="flex items-center justify-between">
-                        <span class="text-3xl font-bold text-gray-900 dark:text-white">${{ product.price }}</span>
+                        <span class="text-3xl font-bold text-gray-900 dark:text-white {% if discounted_price %}line-through{% endif %}">£{{ product.price }}</span>
+                        {% if discounted_price %}
+                            <span class="text-3xl font-bold text-yellow-900 dark:text-white">£{{ discounted_price }}</span>
+                        {% endif %}
                         {% if not request.user.is_superuser %}
                         <form method="POST" action="{% url 'add_to_bag' product.id %}">
                             {% csrf_token %}

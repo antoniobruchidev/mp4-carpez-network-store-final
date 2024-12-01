@@ -94,7 +94,10 @@
             <form method="POST" action="{% url 'add_to_bag' product.id %}">
                 {% csrf_token %}
                 <input type="hidden" name="redirect_url" value="{{ request.path }}">
-                <span class="inline-block ml-5 mt-5 text-3xl font-semibold text-gray-900 mb-0 float left">£ {{ product.price }}</span>
+                <span class="inline-block ml-5 mt-5 text-3xl font-semibold text-yellow-900 mb-0 float left{% if discounted_price %} line-through{% endif %}">£ {{ product.price }}</span>
+                {% if discounted_price %}
+                    <span class="inline-block ml-5 mt-5 text-3xl font-semibold text-yellow-900 mb-0 float left">£ {{ discounted_price }}</span>
+                {% endif %}
                 <div class="flex mr-5 mt-5 mb-5 rounded-md float-right shadow-sm">
                     {% if request.user.is_superuser %}
                         <button type="button" class="product-reviews self-auto md:self-start px-4 py-2 text-sm font-medium text-black bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
