@@ -16,12 +16,21 @@ def bag(request):
 
     for product_id in b.keys():
         product = get_object_or_404(Product, pk=product_id)
-        total += product.price * b[product_id]
+        discounted_price = None
+        if product.discount <= 0:
+            total += product.price * b[product_id]
+        else:
+            discounted_price = (product.price - Decimal(
+                product.price * product.discount / 100
+                ).__round__(2)
+            )
+            total += discounted_price
         objects += b[product_id]
         bag_items.append({
             'product_id': product_id,
             'quantity': b[product_id],
             'product': product,
+            'discounted_price': discounted_price,
         })
 
     if total < settings.FREE_DELIVERY_TRESHOLD:

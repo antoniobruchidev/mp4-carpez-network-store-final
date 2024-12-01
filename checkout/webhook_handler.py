@@ -1,3 +1,4 @@
+from decimal import Decimal
 import json
 import socket
 import time
@@ -104,12 +105,16 @@ class StripeWH_Handler:
                     )
                 order.save()
                 for item_id, quantity in bag.items():
-                    product = Product.objects.get(id=item_id)
+                    p = Product.objects.get(id=item_id)
                     order_line_item = OrderLineItem(
                         order=order,
-                        product=product,
+                        product=p,
                         quantity=quantity
                     )
+                    if p.discount > 0:
+                        order_line_item.discounted_price = p.price - Decimal(
+                            p.price * p.discount / 100
+                        ).__round__(2)
                     order_line_item.save()
             except Exception as e:
                 if order:

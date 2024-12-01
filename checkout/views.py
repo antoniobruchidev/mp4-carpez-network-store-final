@@ -1,3 +1,4 @@
+from decimal import Decimal
 import json
 import math
 from django.conf import settings
@@ -79,6 +80,10 @@ def place_order(request):
                 order_line_item = OrderLineItem(
                     order=order, product=product, quantity=quantity
                 )
+                if product.discount > 0:
+                    order_line_item.discounted_price = product.price - Decimal(
+                        product.price * product.discount / 100
+                    ).__round__(2)
                 order_line_item.save()
             except Product.DoesNotExist:
                 messages.error(

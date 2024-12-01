@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from checkout.models import Order, OrderLineItem
@@ -35,7 +36,13 @@ def get_products(request):
                 for product in products:
                     for tag_check in product.tags.all():
                         if tag == tag_check:
-                            tagged_products.append(product)
+                            if product.discount > 0:
+                                discounted_price = product.price * Decimal(
+                                    product.price * product.discount / 100
+                                ).__round__(2)
+                            else:
+                                discounted_price = None
+                            tagged_products.append((product, discounted_price))
                 if len(tagged_products) > 0:
                     context = {
                         'products': tagged_products
@@ -80,11 +87,20 @@ def get_products(request):
                 Q(name__icontains=query) | Q(description__icontains=query)
                 )
             products = products.filter(queries)
-
+    discounted_prices = []
+    for product in products:
+        if product.discount > 0:
+            discounted_price = product.price - Decimal(
+                product.price * product.discount / 100
+            ).__round__(2)
+        else:
+            discounted_price = None
+        discounted_prices.append(discounted_price)
+    products_and_discounts = zip(products, discounted_prices)
     current_sorting = f'{sort}_{direction}'
 
     context = {
-        'products': products,
+        'products': products_and_discounts,
         'search-term': query,
         'category': category,
         'categories': categories,
@@ -113,13 +129,18 @@ def get_product_details(request, product_id):
                 usernames.append(user.username)
                 reviews.append(review)
     product_reviews = zip(reviews, usernames)
+    if product.discount > 0:
+        discounted_price = product.price - Decimal(product.price * product.discount / 100).__round__(2)
+    else:
+        discounted_price = None
     template = 'products/product_details.html'
     context = {
         'product': product,
         'product_reviews': product_reviews,
         'tags': product_badges,
         'brand': product.brand,
-        'category': product.category
+        'category': product.category,
+        'discounted_price': discounted_price
     }
     return render(request, template, context)
 
