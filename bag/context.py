@@ -34,7 +34,10 @@ def bag(request):
         })
 
     if total < settings.FREE_DELIVERY_TRESHOLD:
-        delivery = total * Decimal(settings.STANDARD_DELIVERY_PERCENTAGE / 100)
+        delivery = total * Decimal(
+            settings.STANDARD_DELIVERY_PERCENTAGE / 100
+            )
+        delivery = delivery.__round__(2)
         free_delivery_delta = settings.FREE_DELIVERY_TRESHOLD - total
     else:
         delivery = 0
