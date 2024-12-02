@@ -41,17 +41,8 @@ class ProductForm(forms.ModelForm):
             ),
             ButtonHolder(HTML(
                 '<div class="inline-flex rounded-md shadow-sm" role="group">'
-                '<button class="btn-reset" type="reset">Reset</button>'
-                '<button class="btn-add-detail" type="button" id="add_brand">'
-                'Add Brand'
-                '</button>'
-                '<button class="btn-add-detail" type="button" id="add_category">'
-                'Add Category'
-                '</button>'
-                '<button class="btn-add-detail" type="button" id="add_tag">'
-                'Add Tag'
-                '</button>'
-                '<button class="btn-edit" type="submit">Submit</button>'
+                '<button class="btn-left" type="reset">Reset</button>'
+                '<button class="btn-right" type="submit">Submit</button>'
                 '</div>'
                 ),
                 css_class='text-end' 
