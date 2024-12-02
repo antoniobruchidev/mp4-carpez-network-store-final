@@ -6,17 +6,17 @@
     <form class="w-full mx-auto mb-10" method="GET" action="{% url 'get_products' %}">
         <input type="hidden" name="category" value="" id="category">
         <div class="flex">
-            <button id="category-button" data-dropdown-toggle="categories" class="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-900 bg-gray-100 border border-gray-300 rounded-s-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600" type="button">
+            <button id="category-button" data-dropdown-toggle="categories" class="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-yellow-900 bg-yellow-50 border border-yellow-900 rounded-s-lg hover:bg-yellow-300 focus:ring-2 focus:outline-none focus:ring-yellow-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600" type="button">
                 All categories 
                 <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
                 </svg>
                 </button>
-            <div id="categories" class="z-100 hidden bg-gray-200 opacity-75 divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
-                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="category-button">
+            <div id="categories" class="z-100 hidden bg-yellow-50 divide-y divide-yellow-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                <ul class="py-2 text-sm text-yellow-900 dark:text-gray-200" aria-labelledby="category-button">
                     {% for category in categories %}
                         <li>
-                            <button type="button" class="category-option w-full h-full rounded-md bg-gray-200 hover:bg-gray-700 hover:text-gray-100 hover:opacity-100 px-4 py-2 text-black dark:hover:bg-gray-600 dark:hover:text-white">
+                            <button type="button" class="category-option w-full h-full rounded-md bg-yellow-50 hover:bg-yellow-900 hover:text-yellow-300 hover:opacity-100 px-4 py-2 text-black dark:hover:bg-gray-600 dark:hover:text-white">
                                 {{ category.friendly_name }}
                             </button>
                             <input type="hidden" value="{{ category.name }}">
@@ -25,9 +25,8 @@
                 </ul>
             </div>
             <div class="relative w-full">
-                <label for="search-dropdown" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Youqr Email</label>
-                <input type="search" name="q" id="search-dropdown" class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-e-lg border-s-gray-50 border-s-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-s-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500" placeholder="Search Graphic cards, Motherboards, CPUs, RAM, SSD..." required />
-                <button type="submit" class="absolute top-0 end-0 p-2.5 text-sm font-medium h-full text-white bg-yellow-700 rounded-e-lg border border-yellow-700 hover:bg-yellow-900 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                <input type="search" name="q" id="search-dropdown" class="block p-2.5 w-full z-20 text-sm text-yellow-900 bg-yellow-50 rounded-e-lg border-s-yellow-900 border-s-2 border border-yellow-900 focus:ring-yellow-700 focus:border-yellow-700 dark:bg-gray-700 dark:border-s-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500" placeholder="Search Graphic cards, Motherboards, CPUs, RAM, SSD..." required />
+                <button type="submit" class="absolute top-0 end-0 p-2.5 text-sm font-medium h-full text-white bg-yellow-700 rounded-e-lg border border-yellow-900 hover:bg-yellow-900 focus:ring-4 focus:outline-none focus:ring-yellow-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                     <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
                     </svg>
@@ -36,7 +35,7 @@
             </div>
         </div>
         <div class="w-full mt-4 mb-20">
-            <select id="sort-selector" class="mr-20 mb-20 float-right w-full max-w-sm text-{% if current_sorting != 'None_None' %}yellow-700{% else %}black{% endif %} block py-2.5 px-0 text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+            <select id="sort-selector" class="mr-10 mb-20 float-right w-48 text-{% if current_sorting != 'None_None' %}yellow-900{% else %}black{% endif %} block py-2.5 px-0 text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
                 <option value="reset" {% if current_sorting == 'None_None' %}selected{% endif %}>Sort by...</option>
                 <option value="price_asc" {% if current_sorting == 'price_asc' %}selected{% endif %}>Price (low to high)</option>
                 <option value="price_desc" {% if current_sorting == 'price_desc' %}selected{% endif %}>Price (high to low)</option>
@@ -50,11 +49,10 @@
         </div>
         
     </form>
-
     <div class="w-full grid grid-cols-1 justify-center md:grid-cols-3 gap-4 mt-20">
         {% for product, discounted_price in products %}
 
-            <div class="max-w-md mx-auto bg-white border border-gray-200 rounded-lg shadow grid grid-cols-1 gap-4 content-between dark:bg-gray-800 dark:border-gray-700 w-full">
+            <div class="max-w-md mx-auto bg-white border border-yellow-700 rounded-lg shadow grid grid-cols-1 gap-4 content-between dark:bg-gray-800 dark:border-gray-700 w-full">
                 <div class="p-4 self-center">
                     <a href="{% url 'get_product_details' product.id %}">
                         <img class="rounded-t-lg w-full" src="{{ product.image.url }}" alt="{{ product.name }}" />
@@ -62,7 +60,7 @@
                 </div>                
                 <div class="px-5 pb-5">
                     <a href="{% url 'get_product_details' product.id %}">
-                        <h5 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">{{ product.name }}</h5>
+                        <h5 class="text-xl font-semibold tracking-tight text-yellow-800 dark:text-white">{{ product.name }}</h5>
                     </a>
                     <div class="flex items-center mt-2.5 mb-5">
                         <div class="flex items-center space-x-1 rtl:space-x-reverse">
@@ -133,22 +131,24 @@
                         <span class="bg-yellow-100 text-black text-xs font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800 ms-3">{% if product.rating %}{{ product.rating }}{% else %} N/A{% endif %}</span>
                     </div>
                     <div class="flex items-center justify-between">
-                        <span class="text-3xl font-bold text-gray-900 dark:text-white {% if discounted_price %}line-through{% endif %}">£{{ product.price }}</span>
-                        {% if discounted_price %}
-                            <span class="text-3xl font-bold text-yellow-900 dark:text-white">£{{ discounted_price }}</span>
-                        {% endif %}
+                        <div>
+                            <span class="block text-yellow-800 dark:text-white {% if discounted_price %}line-through text-sm{% else %}text-2xl font-bold{% endif %}">£ {{ product.price }}</span>
+                            {% if discounted_price %}
+                                <span class="block text-2xl font-bold text-yellow-800 dark:text-white">£ {{ discounted_price }}</span>
+                            {% endif %}
+                        </div>
                         {% if not request.user.is_superuser %}
                         <form method="POST" action="{% url 'add_to_bag' product.id %}">
                             {% csrf_token %}
                             <input type="hidden" value="{% url 'get_products' %}" name="redirect_url">
-                            <button class=" mb-8 text-black bg-yellow-300 hover:bg-yellow-700 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Add to cart</button>{% endif %}
+                            <button class="btn-submit">Add to cart</button>{% endif %}
                         </form>
                     </div>
                     {% if request.user.is_superuser %}
-                        <p class="text-end mb-2">
-                            <a href="{% url 'edit_product_details' product.id %}" class="text-black bg-trasparent hover:bg-yellow-100 hover:text-yellow-700 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Edit</a>
-                            <button type="button" data-product-id="{{ product.id }}" data-modal-target="popup-modal" data-modal-toggle="popup-modal" class="delete-button text-red-600 bg-trasparent hover:bg-red-100 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Delete</button>
-                        </p>
+                        <div class="float-end inline-flex rounded-md shadow-sm" role="group">
+                            <a href="{% url 'edit_product_details' product.id %}" class="btn-left">Edit</a>
+                            <button type="button" data-product-id="{{ product.id }}" data-modal-target="popup-modal" data-modal-toggle="popup-modal" class="btn-delete">Delete</button>
+                        </div>
                     {% endif %}
                 </div>
             </div>

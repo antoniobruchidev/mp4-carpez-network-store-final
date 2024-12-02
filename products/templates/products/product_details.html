@@ -94,28 +94,30 @@
             <form method="POST" action="{% url 'add_to_bag' product.id %}">
                 {% csrf_token %}
                 <input type="hidden" name="redirect_url" value="{{ request.path }}">
-                <span class="inline-block ml-5 mt-5 text-3xl font-semibold text-yellow-900 mb-0 float left{% if discounted_price %} line-through{% endif %}">£ {{ product.price }}</span>
-                {% if discounted_price %}
-                    <span class="inline-block ml-5 mt-5 text-3xl font-semibold text-yellow-900 mb-0 float left">£ {{ discounted_price }}</span>
-                {% endif %}
+                <div>
+                    <span class="block ml-5 mt-5 text-3xl font-semibold text-yellow-900 mb-0 float left{% if discounted_price %} line-through text-sm{% endif %}">£ {{ product.price }}</span>
+                    {% if discounted_price %}
+                        <span class="block ml-5 mt-5 text-3xl font-semibold text-yellow-900 mb-0 float left">£ {{ discounted_price }}</span>
+                    {% endif %}
+                </div>
                 <div class="flex mr-5 mt-5 mb-5 rounded-md float-right shadow-sm">
                     {% if request.user.is_superuser %}
-                        <button type="button" class="product-reviews self-auto md:self-start px-4 py-2 text-sm font-medium text-black bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
+                        <button type="button" class="product-reviews btn-left">
                             Reviews
                         </button>
-                        <a href="{% url 'edit_product_details' product.id %}" class="self-auto md:self-start px-4 py-2 text-sm font-medium text-black bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
+                        <a href="{% url 'edit_product_details' product.id %}" class="btn-middle">
                             Edit
                         </a>
-                        <button type="button" data-product-id="{{ product.id }}" id="delete-button" data-modal-target="popup-modal" data-modal-toggle="popup-modal" class="self-auto md:self-start px-4 py-2 text-sm font-medium text black bg-red-100 border-t border-b border-red-200 hover:bg-red-700 hover:text-red-100 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
+                        <button type="button" data-product-id="{{ product.id }}" id="delete-button" data-modal-target="popup-modal" data-modal-toggle="popup-modal" class="btn-delete">
                             Delete
                         </a>
                     {% else %}
                         {% if product.rating %}
-                            <button type="button" class="product-reviews self-auto md:self-start px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
+                            <button type="button" class="product-reviews btn-left">
                                 Reviews
                             </button>
                         {% endif %}
-                        <button type="submit" class="self-auto md:self-start px-4 py-2 text-sm font-medium bg-yellow-300 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
+                        <button type="submit" class="{% if product.rating %}btn-right{% else %}btn-submit{% endif %}">
                             Add to cart
                         </button>
                     {% endif %}

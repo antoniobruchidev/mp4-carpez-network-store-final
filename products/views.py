@@ -28,7 +28,6 @@ def get_products(request):
     if request.GET:  
         if 'tag' in request.GET:
             if request.GET['tag'] != "":
-                print(request.GET['tag'])
                 tag = get_object_or_404(
                     Tag, tag=request.GET['tag']
                 )
@@ -69,12 +68,20 @@ def get_products(request):
             if sortkey == 'name':
                 sortkey = 'lower_name'
                 products = products.annotate(lower_name=Lower('name'))
-
+                
             if 'direction' in request.GET:
                 direction = request.GET['direction']
                 if direction == 'desc':
                     sortkey = f'-{sortkey}'
-                    products = products.order_by(sortkey)
+            
+            products = products.order_by(sortkey)
+
+            if request.GET['sort'] == 'rating':
+                rated_products = []
+                for product in products:
+                    if product.rating != None:
+                        rated_products.append(product)
+                products = rated_products
 
         if 'q' in request.GET:
             query = request.GET['q']
