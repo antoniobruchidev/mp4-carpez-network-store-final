@@ -1,8 +1,15 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load crispy_forms_tags %}
+
+{% block extra_css %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'dashboard/css/dashboard.css' %}">
+{% endblock %}
 
 {% block content %}
 
+<div class="loading invisible">Loading&#8230;</div>
 
 <div class="container mt-20">
     <div class="w-full max-w-sm items-center mx-auto">
@@ -25,13 +32,16 @@
     <div class="mb-4 border-b border-gray-200 dark:border-gray-700">
         <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="default-tab" data-tabs-toggle="#tab-content" role="tablist">
             <li class="me-2" role="presentation">
-                <button class="inline-block p-4 rounded-t-lg border-b-2 border-yellow-700 text-yellow-700 hover:text-yellow-900 hover:border-yellow-900" id="profile-tab" data-tabs-target="#orders" type="button" role="tab" aria-controls="orders" aria-selected="false">Profile</button>
+                <button class="inline-block p-4 rounded-t-lg border-b-2 border-yellow-700 text-yellow-700 hover:text-yellow-900 hover:border-yellow-900 dark:hover:text-gray-300" id="orders-tab" data-tabs-target="#orders" type="button" role="tab" aria-controls="orders" aria-selected="false">Orders</button>
             </li>
             <li class="me-2" role="presentation">
-                <button class="inline-block p-4 rounded-t-lg border-b-2 border-yellow-700 text-yellow-700 hover:text-yellow-900 hover:border-yellow-900 dark:hover:text-gray-300" id="dashboard-tab" data-tabs-target="#reviews" type="button" role="tab" aria-controls="reviews" aria-selected="false">Reviews</button>
+                <button class="inline-block p-4 rounded-t-lg border-b-2 border-yellow-700 text-yellow-700 hover:text-yellow-900 hover:border-yellow-900 dark:hover:text-gray-300" id="reviews-tab" data-tabs-target="#reviews" type="button" role="tab" aria-controls="reviews" aria-selected="false">Reviews</button>
             </li>
             <li class="me-2" role="presentation">
-                <button class="inline-block p-4 rounded-t-lg border-b-2 border-yellow-700 text-yellow-700 hover:text-yellow-900 hover:border-yellow-900 dark:hover:text-gray-300" id="dashboard-tab" data-tabs-target="#keywords" type="button" role="tab" aria-controls="keywords" aria-selected="false">Tags, Brands, Categories</button>
+                <button class="inline-block p-4 rounded-t-lg border-b-2 border-yellow-700 text-yellow-700 hover:text-yellow-900 hover:border-yellow-900 dark:hover:text-gray-300" id="keywords-tab" data-tabs-target="#keywords" type="button" role="tab" aria-controls="keywords" aria-selected="false">Tags, Brands, Categories</button>
+            </li>
+            <li class="me-2" role="presentation">
+                <button class="inline-block p-4 rounded-t-lg border-b-2 border-yellow-700 text-yellow-700 hover:text-yellow-900 hover:border-yellow-900 dark:hover:text-gray-300" id="discounts-tab" data-tabs-target="#discounts" type="button" role="tab" aria-controls="discounts" aria-selected="false">Discounts</button>
             </li>
         </ul>
     </div>
@@ -69,7 +79,7 @@
                                 <td class="px-6 py-4 text-xs md:text-md">
                                     <label for="status" class="sr-only">Change the status</label>
                                     <select name="status" data-id="{{ order.id }}" class="status-selector block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-                                        <option selected>{{ order.get_status_display }}</option>
+                                        <option selected>{{ order.status }}</option>
                                         <option value="pending">Pending</option>
                                         <option value="confirmed">Confirmed</option>
                                         <option value="dispatched">Dispatched</option>
@@ -136,8 +146,17 @@
                     </div>
                     <div class="tags-container float-right mt-10 mr-10 grid grid-cols-2 justify-items-center">
                         {% for tag in tags %}
-                            <div class="div">
-                                <span class="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-yellow-300 border border-yellow-300">{{ tag.friendly_tag }}</span>
+                            <div data-popover-target="popover-tag-{{ tag.id }}">
+                                <button id="popover-tag-delete-{{ tag.id }}" data-tag-id="{{ tag.id }}" class="tag bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-yellow-300 border border-yellow-300">{{ tag.friendly_tag }}</button id="popover-brand-delete-{{ brand.id }}" data-brand-id="{{ brand.id }}">
+                            </div>
+                            <div data-popover id="popover-tag-{{ tag.id }}" role="tooltip" class="absolute z-10 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
+                                <div class="px-3 py-2 bg-yellow-100 border-b border-yellow-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
+                                    <h3 class="font-semibold text-yellow-900 dark:text-white">Click to delete</h3>
+                                </div>
+                                <div class="px-3 py-2">
+                                    <p class=" text-yellow-900">Click to remove {{ tag.friendly_tag }}</p>
+                                </div>
+                                <div data-popper-arrow></div>
                             </div>
                         {% endfor %}
                     </div>
@@ -161,8 +180,17 @@
                     </div>
                     <div class="category-container float-right mt-10 mr-10 grid grid-cols-2 justify-items-center">
                         {% for category in categories %}
-                            <div class="div">
-                                <span class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-500">{{ category.friendly_name }}</span>
+                            <div data-popover-target="popover-category-{{ category.id }}">
+                                <button id="popover-category-delete-{{ category.id }}" data-category-id="{{ category.id }}" class="category bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-500">{{ category.friendly_name }}</button>
+                            </div>
+                            <div data-popover id="popover-category-{{ category.id }}" role="tooltip" class="absolute z-10 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
+                                <div class="px-3 py-2 bg-yellow-100 border-b border-yellow-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
+                                    <h3 class="font-semibold text-yellow-900 dark:text-white">Click to delete</h3>
+                                </div>
+                                <div class="px-3 py-2">
+                                    <p class=" text-yellow-900">Click to remove {{ category.friendly_name }}</p>
+                                </div>
+                                <div data-popper-arrow></div>
                             </div>
                         {% endfor %}
                     </div>
@@ -186,13 +214,62 @@
                     </div>
                     <div class="brand-container float-right mt-10 mr-10 grid grid-cols-2 justify-items-center">
                         {% for brand in brands %}
-                            <div class="div">
-                                <span class="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-indigo-400 border border-indigo-400">{{ brand.brand|upper }}</span>
+                        <div data-popover-target="popover-brand-{{ brand.id }}">
+                                <button id="popover-brand-delete-{{ brand.id }}" data-brand-id="{{ brand.id }}" class="brand bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-indigo-400 border border-indigo-400">{{ brand.brand|upper }}</button>
+                            </div>
+                            <div data-popover id="popover-brand-{{ brand.id }}" role="tooltip" class="absolute z-10 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
+                                <div class="px-3 py-2 bg-yellow-100 border-b border-yellow-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
+                                    <h3 class="font-semibold text-yellow-900 dark:text-white">Click to delete</h3>
+                                </div>
+                                <div class="px-3 py-2">
+                                    <p class=" text-yellow-900">Click to remove {{ brand.brand }}</p>
+                                </div>
+                                <div data-popper-arrow></div>
                             </div>
                         {% endfor %}
                     </div>
                 </div>
 
+
+            </div>    
+        </div>
+        <div class="hidden p-4 dark:bg-gray-800" id="discounts" role="tabpanel" aria-labelledby="discounts-tab">
+            <div class="grid grid-cols-1 justify-items-center">
+                
+
+                <div class="w-full py-20 flex p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
+                    <div class="form-container flex flex-1">
+                        <form class="w-full max-w-md p-4 space-y-6" action="{% url 'add_discount' %}" method="POST">
+                            {% csrf_token %}
+                            <h5 class="text-xl font-medium text-gray-900 dark:text-white">Add a Discount</h5>
+                                <div>
+                                    <label for="points" class="w-full block mb-2 text-sm font-medium text-gray-900 dark:text-white">Points to be used</label>
+                                    <input type="number" name="points" id="points" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="0" required />
+                                </div>
+                                <div>
+                                    <label for="discount" class="w-full block mb-2 text-sm font-medium text-gray-900 dark:text-white">Discount to be applied</label>
+                                    <input type="number" name="discount" id="discount" placeholder="0" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
+                                </div>
+                            <button type="submit" class="btn btn-submit">Add Discount</button>
+                        </form>
+                    </div>
+                    <div class="tags-container float-right mt-10 mr-10 grid grid-cols-2 justify-items-center">
+                        {% for discount in discounts %}
+                            <div class="div" data-popover-target="popover-discount-{{ discount.id }}">
+                                <button id="popover-discount-delete-{{ discount.id }}" data-discount-id="{{ discount.id }}" class="discount bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-yellow-300 border border-yellow-300">{{ discount.discount }}</button>
+                            </div>
+                            <div data-popover id="popover-discount-{{ discount.id }}" role="tooltip" class="absolute z-10 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
+                                <div class="px-3 py-2 bg-yellow-100 border-b border-yellow-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
+                                    <h3 class="font-semibold text-yellow-900 dark:text-white">Click to delete</h3>
+                                </div>
+                                <div class="px-3 py-2">
+                                    <p class=" text-yellow-900">{{ discount.discount }}% discount to be applied when user burn {{ discount.points }} of its points</p>
+                                </div>
+                                <div data-popper-arrow></div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
 
             </div>    
         </div>
@@ -207,10 +284,49 @@
 {% block postloadjs %}
 {{ block.super }}
 <script type="text/javascript">
+    var csrfToken = "{{ csrf_token }}";
+
     $('.status-selector').on('change', function() {
         var orderId = $(this).data('id')
+        $('.loading').removeClass("invisible")
         var form = $(`#status-${orderId}`)
         form.submit()
     })
+    $('.tag').on('click', async function() {
+        var tagId = $(this).data('tag-id')
+        $('.loading').removeClass("invisible")
+        var postData = {
+            'csrfmiddlewaretoken': csrfToken
+        };
+        var url = `delete_tag/${tagId}`;
+        $.post(url, postData).done(window.location.reload())
+    })
+    $('.category').on('click', function() {
+        var categoryId = $(this).data('category-id')
+        $('.loading').removeClass("invisible")
+        var postData = {
+            'csrfmiddlewaretoken': csrfToken
+        };
+        var url = `delete_category/${tagId}`;
+        $.post(url, postData).done(window.location.reload())
+    })
+    $('.brand').on('click', function() {
+        var brandId = $(this).data('brand-id')
+        $('.loading').removeClass("invisible")
+        var postData = {
+            'csrfmiddlewaretoken': csrfToken
+        };
+        var url = `delete_brand/${tagId}`;
+        $.post(url, postData).done(window.location.reload())
+    })
+    $('.discount').on('click', function() {
+        var discountId = $(this).data('discount-id')
+        $('.loading').removeClass("invisible")
+        var postData = {
+            'csrfmiddlewaretoken': csrfToken
+        };
+        var url = `delete_discount/${tagId}`;
+        $.post(url, postData).done(window.location.reload())
+    })
 </script>
-{% endblock  %}
+{% endblock %}

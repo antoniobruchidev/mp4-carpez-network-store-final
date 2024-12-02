@@ -11,6 +11,11 @@ from products.models import Product
 # Create your models here.
 
 
+class Discount(models.Model):
+    points = models.IntegerField(null=False, blank=False)
+    discount = models.IntegerField(unique=True, null=False)
+
+
 class Order(models.Model):
     order_number = models.CharField(max_length=32, null=False, editable=False)
     date = models.DateTimeField(auto_now_add=True)
@@ -25,6 +30,12 @@ class Order(models.Model):
         decimal_places=2,
         null=False,
         default=0
+    )
+    discount = models.ForeignKey(
+        Discount,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL
     )
     grand_total = models.DecimalField(
         max_digits=10,
@@ -114,7 +125,10 @@ class Order(models.Model):
             )
         else:
             self.delivery_cost = 0
-        self.grand_total = self.order_total + self.delivery_cost
+        if self.discount:
+            self.grand_total = self.order_total + self.delivery_cost - self.discount
+        else:
+            self.grand_total = self.order_total + self.delivery_cost
         self.save()
 
     def __str__(self):

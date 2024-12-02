@@ -1,9 +1,10 @@
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.views.decorators.http import require_POST
 
-from checkout.models import Order, OrderLineItem
+from checkout.models import Discount, Order, OrderLineItem
 from dashboard.models import Dashboard
 from products.models import Brand, Category, Product, Tag
 from django.contrib import messages
@@ -33,12 +34,13 @@ def dashboard(request):
                     return redirect(reverse('dashboard'))
                         
                 return redirect('get_product_details', product.id)
-        orders = Order.objects.all()
+        orders = Order.objects.all().order_by('-date').values()
         reviews = Review.objects.all()
         review_related_products = []
         categories = Category.objects.all()
         tags = Tag.objects.all()
         brands = Brand.objects.all()
+        discounts = Discount.objects.all()
         for review in reviews:
             order_lineitem = OrderLineItem.objects.get(review=review)
             product = Product.objects.get(id=order_lineitem.product.id)
@@ -49,14 +51,16 @@ def dashboard(request):
             'product_reviews': product_reviews,
             'categories': categories,
             'brands': brands,
-            'tags': tags
+            'tags': tags,
+            'discounts': discounts
         }
     else:
         template = 'dashboard/profile.html'
         profile = get_object_or_404(Dashboard, user=request.user.id)
-        orders = profile.orders.all()
+        orders = Order.objects.filter(user=profile).order_by('-date')
         lineitems = []
         for order in orders:
+            print(order)
             order_lineitems = order.lineitems.all()
             for order_lineitem in order_lineitems:
                 review = Review.objects.get(order=order_lineitem)
@@ -133,6 +137,81 @@ def edit_order(request, order_id):
         else:
             messages.error(request, 'Order status could not be updated')
             return redirect('dashboard')
+    else:
+        messages.error(request, "Permission denied")
+        return redirect('home')
+
+
+@require_POST
+def add_discount(request):
+    if request.user.is_superuser:
+        if 'discount' in request.POST and 'points' in request.POST:
+            Discount.objects.create(
+                points=request.POST.get('points'),
+                discount=request.POST.get('discount')
+            )
+            messages.success(request, 'Discount added successfully')
+            return redirect('dashboard')
+        else:
+            messages.error(request, 'Discount could not be added')
+            return redirect('dashboard')
+    else:
+        messages.error(request, "Permission denied")
+        return redirect('home')
+    
+
+@require_POST
+def delete_tag(request, tag_id):
+    if request.user.is_superuser:
+        try:
+            tag = Tag.objects.get(id=tag_id)
+            print(tag)
+            tag.delete()
+            messages.success(request, 'Tag deleted successfully')
+            return HttpResponse(status=200)
+        except Exception as e:
+            messages.error(
+            request,
+            "Sorry we could not accomodate your request at\
+            this time. Please trye again later.",
+        )
+        return HttpResponse(content=e, status=400)
+    else:
+        messages.error(request, "Permission denied")
+        return redirect('home')
+
+
+@require_POST
+def delete_discount(request, discount_id):
+    if request.user.is_superuser:
+        discount = Discount.objects.get(id=discount_id)
+        discount.delete()
+        messages.success(request, 'Discount deleted successfully')
+        return redirect('dashboard')
+    else:
+        messages.error(request, "Permission denied")
+        return redirect('home')
+
+
+@require_POST
+def delete_brand(request, brand_id):
+    if request.user.is_superuser:
+        brand = brand.objects.get(id=brand_id)
+        brand.delete()
+        messages.success(request, 'Brand deleted successfully')
+        return redirect('dashboard')
+    else:
+        messages.error(request, "Permission denied")
+        return redirect('home')
+
+
+@require_POST
+def delete_category(request, category_id):
+    if request.user.is_superuser:
+        category = Category.objects.get(id=category_id)
+        category.delete()
+        messages.success(request, 'Category deleted successfully')
+        return redirect('dashboard')
     else:
         messages.error(request, "Permission denied")
         return redirect('home')
