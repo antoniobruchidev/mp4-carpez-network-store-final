@@ -35,7 +35,7 @@
             </div>
         </div>
         <div class="w-full mt-4 mb-20">
-            <select id="sort-selector" class="mr-10 mb-20 float-right w-48 text-{% if current_sorting != 'None_None' %}yellow-900{% else %}black{% endif %} block py-2.5 px-0 text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+            <select id="sort-selector" class="mr-10 mb-20 float-right w-48 text-{% if current_sorting != 'None_None' %}yellow-900{% else %}black{% endif %} text-center form control form-select">
                 <option value="reset" {% if current_sorting == 'None_None' %}selected{% endif %}>Sort by...</option>
                 <option value="price_asc" {% if current_sorting == 'price_asc' %}selected{% endif %}>Price (low to high)</option>
                 <option value="price_desc" {% if current_sorting == 'price_desc' %}selected{% endif %}>Price (high to low)</option>
