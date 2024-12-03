@@ -44,6 +44,21 @@
                             </td>
                         </tr>
                     {% endfor %}
+                    {% if discount %}
+                        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                            <th scope="row" class="px-1 py-4 text-xs font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                Using {{ discount.points }} to unlock {{ discount.discount }}% discount.
+                            </th>
+                            <td class="px-1 py-4">
+                               <p class="text-xs text-end text-gray-900">1</p>
+                            </td>
+                            <td class="px-1 py-4">
+                                <p class="text-xs text-end text-gray-900">£ {{ discount_amount }} -</p>
+                            <td class="px-1 py-4">
+                                <p class="text-xs text-end text-gray-900">£ {{ discount_amount }} -</p>
+                            </td>
+                        </tr>
+                    {% endif %}
                 </tbody>
             </table>
         </div>
@@ -60,7 +75,7 @@
     </div>
 </div>
 <div class="container p-2 md:p-0 mt-5" id="payment-form mt-20">
-    <form method="POST" action="{% url 'checkout' %}" id="payment-form">
+    <form method="POST" action="{% if discount %}{% url 'checkout' discount_id=discount.id %}{% else %}{% url 'checkout' discount_id='0' %}{% endif %}" id="payment-form">
         {% csrf_token %}
         <div id="address-element" class="m-0 p-0"></div>
         <div>
@@ -79,6 +94,9 @@
 
 {% block postloadjs %}
 {{ block.super }}
+<script>
+    const discountId = "{{ discount.id }}"
+</script>
 {{ stripe_public_key|json_script:"id_stripe_public_key" }}
 {{ client_secret|json_script:"id_client_secret" }}
 {{ bag|json_script:"bag" }}

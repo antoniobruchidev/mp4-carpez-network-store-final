@@ -15,6 +15,9 @@ class Discount(models.Model):
     points = models.IntegerField(null=False, blank=False)
     discount = models.IntegerField(unique=True, null=False)
 
+    def __repr__(self):
+        return f"{self.points} points for {self.discount}% discount."
+
 
 class Order(models.Model):
     order_number = models.CharField(max_length=32, null=False, editable=False)
@@ -115,6 +118,8 @@ class Order(models.Model):
         """update grand total going trought every lineitems and apply
         delivery cost if any.
         """
+        if self.discount:
+            print("update total discount", self.discount)
         self.order_total = (
             self.lineitems.aggregate(
                 Sum('lineitem_total'))['lineitem_total__sum'] or 0
@@ -126,7 +131,9 @@ class Order(models.Model):
         else:
             self.delivery_cost = 0
         if self.discount:
-            self.grand_total = self.order_total + self.delivery_cost - self.discount
+            d = Discount.objects.get()
+            discount = self.order_total * d.discount / 100
+            self.grand_total = self.order_total + self.delivery_cost - discount
         else:
             self.grand_total = self.order_total + self.delivery_cost
         self.save()

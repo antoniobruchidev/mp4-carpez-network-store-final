@@ -35,10 +35,10 @@ form.addEventListener('submit', async (event) => {
       'csrfmiddlewaretoken': csrfToken,
       'client_secret': clientSecret,
       'email': $("#email").val(),
-      'user_id': userId
+      'user_id': userId,
+      'discount': discountId,
     };
     var url = '/checkout/cache_checkout_data/';
-    console.log(postData)
     $.post(url, postData).done(async function(e) {
         
         try {
@@ -58,12 +58,12 @@ form.addEventListener('submit', async (event) => {
                 // methods like iDEAL, your customer will be redirected to an intermediate
                 // site first to authorize the payment, then redirected to the `return_url`.
                 
-                console.log(await data)
                 var details = {
                         "bag": JSON.parse(bag),
                         "stripe_pid": await data["paymentIntent"]["id"],
                         "shipping": JSON.stringify(await data["paymentIntent"]["shipping"]),
-                        "email": $("#email").val()
+                        "email": $("#email").val(),
+                        "discount": discountId,
                         }
                 
                 var json_details = JSON.stringify(details)

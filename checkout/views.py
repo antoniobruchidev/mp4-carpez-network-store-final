@@ -12,7 +12,7 @@ from django.urls import reverse
 from django.contrib import messages
 
 from checkout.forms import OrderForm
-from checkout.models import Order, OrderLineItem
+from checkout.models import Discount, Order, OrderLineItem
 from dashboard.models import Dashboard
 from products.models import Product
 
@@ -24,6 +24,7 @@ from products.models import Product
 def cache_checkout_data(request):
     try:
         pid = request.POST.get("client_secret").split("_secret")[0]
+        print(request.POST.get("shipping"), request.POST.get("discount"))
         stripe.api_key = settings.STRIPE_SECRET_KEY
         stripe.PaymentIntent.modify(
             pid,
@@ -32,7 +33,8 @@ def cache_checkout_data(request):
                 "user_id": request.POST.get("user_id"),
                 "email": request.POST.get("email"),
                 "shipping": request.POST.get("shipping"),
-                "billing": request.POST.get("billing")
+                "billing": request.POST.get("billing"),
+                "discount": request.POST.get("discount")
             },
         )
         return HttpResponse(status=200)
@@ -51,24 +53,35 @@ def place_order(request):
     b = json.loads(json_body['bag'])
     e = json_body['email']
     s = json.loads(json_body['shipping'])
+    d = json.loads(json_body['discount'])
     pid = json_body['stripe_pid']
     bag_and_shipping_details = {
         'bag': b,
         'stripe_pid': pid,
         'shipping': s,
-        'email': e
+        'email': e,
+        'discount': d
     }
+    print(str(request.user), d)
     if str(request.user) != "AnonymousUser":
         profile = Dashboard.objects.get(user=request.user)
     else:
         profile = None
     order_form = OrderForm({
         'bag_and_shipping_details': bag_and_shipping_details,
-        'user': profile
     })
     try:
         order = Order.objects.get(stripe_pid=pid)
         order_exist = True
+        if profile:
+            discount = Discount(id=d)
+            profile.in_use = 0
+            order.discount = discount
+            order.user = profile
+            order.save()
+            order.update_total()
+            request.session['discount'] = 0
+            print(order.discount, profile.points, profile.in_use)
     except Order.DoesNotExist:
         order_exist = False
 
@@ -97,6 +110,15 @@ def place_order(request):
                 order.delete()
                 return redirect(reverse("view_bag"))
         order = Order.objects.get(stripe_pid=pid,)
+        if profile and d != "0":
+            discount = Discount(id=d)
+            profile.in_use = 0
+            order.user = profile
+            order.discount = discount
+            order.save()
+            order.update_total()
+            request.session['discount'] = 0
+            print(discount, profile.points, profile.in_use)
         messages.success(
             request,
             f"Order successfully processed! \
@@ -108,9 +130,16 @@ def place_order(request):
         return JsonResponse({'message': 'form not valid'})
 
 
-def checkout(request):
+def checkout(request, discount_id):
+    discount = None
+    if discount_id != "0":
+        discount = Discount.objects.get(id=discount_id)
+        request.session['discount'] = discount_id
+        profile = Dashboard.objects.get(user=request.user)
+        profile.in_use = discount.points
+        profile.points -= discount.points
+        profile.save()
     stripe_public_key = settings.STRIPE_PUBLIC_KEY
-
     current_bag = bag(request)
     total = current_bag["grand_total"]
     stripe_total = round(total * 100)
@@ -123,6 +152,7 @@ def checkout(request):
         'client_secret': intent.client_secret,
         'stripe_public_key': stripe_public_key,
         'user_id': request.user.id,
+        'discount': discount,
     }
     return render(request, 'checkout/checkout.html', context)
 

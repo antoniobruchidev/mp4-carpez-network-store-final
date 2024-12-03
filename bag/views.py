@@ -1,15 +1,23 @@
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
+from dashboard.models import Dashboard
 from products.models import Product
 from django.contrib import messages
+
+from checkout.models import Discount
 
 
 def view_bag(request):
     """ A view to return the bag contents page """
+    if str(request.user) != "AnonymousUser":
+        profile = Dashboard.objects.get(user=request.user)
+        discounts = Discount.objects.all()
     template = 'bag/bag.html'
     context = {
         'on_bag_page': True,
+        'profile': profile,
+        'discounts': discounts
     }
     return render(request, template, context)
 

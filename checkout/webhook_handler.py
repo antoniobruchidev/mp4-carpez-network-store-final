@@ -3,7 +3,7 @@ import json
 import socket
 import time
 from django.http import HttpResponse
-from checkout.models import Order, OrderLineItem
+from checkout.models import Discount, Order, OrderLineItem
 from dashboard.models import Dashboard
 from products.models import Product
 import stripe
@@ -37,6 +37,7 @@ class StripeWH_Handler:
         email = intent.metadata.email
         shipping = dict(intent.shipping)
         user_id = intent.metadata.user_id
+        discount = intent.metadata.discount
         stripe.api_key = settings.STRIPE_SECRET_KEY
         stripe_charge = stripe.Charge.retrieve(
              intent.latest_charge
@@ -61,10 +62,6 @@ class StripeWH_Handler:
                     order_exists = True
                     order.status = 'confirmed'
                     order.billing_details = billing_details
-                    if profile:
-                        profile.points += round(amount / 100) * 100
-                        profile.save()
-                        order.user = profile
                     order.save()
                     break
             except Order.DoesNotExist:
@@ -86,20 +83,25 @@ class StripeWH_Handler:
                             "bag": bag,
                             "shipping": shipping,
                             "email": email,
-                            "stripe_pid": pid
+                            "stripe_pid": pid,
+                            "discount": discount
                         },
                         user=profile,
                         status='confirmed'
                     )
-                    profile.points += round(amount / 100) * 100
-                    profile.save()
+                    if discount != "0":
+                        d = Discount.objects.get(id=d)
+                        order.discount = d
+                        order.save()
+                        order.update_total()
                 else:
                     order = Order.objects.create(
                         bag_and_shipping_details={
                             "bag": bag,
                             "shipping": shipping,
                             "email": email,
-                            "stripe_pid": pid
+                            "stripe_pid": pid,
+                            "discount": discount
                         },
                         status='confirmed'
                     )
