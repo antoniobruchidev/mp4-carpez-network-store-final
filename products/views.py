@@ -42,11 +42,10 @@ def get_products(request):
                             else:
                                 discounted_price = None
                             tagged_products.append((product, discounted_price))
-                if len(tagged_products) > 0:
-                    context = {
-                        'products': tagged_products
-                    }
-                    return render(request, 'products/products.html', context)
+                context = {
+                    'products': tagged_products
+                }
+                return render(request, 'products/products.html', context)
         
         if 'category' in request.GET:
             if request.GET['category'] != "":
@@ -77,11 +76,7 @@ def get_products(request):
             products = products.order_by(sortkey)
 
             if request.GET['sort'] == 'rating':
-                rated_products = []
-                for product in products:
-                    if product.rating != None:
-                        rated_products.append(product)
-                products = rated_products
+                products = products.exclude(rating__isnull=True)
 
         if 'q' in request.GET:
             query = request.GET['q']
@@ -91,9 +86,11 @@ def get_products(request):
                     )
                 return redirect(reverse('products'))
             queries = (
-                Q(name__icontains=query) | Q(description__icontains=query)
+                Q(name__icontains=query) | Q(description__icontains=query) | Q(
+                    tags__friendly_tag__icontains=query
+                ) | Q( brand__brand__icontains=query)
                 )
-            products = products.filter(queries)
+            products = products.filter(queries).distinct()
     discounted_prices = []
     for product in products:
         if product.discount > 0:
