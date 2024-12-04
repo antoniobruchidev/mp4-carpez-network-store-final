@@ -13,11 +13,16 @@ def view_bag(request):
     if str(request.user) != "AnonymousUser":
         profile = Dashboard.objects.get(user=request.user)
         discounts = Discount.objects.all()
+        discounts_available = False
+        for discount in discounts:
+            if profile.points >= discount.points:
+                discounts_available = True
     template = 'bag/bag.html'
     context = {
         'on_bag_page': True,
         'profile': profile,
-        'discounts': discounts
+        'discounts': discounts,
+        'discounts_available': discounts_available
     }
     return render(request, template, context)
 
