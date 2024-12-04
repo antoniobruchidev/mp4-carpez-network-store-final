@@ -23,7 +23,7 @@ This is a confirmation of your order at Carpez Network e-Store. Your information
 {% endif %}
         Grand Total: £ {{ order.grand_total }}
 
-        Your order will be shipped to:
+        Your order is dispatched to:
 
         {{ order.full_name }}
         {{ order.shipping }}

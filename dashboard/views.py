@@ -10,6 +10,11 @@ from products.models import Brand, Category, Product, Tag
 from django.contrib import messages
 
 from reviews.models import Review
+from email_relay.views import (
+    send_dispatch_email,
+    send_delivered_email,
+    send_confirmation_email
+)
 
 # Create your views here.
 
@@ -132,7 +137,14 @@ def edit_order(request, order_id):
             order = Order.objects.get(id=order_id)
             order.status = request.POST.get('status')
             order.save()
-            messages.success(request, 'Order status updated successfully')
+            if order.status == "confirmed":
+                send_confirmation_email(order.id)
+            if order.status == "dispatched":
+                send_dispatch_email(order.id)
+            elif order.status == "delivered":
+                send_delivered_email(order.id)
+            print(order.status)
+            messages.success(request, 'Order status updated successfully and sent notification email')
             return redirect('dashboard')
         else:
             messages.error(request, 'Order status could not be updated')
@@ -165,10 +177,13 @@ def delete_tag(request, tag_id):
     if request.user.is_superuser:
         try:
             tag = Tag.objects.get(id=tag_id)
-            print(tag)
-            tag.delete()
-            messages.success(request, 'Tag deleted successfully')
-            return HttpResponse(status=200)
+            if tag.tag == 'desktop' or tag.tag == 'laptop':
+                messages.error(request, 'Desktop and Laptop tags are required. Aborted.')
+                return HttpResponse(status=200)
+            else:
+                tag.delete()
+                messages.success(request, 'Tag deleted successfully')
+                return HttpResponse(status=200)
         except Exception as e:
             messages.error(
             request,
