@@ -91,6 +91,8 @@ class StripeWH_Handler:
                     )
                     if discount != "0":
                         d = Discount.objects.get(id=d)
+                        profile.in_use = 0
+                        profile.save()
                         order.discount = d
                         order.save()
                         order.update_total()
