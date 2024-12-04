@@ -84,7 +84,7 @@
         </div>
         <div id="payment-element" class="m-0 p-0"></div>
         <div class="flex mr-5 mt-5 mb-5 rounded-md float-right shadow-sm">
-            <button class="btn-left">Back</button>
+            <button class="btn-left" type="reset">Reset</button>
             <button class="btn-right" id="submit-button">Pay now</button>
         </div>
     </form>
@@ -95,7 +95,7 @@
 {% block postloadjs %}
 {{ block.super }}
 <script>
-    const discountId = "{{ discount.id }}"
+    const discountId = "{% if discount %}{{ discount.id }}{% else %}0{% endif %}"
 </script>
 {{ stripe_public_key|json_script:"id_stripe_public_key" }}
 {{ client_secret|json_script:"id_client_secret" }}

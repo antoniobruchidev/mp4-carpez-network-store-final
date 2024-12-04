@@ -54,6 +54,7 @@ def place_order(request):
     e = json_body['email']
     s = json.loads(json_body['shipping'])
     d = json.loads(json_body['discount'])
+    print(d, type(d))
     pid = json_body['stripe_pid']
     bag_and_shipping_details = {
         'bag': b,
@@ -62,7 +63,6 @@ def place_order(request):
         'email': e,
         'discount': d
     }
-    print(str(request.user), d)
     if str(request.user) != "AnonymousUser":
         profile = Dashboard.objects.get(user=request.user)
     else:
@@ -74,14 +74,14 @@ def place_order(request):
         order = Order.objects.get(stripe_pid=pid)
         order_exist = True
         if profile:
-            discount = Discount(id=d)
-            profile.in_use = 0
-            order.discount = discount
+            if d != 0:
+                discount = Discount.objects.get(id=d)
+                order.discount = discount
+                profile.in_use = 0
+                profile.save()
             order.user = profile
-            order.save()
             order.update_total()
             request.session['discount'] = 0
-            print(order.discount, profile.points, profile.in_use)
     except Order.DoesNotExist:
         order_exist = False
 
@@ -110,15 +110,15 @@ def place_order(request):
                 order.delete()
                 return redirect(reverse("view_bag"))
         order = Order.objects.get(stripe_pid=pid,)
-        if profile and d != "0":
-            discount = Discount(id=d)
-            profile.in_use = 0
+        if profile:
+            if d != 0:
+                discount = Discount.objects.get(id=d)
+                order.discount = discount
+                profile.in_use = 0
+                profile.save()
             order.user = profile
-            order.discount = discount
-            order.save()
             order.update_total()
             request.session['discount'] = 0
-            print(discount, profile.points, profile.in_use)
         messages.success(
             request,
             f"Order successfully processed! \

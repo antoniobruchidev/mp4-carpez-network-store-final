@@ -1748,6 +1748,10 @@ input[type=number] {
   inset-inline-end: 0px;
 }
 
+.end-2 {
+  inset-inline-end: 0.5rem;
+}
+
 .end-2\.5 {
   inset-inline-end: 0.625rem;
 }
@@ -1772,28 +1776,12 @@ input[type=number] {
   top: 33.333333%;
 }
 
-.top-3 {
-  top: 0.75rem;
-}
-
-.end-2 {
-  inset-inline-end: 0.5rem;
-}
-
 .top-2 {
   top: 0.5rem;
 }
 
-.top-1 {
-  top: 0.25rem;
-}
-
-.top-0\.5 {
-  top: 0.125rem;
-}
-
-.top-1\/2 {
-  top: 50%;
+.top-3 {
+  top: 0.75rem;
 }
 
 .z-10 {
@@ -2153,10 +2141,6 @@ input[type=number] {
 
 .max-w-xs {
   max-width: 20rem;
-}
-
-.max-w-10 {
-  max-width: 2.5rem;
 }
 
 .flex-1 {
