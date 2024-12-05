@@ -27,7 +27,7 @@ def bag(request):
                 product.price * product.discount / 100
                 ).__round__(2)
             )
-            total += discounted_price
+            total += discounted_price * b[product_id]
         objects += b[product_id]
         bag_items.append({
             'product_id': product_id,
@@ -37,7 +37,10 @@ def bag(request):
         })
     if discount_id != 0:
         discount_amount = Decimal(total * discount.discount / 100).__round__(2)
-        total = total - discount_amount
+        if discount_amount <= discount.max_discount:
+            total = total - discount_amount
+        else:
+            total = total - discount.max_discount
     else:
         discount_amount = 0
 

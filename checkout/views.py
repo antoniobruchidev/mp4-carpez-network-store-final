@@ -132,16 +132,19 @@ def place_order(request):
 
 def checkout(request, discount_id):
     discount = None
+    max_d = False
+    current_bag = bag(request)
+    total = current_bag["grand_total"]
     if discount_id != "0":
         discount = Discount.objects.get(id=discount_id)
+        calc_d = Decimal(total * discount.discount / 100).__round__(2)
+        max_d = True if calc_d > discount.max_discount else False
         request.session['discount'] = discount_id
         profile = Dashboard.objects.get(user=request.user)
         profile.in_use = discount.points
         profile.points -= discount.points
         profile.save()
     stripe_public_key = settings.STRIPE_PUBLIC_KEY
-    current_bag = bag(request)
-    total = current_bag["grand_total"]
     stripe_total = round(total * 100)
     stripe.api_key = settings.STRIPE_SECRET_KEY
     intent = stripe.PaymentIntent.create(
@@ -153,6 +156,7 @@ def checkout(request, discount_id):
         'stripe_public_key': stripe_public_key,
         'user_id': request.user.id,
         'discount': discount,
+        'max_discount': max_d
     }
     return render(request, 'checkout/checkout.html', context)
 

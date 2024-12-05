@@ -80,9 +80,9 @@
                                     {% for discount in discounts %}
                                         {% if profile.points >= discount.points %}
                                             <li>
-                                                <div class="flex items-center ps-3">
+                                                <div class="flex items-center ps-3 pe-5">
                                                     <input id="discount-{{ discount.id }}" type="radio" value="" name="discount-{{ discount.id}}" data-discount-id="{{ discount.id }}" class="discount w-4 h-4 text-yellow-900 bg-yellow-50 border-yellow-900 focus:ring-yellow-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                                                    <label for="discount-{{ discount.id }}" class="w-full py-3 ms-2 text-sm font-medium text-yellow-900 dark:text-gray-300">{{ discount.points }} points for {{ discount.discount }}%</label>
+                                                    <label for="discount-{{ discount.id }}" class="w-full py-3 ms-2 text-sm font-medium text-yellow-900 dark:text-gray-300">{{ discount.points }} points for {{ discount.discount }}%. Max £ {{ discount.max_discount }}</label>
                                                 </div>
                                             </li>
                                         {% endif %}
@@ -123,10 +123,16 @@
         }
     })
     var discount;
-    $('.discount').on('change', function() {
+    $('.discount').on('click', function() {
         if (this.checked) {
             discount = $(this).data("discount-id")
-            console.log(discount)
+            var discounts = $(".discount")
+            console.log(discounts)
+            for (let d of discounts) {
+                if ($(d).data("discount-id") != discount) {
+                    $(d).prop("checked", false)
+                } 
+            }
         }
     })
 

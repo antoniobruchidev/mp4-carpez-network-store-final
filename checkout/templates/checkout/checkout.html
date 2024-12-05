@@ -53,9 +53,9 @@
                                <p class="text-xs text-end text-gray-900">1</p>
                             </td>
                             <td class="px-1 py-4">
-                                <p class="text-xs text-end text-gray-900">£ {{ discount_amount }} -</p>
+                                <p class="text-xs text-end text-gray-900">£ {% if not max_discount %}{{ discount_amount }}{% else %}{{ discount.max_discount }}{% endif %} -</p>
                             <td class="px-1 py-4">
-                                <p class="text-xs text-end text-gray-900">£ {{ discount_amount }} -</p>
+                                <p class="text-xs text-end text-gray-900">£ {% if not max_discount %}{{ discount_amount }}{% else %}{{ discount.max_discount }}{% endif %} -</p>
                             </td>
                         </tr>
                     {% endif %}

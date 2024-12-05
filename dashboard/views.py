@@ -192,7 +192,8 @@ def add_discount(request):
         if 'discount' in request.POST and 'points' in request.POST:
             Discount.objects.create(
                 points=request.POST.get('points'),
-                discount=request.POST.get('discount')
+                discount=request.POST.get('discount'),
+                max_discount=request.POST.get('max_discount')
             )
             messages.success(request, 'Discount added successfully')
             return redirect('dashboard')

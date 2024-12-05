@@ -48,7 +48,6 @@ class StripeWH_Handler:
         else:
             user = User.objects.get(id=int(user_id))
             profile = Dashboard.objects.get(user=user)
-        amount = round(int(intent.amount) / 100, 2)
         billing_details = stripe_charge.billing_details
         order_exists = False
         attempt = 1
@@ -56,7 +55,6 @@ class StripeWH_Handler:
             try:
                 order = Order.objects.get(
                     stripe_pid=pid,
-                    grand_total=amount
                 )
                 if order:
                     order_exists = True
@@ -90,7 +88,8 @@ class StripeWH_Handler:
                         status='confirmed'
                     )
                     if discount != "0":
-                        d = Discount.objects.get(id=d)
+                        d = Discount.objects.get(id=discount)
+                        print(d)
                         profile.in_use = 0
                         profile.save()
                         order.discount = d

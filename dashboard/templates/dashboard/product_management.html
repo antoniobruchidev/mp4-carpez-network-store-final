@@ -206,14 +206,14 @@
                             {% csrf_token %}
                             <h5 class="text-xl font-medium text-gray-900 dark:text-white">Add a category</h5>
                             <div>
-                                <label for="friendly_tag" class="w-full block mb-2 text-sm font-medium text-gray-900 dark:text-white">User friendly category (ex: Graphic Card)</label>
-                                <input type="text" name="friendly_tag" id="friendly_tag" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="Enter a user friendly category name" required />
+                                <label for="friendly_name" class="w-full block mb-2 text-sm font-medium text-gray-900 dark:text-white">User friendly category (ex: Graphic Card)</label>
+                                <input type="text" name="friendly_name" id="friendly_name" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="Enter a user friendly category name" required />
                             </div>
                             <div>
-                                <label for="tag" class="w-full block mb-2 text-sm font-medium text-gray-900 dark:text-white">machine friendly category (ex: graphic_card)</label>
-                                <input type="text" name="tag" id="tag" placeholder="enter a cateogry name with no special characters" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
+                                <label for="name" class="w-full block mb-2 text-sm font-medium text-gray-900 dark:text-white">machine friendly category (ex: graphic_card)</label>
+                                <input type="text" name="name" id="name" placeholder="enter a cateogry name with no special characters" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
                             </div>
-                            <button type="submit" class="btn btn-submit">Add Tag</button>
+                            <button type="submit" class="btn btn-submit">Add Category</button>
                         </form>
                     </div>
                     <div class="category-container float-right mt-10 mr-10 grid grid-cols-2 justify-items-center">
@@ -282,16 +282,20 @@
                             <h5 class="text-xl font-medium text-gray-900 dark:text-white">Add a Discount</h5>
                                 <div>
                                     <label for="points" class="w-full block mb-2 text-sm font-medium text-gray-900 dark:text-white">Points to be used</label>
-                                    <input type="number" name="points" id="points" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="0" required />
+                                    <input type="number" name="points" id="points" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="0" min="0" required />
                                 </div>
                                 <div>
-                                    <label for="discount" class="w-full block mb-2 text-sm font-medium text-gray-900 dark:text-white">Discount to be applied</label>
-                                    <input type="number" name="discount" id="discount" placeholder="0" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
+                                    <label for="discount" class="w-full block mb-2 text-sm font-medium text-gray-900 dark:text-white">Discount to be applied (%)</label>
+                                    <input type="number" name="discount" id="discount" placeholder="0" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" min="1" required />
+                                </div>
+                                <div>
+                                    <label for="max_discount" class="w-full block mb-2 text-sm font-medium text-gray-900 dark:text-white">Max discount to be applied (£)</label>
+                                    <input type="number" name="max_discount" id="max_discount" placeholder="0" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" min="1" required />
                                 </div>
                             <button type="submit" class="btn btn-submit">Add Discount</button>
                         </form>
                     </div>
-                    <div class="tags-container float-right mt-10 mr-10 grid grid-cols-2 justify-items-center">
+                    <div class="discounts-container float-right mt-10 mr-10 grid grid-cols-2 justify-items-center">
                         {% for discount in discounts %}
                             <div class="div" data-popover-target="popover-discount-{{ discount.id }}">
                                 <button id="popover-discount-delete-{{ discount.id }}" data-discount-id="{{ discount.id }}" class="discount bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-yellow-300 border border-yellow-300">{{ discount.discount }}</button>
@@ -301,7 +305,7 @@
                                     <h3 class="font-semibold text-yellow-900 dark:text-white">Click to delete</h3>
                                 </div>
                                 <div class="px-3 py-2">
-                                    <p class=" text-yellow-900">{{ discount.discount }}% discount to be applied when user burn {{ discount.points }} of its points</p>
+                                    <p class=" text-yellow-900">{{ discount.discount }}% discount to be applied when user burn {{ discount.points }} of its points for a maximum of £ {{ discount.max_discount }}</p>
                                 </div>
                                 <div data-popper-arrow></div>
                             </div>
@@ -347,7 +351,7 @@
         var postData = {
             'csrfmiddlewaretoken': csrfToken
         };
-        var url = `delete_category/${tagId}`;
+        var url = `delete_category/${categoryId}`;
         $.post(url, postData).done(function (){
             window.location.reload()
         })
@@ -358,7 +362,7 @@
         var postData = {
             'csrfmiddlewaretoken': csrfToken
         };
-        var url = `delete_brand/${tagId}`;
+        var url = `delete_brand/${brandId}`;
         $.post(url, postData).done(function (){
             window.location.reload()
         })
@@ -369,8 +373,9 @@
         var postData = {
             'csrfmiddlewaretoken': csrfToken
         };
-        var url = `delete_discount/${tagId}`;
+        var url = `delete_discount/${discountId}`;
         $.post(url, postData).done(function (){
+        $('.loading').addClass("invisible")
             window.location.reload()
         })
     })
