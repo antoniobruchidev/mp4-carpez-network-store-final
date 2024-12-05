@@ -8,6 +8,7 @@ from checkout.models import Discount, Order, OrderLineItem
 from dashboard.models import Dashboard
 from products.models import Brand, Category, Product, Tag
 from django.contrib import messages
+from django.core.paginator import Paginator
 
 from reviews.models import Review
 from email_relay.views import (
@@ -39,7 +40,29 @@ def dashboard(request):
                     return redirect(reverse('dashboard'))
                         
                 return redirect('get_product_details', product.id)
-        orders = Order.objects.all().order_by('-date').values()
+        orders = Order.objects.all().order_by('-date')
+        paginated_orders = Paginator(orders, 20)
+        if 'page' in request.GET:
+            page = int(request.GET.get("page"))
+        else:
+            page = 1
+        page_orders = paginated_orders.get_page(page)
+        orders = page_orders
+        page_display = "{} to {} of {} entries".format(
+            int(page - 1) * 20 + 1,
+            int(page) * 20,
+            paginated_orders.count
+        )
+        if page == paginated_orders.num_pages:
+            page_display = "{} to {} of {} entries".format(
+                int(page - 1) * 20 + 1,
+                paginated_orders.count,
+                paginated_orders.count
+            )
+        page_count = []
+        for item in range(0,paginated_orders.num_pages):
+            page_count.append(item + 1)
+            print("added", len(page_count), item)
         reviews = Review.objects.all()
         review_related_products = []
         categories = Category.objects.all()
@@ -57,7 +80,16 @@ def dashboard(request):
             'categories': categories,
             'brands': brands,
             'tags': tags,
-            'discounts': discounts
+            'discounts': discounts,
+            'paginator': { 
+                'pages': paginated_orders.num_pages,
+                'current_page': page,
+                'previous_page':page - 1,
+                'next_page': page + 1,
+                'entries': paginated_orders.count,
+                'page_display': page_display,
+                'page_count': page_count
+            }
         }
     else:
         template = 'dashboard/profile.html'
