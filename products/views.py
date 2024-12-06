@@ -36,7 +36,7 @@ def get_products(request):
                     for tag_check in product.tags.all():
                         if tag == tag_check:
                             if product.discount > 0:
-                                discounted_price = product.price * Decimal(
+                                discounted_price = product.price - Decimal(
                                     product.price * product.discount / 100
                                 ).__round__(2)
                             else:
