@@ -42,6 +42,7 @@ class StripeWH_Handler:
         stripe_charge = stripe.Charge.retrieve(
              intent.latest_charge
         )
+        amount = round(int(intent.amount) / 100, 2)
         if user_id == "ul" or user_id == 'null':
             profile = None
             user = None
@@ -55,6 +56,7 @@ class StripeWH_Handler:
             try:
                 order = Order.objects.get(
                     stripe_pid=pid,
+                    grand_total=amount
                 )
                 if order:
                     order_exists = True
