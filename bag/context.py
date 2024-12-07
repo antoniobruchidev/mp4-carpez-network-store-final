@@ -14,8 +14,8 @@ def bag(request):
     objects = 0
 
     b = request.session.get('bag', {})
-    discount_id = request.session.get('discount', 0)
-    if discount_id != 0:
+    discount_id = request.session.get('discount', "0")
+    if discount_id != "0":
         discount = Discount.objects.get(id=discount_id)
     for product_id in b.keys():
         product = get_object_or_404(Product, pk=product_id)
@@ -34,7 +34,7 @@ def bag(request):
             'product': product,
             'discounted_price': discounted_price,
         })
-    if discount_id != 0:
+    if discount_id != "0":
         discount_amount = Decimal(total * discount.discount / 100).__round__(2)
         if discount_amount <= discount.max_discount:
             total = total - discount_amount

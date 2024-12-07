@@ -11,16 +11,16 @@ var bag = $('#bag').text()
 var userId = $('#user_id').text();
 const stripe = Stripe(stripePublicKey);
 const appearance = { /* appearance */ };
-const options = { mode: 'shipping'};
-const optionsb = {
-    mode: 'payment',
-};
+const shipping = { mode: 'shipping' };
+const payment = { mode: 'payment' };
+const billing = { mode: 'billing' };
 const elements = stripe.elements({ clientSecret, appearance });
-const addressElement = elements.create('address', options);
-
-const paymentElement = elements.create('payment', optionsb);
+const addressElement = elements.create('address', shipping);
+const paymentElement = elements.create('payment', payment);
+const billingElement = elements.create('address', billing);
 addressElement.mount('#address-element');
 paymentElement.mount('#payment-element');
+billingElement.mount('#billing-element');
 
 
 const form = document.getElementById('payment-form');

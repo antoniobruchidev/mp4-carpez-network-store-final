@@ -77,12 +77,13 @@
 <div class="container p-2 md:p-0 mt-5" id="payment-form mt-20">
     <form method="POST" action="{% if discount %}{% url 'checkout' discount_id=discount.id %}{% else %}{% url 'checkout' discount_id='0' %}{% endif %}" id="payment-form">
         {% csrf_token %}
-        <div id="address-element" class="m-0 p-0"></div>
-        <div>
-            <label for="email" class="block mt-2 text-sm font-normal text-gray-300 dark:text-white">Email</label>
+        <div class="mt-4 mb-2">
+            <label for="email" class="block mt-2 font-normal text-gray-700 dark:text-white">Email</label>
             <input type="email" id="email" name="email" class="bg-white border border-gray-200 text-gray-900 text-md rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Email" required />
         </div>
+        <div id="address-element" class="m-0 p-0"></div>
         <div id="payment-element" class="m-0 p-0"></div>
+        <div id="billing-element" class="m-0 p-0"></div>
         <div class="flex mr-5 mt-5 mb-5 rounded-md float-right shadow-sm">
             <button class="btn-left" type="reset">Reset</button>
             <button class="btn-right" id="submit-button">Pay now</button>
