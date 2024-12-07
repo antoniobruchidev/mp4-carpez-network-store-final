@@ -23,6 +23,11 @@
         @apply block text-base text-center p-2 w-full h-full rounded-md bg-white hover:bg-yellow-900 hover:text-yellow-300 hover:opacity-100 px-4 py-2 text-yellow-800 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white
     }
 
+    .sort-option,
+    .category-option {
+        @apply w-44 text-sm text-black rounded-md bg-yellow-50 hover:bg-yellow-300 hover:border hover:border-yellow-900 px-4 py-2 text-black dark:hover:bg-gray-600 dark:hover:text-white
+    }
+
     .form-control {
         @apply bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-50
     }
