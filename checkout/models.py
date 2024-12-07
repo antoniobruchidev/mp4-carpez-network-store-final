@@ -16,7 +16,7 @@ class Discount(models.Model):
     discount = models.IntegerField(null=False)
     max_discount = models.IntegerField(null=False, blank=False)
 
-    def __repr__(self):
+    def __str__(self):
         return f"{self.points} points for {self.discount}% discount."
 
 
@@ -173,7 +173,10 @@ class OrderLineItem(models.Model):
 
     def save(self, *args, **kwargs):
         """Override the save method to set the lineitem total before saving"""
-        self.lineitem_total = self.product.price * self.quantity
+        if self.discounted_price:
+            self.lineitem_total = self.discounted_price * self.quantity
+        else:
+            self.lineitem_total = self.product.price * self.quantity
         super().save(*args, **kwargs)
 
     def __str__(self):

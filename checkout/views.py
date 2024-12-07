@@ -24,7 +24,6 @@ from products.models import Product
 def cache_checkout_data(request):
     try:
         pid = request.POST.get("client_secret").split("_secret")[0]
-        print(request.POST.get("shipping"), request.POST.get("discount"))
         stripe.api_key = settings.STRIPE_SECRET_KEY
         stripe.PaymentIntent.modify(
             pid,
@@ -54,7 +53,6 @@ def place_order(request):
     e = json_body['email']
     s = json.loads(json_body['shipping'])
     d = json.loads(json_body['discount'])
-    print(d, type(d))
     pid = json_body['stripe_pid']
     bag_and_shipping_details = {
         'bag': b,
@@ -63,6 +61,7 @@ def place_order(request):
         'email': e,
         'discount': d
     }
+    current_bag = bag(request)
     if str(request.user) != "AnonymousUser":
         profile = Dashboard.objects.get(user=request.user)
     else:
@@ -71,32 +70,43 @@ def place_order(request):
         'bag_and_shipping_details': bag_and_shipping_details,
     })
     try:
-        order = Order.objects.get(stripe_pid=pid)
+        order = Order.objects.get(
+            stripe_pid=pid,
+            grand_total=current_bag["grand_total"]
+        )
         order_exist = True
         if profile:
-            if d != 0:
+            print(d, type(d), "discount check after profile")
+            if d != "0":
                 discount = Discount.objects.get(id=d)
                 order.discount = discount
-                profile.in_use = 0
+                print("add discount to order")
+            else:
+                profile.points += order.grand_total
                 profile.save()
+                print("applied discount, place order log")
             order.user = profile
+            print("profile applied in place order, place order log")
             order.update_total()
-            request.session['discount'] = 0
     except Order.DoesNotExist:
         order_exist = False
+        print("order created in webhook, place order log, profile check next")
 
     if order_form.is_valid() and not order_exist:
         order = order_form.save()
         for item_id, quantity in b.items():
             try:
                 product = Product.objects.get(id=item_id)
+                print("get single product, place order log")
                 order_line_item = OrderLineItem(
                     order=order, product=product, quantity=quantity
                 )
+                print(product.discount, type(product.discount), "check individual product discounts and create lineitem -place order log")
                 if product.discount > 0:
                     order_line_item.discounted_price = product.price - Decimal(
                         product.price * product.discount / 100
                     ).__round__(2)
+                    print("applied discount to lineitem")
                 order_line_item.save()
             except Product.DoesNotExist:
                 messages.error(
@@ -109,16 +119,23 @@ def place_order(request):
                 )
                 order.delete()
                 return redirect(reverse("view_bag"))
-        order = Order.objects.get(stripe_pid=pid,)
+        order = Order.objects.get(stripe_pid=pid)
+        print("order created in place order, place order log")
         if profile:
+            print(d, type(d), "check order discount")
             if d != 0:
                 discount = Discount.objects.get(id=d)
                 order.discount = discount
                 profile.in_use = 0
                 profile.save()
+                print("applied discount, place order log")
+            else:
+                profile.points += round(order.grand_total / 100) * 100
+                profile.save()
+                print("applied points to profile, place order log")
             order.user = profile
+            print("applied profile, place order log")
             order.update_total()
-            request.session['discount'] = 0
         messages.success(
             request,
             f"Order successfully processed! \
@@ -133,6 +150,7 @@ def place_order(request):
 def checkout(request, discount_id):
     discount = None
     max_d = False
+    request.session['discount'] = discount_id
     current_bag = bag(request)
     total = current_bag["grand_total"]
     if discount_id != "0":
@@ -167,6 +185,8 @@ def checkout_success(request, order_number):
 
     if "bag" in request.session:
         del request.session["bag"]
+    if "discount" in request.session:
+        del request.session["discount"]
 
     template = "checkout/checkout_success.html"
     context = {
