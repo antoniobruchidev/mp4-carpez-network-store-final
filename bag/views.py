@@ -10,6 +10,9 @@ from checkout.models import Discount
 
 def view_bag(request):
     """ A view to return the bag contents page """
+    profile = None
+    discounts = None
+    discounts_available = None
     if str(request.user) != "AnonymousUser":
         profile = Dashboard.objects.get(user=request.user)
         discounts = Discount.objects.all()
