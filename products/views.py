@@ -20,6 +20,7 @@ def get_products(request):
     """View to return all products"""
     products = Product.objects.all()
     categories = Category.objects.all()
+    tags = Tag.objects.all()
     category = None
     sort = None
     direction = None
@@ -43,7 +44,8 @@ def get_products(request):
                                 discounted_price = None
                             tagged_products.append((product, discounted_price))
                 context = {
-                    'products': tagged_products
+                    'products': tagged_products,
+                    'tags': tags
                 }
                 return render(request, 'products/products.html', context)
         
@@ -109,6 +111,7 @@ def get_products(request):
         'category': category,
         'categories': categories,
         'current_sorting': current_sorting,
+        'tags': tags,
     }
     return render(request, 'products/products.html', context)
 

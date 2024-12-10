@@ -1841,6 +1841,10 @@ input[type=number] {
   float: right;
 }
 
+.float-left {
+  float: left;
+}
+
 .m-0 {
   margin: 0px;
 }
@@ -1994,6 +1998,10 @@ input[type=number] {
 
 .mt-5 {
   margin-top: 1.25rem;
+}
+
+.ml-2 {
+  margin-left: 0.5rem;
 }
 
 .block {
@@ -2183,6 +2191,10 @@ input[type=number] {
 
 .max-w-5xl {
   max-width: 64rem;
+}
+
+.max-w-3xl {
+  max-width: 48rem;
 }
 
 .flex-1 {
@@ -3337,6 +3349,10 @@ input[type=number] {
 
 .focus\:z-10:focus {
   z-index: 10;
+}
+
+.focus\:border-0:focus {
+  border-width: 0px;
 }
 
 .focus\:border-blue-500:focus {
