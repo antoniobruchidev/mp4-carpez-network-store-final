@@ -67,7 +67,66 @@
     {% endblock %}
 
     {% block postloadjs %}
-    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js">
+    import { Popover } from 'flowbite';
+    </script>
+    <script type="text/javascript">
+    
+      $('#dashboard').on('click', function() {
+        window.location.href="{% url 'dashboard' %}"
+      })
+      $('#login').on('click', function() {
+        window.location.href="{% url 'account_login' %}"
+      })
+      $('#signup').on('click', function() {
+        window.location.href="{% url 'account_signup' %}"
+      })
+      $('#add-product').on('click', function() {
+        window.location.href="{% url 'add_product' %}"
+      })
+      $('#view-bag').on('click', function() {
+        window.location.href="{% url 'view_bag' %}"
+      })
+      {% if not on_bag_page and not request.user.is_supersuser %}
+      if (navigator.userAgent.match(/Android/i)
+          || navigator.userAgent.match(/webOS/i)
+          || navigator.userAgent.match(/iPhone/i)
+          || navigator.userAgent.match(/iPad/i)
+          || navigator.userAgent.match(/iPod/i)
+          || navigator.userAgent.match(/BlackBerry/i)
+          || navigator.userAgent.match(/Windows Phone/i)) {
+            const $targetEl = document.getElementById('popover-grand-total')
+            const $triggerEl = document.getElementById('popover-trigger')
+            const options = {
+                placement: 'bottom',
+                triggerType: 'click',
+                offset: 150,
+                onHide: () => {
+                },
+                onShow: () => {
+                },
+                onToggle: () => {
+                },
+            };
+            const popover = new Popover($targetEl, $triggerEl, options);
+          } else {
+          const $targetEl = document.getElementById('popover-grand-total')
+          const $triggerEl = document.getElementById('popover-trigger')
+          const options = {
+              placement: 'right',
+              triggerType: 'hover',
+              offset: 10,
+              onHide: () => {
+              },
+              onShow: () => {
+              },
+              onToggle: () => {
+              },
+          };
+          const popover = new Popover($targetEl, $triggerEl, options);
+          }
+      {% endif %}
+   </script>
     {% endblock %}
   </body>
 </html>

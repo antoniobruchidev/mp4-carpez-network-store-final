@@ -5,6 +5,7 @@
 @layer base {
     body {
         font-family: 'Lato', sans-serif !important;
+        @apply bg-yellow-50
     }
 
     .navbar-trigger {
@@ -12,19 +13,16 @@
     }
 
     .navbar-ul {
-        @apply flex flex-col font-medium text-center p-4 md:p-0 mt-4 border border-yellow-900 rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700
+        @apply w-full flex flex-col font-medium text-center p-4 md:p-0 mt-4 border border-yellow-900 rounded-lg md:space-x-4 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700
     }
 
     .menu-button {
-        @apply block text-lg w-full h-full rounded-md bg-white hover:bg-yellow-900 text-yellow-900 hover:text-yellow-300 px-4 py-2 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white
-    }
-
-    .dropdown-menu {
-        @apply block text-base text-center p-2 w-full h-full rounded-md bg-white hover:bg-yellow-900 hover:text-yellow-300 hover:opacity-100 px-4 py-2 text-yellow-800 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white
+        @apply block text-2xl md:text-base lg:text-lg w-full h-full rounded-md bg-yellow-700 hover:bg-yellow-900 text-white border border-yellow-300 mx-auto md:border-0 md:bg-yellow-50 md:hover:bg-yellow-900 md:text-yellow-900 md:hover:text-white px-2 py-2 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white
     }
 
     .sort-option,
-    .category-option {
+    .category-option,
+    .dropdown-menu {
         @apply w-44 text-sm text-black rounded-md bg-yellow-50 hover:bg-yellow-300 hover:border hover:border-yellow-900 px-4 py-2 text-black dark:hover:bg-gray-600 dark:hover:text-white
     }
 
