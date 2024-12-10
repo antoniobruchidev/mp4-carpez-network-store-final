@@ -34,6 +34,7 @@ ALLOWED_HOSTS = [
     'localhost',
     config('HEROKU_DOMAIN'),
     '141.0.153.251',
+    '192.168.1.107',
 ]
 
 
