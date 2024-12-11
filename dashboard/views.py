@@ -65,14 +65,17 @@ def dashboard(request):
             store_answer=None
         )
         review_related_products = []
+        review_customer_emails = []
         categories = Category.objects.all()
         tags = Tag.objects.all()
         brands = Brand.objects.all()
         discounts = Discount.objects.all()
         for review in reviews:
             product = Product.objects.get(id=review.order.product.id)
+            order = Order.objects.get(id=review.order.order.id)
             review_related_products.append(product)
-        product_reviews = zip(reviews, review_related_products)
+            review_customer_emails.append(order.email)
+        product_reviews = zip(reviews, review_related_products, review_customer_emails)
         context = {
             'orders': page_orders,
             'product_reviews': product_reviews,

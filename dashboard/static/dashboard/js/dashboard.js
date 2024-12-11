@@ -479,7 +479,34 @@
                 createRedToast(data)
             }
         } catch (error) {
-            
+            console.log(error)
         }
+    })
+
+    $(".review-answer").on("submit", async function (e) {
+        e.preventDefault()
+        var formData = new FormData(this)
+        var reviewId = $(this).data("review")
+        var url = `/reviews/answer_review/${reviewId}/`
+        try {
+            const response = await fetch(url,{
+                method: "POST",
+                body: formData,
+            })
+            const data = await response.json()
+            if (data.success) {
+                createGreenToast(data)
+                $(`#review-${reviewId}`).remove()
+            } else {
+                createRedToast(data)
+            }
+        } catch (error) {
+            console.log(error)
+        }  
+    })
+
+    $(".send-email-from-review").on("click", function () {
+        var email = $(this).data("email")
+        window.open(`mailto:${email}`)
     })
     

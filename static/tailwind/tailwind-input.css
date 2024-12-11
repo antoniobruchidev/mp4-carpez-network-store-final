@@ -125,12 +125,20 @@
     .brand {
         @apply bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-indigo-400 border border-indigo-400
     }
-    
+
     .category {
         @apply bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-500
     }
 
     .discount {
         @apply bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-yellow-300 border border-yellow-300
+    }
+
+    .review-container {
+        @apply bg-white rounded-lg border border-yellow-700 rounded-lg mb-3 w-full max-w-4xl p-4
+    }
+
+    .send-email-from-review {
+        @apply ml-2 mt-1 text-center text-xl rounded-e-lg bg-transparent text-yellow-300 hover:text-yellow-900
     }
 }

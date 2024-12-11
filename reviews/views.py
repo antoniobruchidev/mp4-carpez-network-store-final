@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods, require_POST
@@ -62,14 +63,26 @@ def add_review(request):
 
 @require_POST
 def answer_review(request, review_id):
+    data = dict()
     if request.user.is_superuser:
-        review = Review.objects.get(id=review_id)
-        if 'content' in request.POST:
-            review.store_answer = request.POST['content']
-            review.save()
+        try:
             review = Review.objects.get(id=review_id)
-            messages.success(request, "Successfully answered review")
-            return redirect('dashboard')
+            if 'content' in request.POST:
+                review.store_answer = request.POST['content']
+                review.save()
+                review = Review.objects.get(id=review_id)
+                data["success"] = "Successfully answered review"
+                status = 200
+            else:
+                data["error"] = "Answer could not be added, invalid inputs"
+                status = 422
+        except Exception as error:
+            data["error"] = error.__str__()
+            status = 500
+        except Review.DoesNotExist:
+            data["error"] = "Review could not be found"
+            status = 404
+        return JsonResponse(data=data, status=status)
     else:
-        messages.error(request, "Only store manager can answer reviews")
-        return redirect('home')
+        data["error"] = "Permission denied"
+        return JsonResponse(data=data, status=403)

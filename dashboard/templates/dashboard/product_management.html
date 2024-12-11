@@ -137,27 +137,35 @@
         </div>
         <div class="hidden p-4 dark:bg-gray-800" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
             <div class="grid grid-cols-1 justify-items-center">
-                {% for review, product in product_reviews %}
-                    <div class="w-full max-w-lg mb-4 shadow-sm">
-                        <h5 class="w-full text-center mt-4 mb-2 text-md text-black font-semibold">{{ review }}</h5>
-                        <p class="w-full mt-2 text sm text-gray-900 font-normal mx-5 p-2">
-                            {{ review.content }}
-                        </p>
-                    </div>
-                    <div class="relative w-full max-w-lg mb-4 shadow-sm">{% if review.store_answer == None %}
-                            <form method="POST" action="{% url 'answer_review' review.id %}" class="w-full max-w-lg">
+                {% for review, product, customer_email in product_reviews %}
+                    <div class="review-container" id="review-{{ review.id }}">
+                        <div class="flex">
+                            <div class="w-full flex-1 min-w-2xl p-4">
+                                <h5 class="w-full text-center mt-4 mb-2 text-md text-black font-semibold">{{ review }}</h5>
+                                <p class="w-full mt-2 text sm text-gray-900 font-normal mx-5 p-2">
+                                    {{ review.content }}
+                                </p>
+                            </div>
+                            <div class="hidden md:block shrink max-w-32 p-4">
+                                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                            </div>
+                        </div>
+                        <div class="w-full max-w-4xl">
+                            <form data-review="{{ review.id }}" method="POST" action="{% url 'answer_review' review.id %}" class="review-answer flex mb-4 shadow-sm w-full max-w-4xl">
                                 {% csrf_token %}
-                                <button type="submit" class="absolute bottom-0 right-0 w-6 h-6 p-0 rounded-full bg-yellow-300 text.black hover:bg-yellow-700 hover:text-white">
-                                    <i class="fa-solid fa-paper-plane w-4 h-4"></i>
-                                </button>
-                                <textarea id="content" name="content" rows="2" class="block p-2.5 w-full max-w-lg text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Write your answer here..."></textarea>
+                                <textarea id="content" name="content" rows="2" class="flex-1 inline-block text-sm text-yellow-900 bg-white rounded-lg border border-yellow-700 focus:ring-yellow-500 focus:border-yellow-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Write your answer here..."></textarea>
+                                <div class="grid grid-cols-1">
+                                    <button type="submit" class="ml-2 mt-1 text-center text-xl rounded-e-lg bg-transparent text-yellow-300 hover:text-yellow-900">
+                                        <i class="fa-solid fa-paper-plane"></i>
+                                        <span class="sr-only">Answer review</span>
+                                    </button>
+                                    <button data-email="{{ customer_email }}" type="button" class="send-email-from-review">
+                                        <i class="fa-solid fa-envelope"></i>
+                                        <span class="sr-only">Email customer</span>
+                                    </button>
+                                </div>
                             </form>
-                        {% else %}
-                            <h5 class="w-full text-center mt-4 mb-2 text-md text-black font-semibold">Answer</h5>
-                            <p class="w-full mt-2 text sm text-gray-900 font-normal mx-5 p-2">
-                                {{ review.store_answer }}
-                            </p>
-                        {% endif %}
+                        </div>
                     </div>
                 {% endfor %}
             </div>    
