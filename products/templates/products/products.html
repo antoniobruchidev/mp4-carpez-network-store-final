@@ -34,7 +34,7 @@
                 </button>
             </div>
         </div>
-        <div class="ml-2 mb-10 mt-5 flex inline-flex items-center float-left max-w-3xl">
+        <div class="ml-2 mb-10 mt-5 hidden md:flex md:flex-wrap md:max-w-xl lg:max-w-4xl xl:max-w-6xl items-center float-left">
             {% for tag in tags %}
             <a href="{% url 'get_products' %}?tag={{ tag }}">
                 <span class="bg-yellow-100 text-yellow-800 hover:bg-yellow-200 hover:text-yellow-900 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-yellow-300 border border-yellow-300">{{ tag.friendly_tag }}</span>
