@@ -18,7 +18,10 @@ from reviews.models import Review
 
 def get_products(request):
     """View to return all products"""
-    products = Product.objects.all()
+    if request.user.is_superuser:
+        products = Product.objects.all()
+    else:
+        products = Product.objects.exclude(available=False)
     categories = Category.objects.all()
     tags = Tag.objects.all()
     category = None

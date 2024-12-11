@@ -11,7 +11,7 @@ class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
         fields = ['name', 'price', 'image', 'description', 'category',
-                  'tags', 'brand', 'sku', 'discount']
+                  'tags', 'brand', 'sku', 'discount', 'available',]
 
     name = forms.CharField(max_length=254, required=True, label='Name:')
     price = forms.DecimalField(decimal_places=2, required=True, label='Price:')
@@ -22,6 +22,7 @@ class ProductForm(forms.ModelForm):
     brands = forms.Select()
     sku = forms.CharField(label='SKU')
     discount = forms.DecimalField(decimal_places=1, label='Discount (%):')
+    available = forms.BooleanField(required=False)
 
     @property
     def helper(self):
@@ -37,7 +38,8 @@ class ProductForm(forms.ModelForm):
                 'sku',
                 'price',
                 'discount',
-                'image'
+                'available',
+                'image',
             ),
             ButtonHolder(HTML(
                 '<div class="inline-flex rounded-md shadow-sm" role="group">'

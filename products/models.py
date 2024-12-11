@@ -59,6 +59,7 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=8, decimal_places=2)
     discount = models.DecimalField(max_digits=2, decimal_places=1, null=False, default=0)
     image = models.ImageField(null=True, blank=True)
+    available = models.BooleanField(null=False, default=True)
 
     def __str__(self):
         return str(self.name)
