@@ -41,7 +41,7 @@
         <h4 class="logo-font text-center text-yellow-200 mt-3 mb-0">Free delivery on orders over ${{ free_delivery_treshold }}!</h4>
       </div> 
     </header>
-    <div class="max-h-[0px] overflow-visible grid justify-items-center">
+    <div class="max-h-[0px] overflow-visible grid justify-items-center" id="messages">
 
       {% if messages %}
       {% for message in messages %}
@@ -87,44 +87,36 @@
       $('#view-bag').on('click', function() {
         window.location.href="{% url 'view_bag' %}"
       })
-      {% if not on_bag_page and not request.user.is_supersuser %}
-      if (navigator.userAgent.match(/Android/i)
-          || navigator.userAgent.match(/webOS/i)
-          || navigator.userAgent.match(/iPhone/i)
-          || navigator.userAgent.match(/iPad/i)
-          || navigator.userAgent.match(/iPod/i)
-          || navigator.userAgent.match(/BlackBerry/i)
-          || navigator.userAgent.match(/Windows Phone/i)) {
-            const $targetEl = document.getElementById('popover-grand-total')
-            const $triggerEl = document.getElementById('popover-trigger')
-            const options = {
-                placement: 'bottom',
-                triggerType: 'click',
-                offset: 150,
-                onHide: () => {
-                },
-                onShow: () => {
-                },
-                onToggle: () => {
-                },
-            };
-            const popover = new Popover($targetEl, $triggerEl, options);
-          } else {
+      {% if not on_bag_page %}
+      var admin = "{{ request.user.is_superuser }}"
+      console.log(admin == "True")
+      if (admin != "True"){
+        if (navigator.userAgent.match(/Android/i)
+            || navigator.userAgent.match(/webOS/i)
+            || navigator.userAgent.match(/iPhone/i)
+            || navigator.userAgent.match(/iPad/i)
+            || navigator.userAgent.match(/iPod/i)
+            || navigator.userAgent.match(/BlackBerry/i)
+            || navigator.userAgent.match(/Windows Phone/i)) {
+          const $targetEl = document.getElementById('popover-grand-total')
+          const $triggerEl = document.getElementById('popover-trigger')
+          const options = {
+              placement: 'bottom',
+              triggerType: 'click',
+              offset: 150,
+          };
+          const popover = new Popover($targetEl, $triggerEl, options);
+        } else {
           const $targetEl = document.getElementById('popover-grand-total')
           const $triggerEl = document.getElementById('popover-trigger')
           const options = {
               placement: 'right',
               triggerType: 'hover',
               offset: 10,
-              onHide: () => {
-              },
-              onShow: () => {
-              },
-              onToggle: () => {
-              },
           };
           const popover = new Popover($targetEl, $triggerEl, options);
-          }
+        }
+      }
       {% endif %}
    </script>
     {% endblock %}

@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
@@ -47,7 +47,6 @@ def dashboard(request):
         else:
             page = 1
         page_orders = paginated_orders.get_page(page)
-        orders = page_orders
         page_display = "{} to {} of {} entries".format(
             int(page - 1) * 20 + 1,
             int(page) * 20,
@@ -62,20 +61,20 @@ def dashboard(request):
         page_count = []
         for item in range(0,paginated_orders.num_pages):
             page_count.append(item + 1)
-            print("added", len(page_count), item)
-        reviews = Review.objects.all()
+        reviews = Review.objects.exclude(rating=None).filter(
+            store_answer=None
+        )
         review_related_products = []
         categories = Category.objects.all()
         tags = Tag.objects.all()
         brands = Brand.objects.all()
         discounts = Discount.objects.all()
         for review in reviews:
-            order_lineitem = OrderLineItem.objects.get(review=review)
-            product = Product.objects.get(id=order_lineitem.product.id)
+            product = Product.objects.get(id=review.order.product.id)
             review_related_products.append(product)
         product_reviews = zip(reviews, review_related_products)
         context = {
-            'orders': orders,
+            'orders': page_orders,
             'product_reviews': product_reviews,
             'categories': categories,
             'brands': brands,
@@ -97,7 +96,6 @@ def dashboard(request):
         orders = Order.objects.filter(user=profile).order_by('-date')
         lineitems = []
         for order in orders:
-            print(order)
             order_lineitems = order.lineitems.all()
             for order_lineitem in order_lineitems:
                 review = Review.objects.get(order=order_lineitem)
@@ -114,52 +112,88 @@ def dashboard(request):
 @require_POST
 def add_tag(request):
     if request.user.is_superuser:
+        data = dict()
         if 'tag' in request.POST and 'friendly_tag' in request.POST:
-            Tag.objects.create(
-                tag=request.POST.get('tag'),
-                friendly_tag=request.POST.get('friendly_tag')
-            )
-            messages.success(request, 'Tag added successfully')
-            return redirect('dashboard')
+            try:
+                tag = Tag.objects.create(
+                    tag=request.POST.get('tag'),
+                    friendly_tag=request.POST.get('friendly_tag')
+                )
+                data["success"] = 'Tag added successfully'
+                data["new_tag_id"] = tag.id
+                data["new_tag_name"] = tag.friendly_tag
+                status = 200
+            except Exception as error:
+                status = 500
+                if 'unique constraint' in error.__str__():
+                    data["error"] = "Attempt to add tag violates unique fields rule, double check if you already have the desired tag."
+                else:
+                    data["error"] = error.__str__
+            return JsonResponse(data=data, status=status)
         else:
-            messages.error(request, 'Tag could not be added')
-            return redirect('dashboard')
+            data["error"] = 'Tag could not be added, invalid input'
+            return JsonResponse(data=data, status=422)
+    else:
+        data["error"] = "Permission denied"
+        return JsonResponse(data=data, status=403)
 
 
 @require_POST
 def add_category(request):
     if request.user.is_superuser:
-        if 'category' in request.POST and 'friendly_name' in request.POST:
-            Category.objects.create(
-                category=request.POST.get('tag'),
-                friendly_name=request.POST.get('friendly_name')
-            )
-            messages.success(request, 'Tag added successfully')
-            return redirect('dashboard')
+        data = dict()
+        if 'name' in request.POST and 'friendly_name' in request.POST:
+            try:
+                category = Category.objects.create(
+                    name=request.POST.get('name'),
+                    friendly_name=request.POST.get('friendly_name')
+                )
+                data["success"] = 'Category added successfully'
+                data["new_category_id"] = category.id
+                data["new_category_name"] = category.friendly_name
+                status=200
+            except Exception as error:
+                status = 500
+                if 'unique constraint' in error.__str__():
+                    data["error"] = "Attempt to add category violates unique fields rule, double check if you already have the desired category."
+                else:
+                    data["error"] = error.__str__()
+            return JsonResponse(data=data, status=status)
         else:
-            messages.error(request, 'Tag could not be added')
-            return redirect('dashboard')
+            data["error"] = 'Category could not be added, invalid input'
+            return JsonResponse(data=data, status=422)
     else:
-        messages.error(request, "Permission denied")
-        return redirect('home')
+        data["error"] = "Permission denied"
+        return JsonResponse(data=data, status=403)
 
 
 @require_POST
 def add_brand(request):
     if request.user.is_superuser:
+        data = dict()
         if 'brand' in request.POST and 'support_page' in request.POST:
-            Brand.objects.create(
-                brand=request.POST.get('brand'),
-                support_page=request.POST.get('support_page')
-            )
-            messages.success(request, 'Tag added successfully')
-            return redirect('dashboard')
+            try:
+                brand = Brand.objects.create(
+                    brand=request.POST.get('brand'),
+                    support_page=request.POST.get('support_page')
+                )
+                data["success"] = 'Brand added successfully'
+                data["new_brand_id"] = brand.id
+                data["new_brand_name"] = brand.brand
+                status = 200
+            except Exception as error:
+                status = 500
+                if 'unique constraint' in error.__str__():
+                    data["error"] = "Attempt to add brand violates unique field rule, double check if you already have the desired brand."
+                else:
+                    data["error"] = error.__str__()
+            return JsonResponse(data=data, status=status)
         else:
-            messages.error(request, 'Tag could not be added')
-            return redirect('dashboard')
+            data["error"] = 'Brand could not be added, invalid input'
+            return JsonResponse(data=data, status=422)
     else:
-        messages.error(request, "Permission denied")
-        return redirect('home')
+        data["error"] = "Permission denied"
+        return JsonResponse(data=data, status=403)
 
 
 @require_POST
@@ -175,7 +209,6 @@ def edit_order(request, order_id):
                 send_dispatch_email(order.id)
             elif order.status == "delivered":
                 send_delivered_email(order.id)
-            print(order.status)
             messages.success(request, 'Order status updated successfully and sent notification email')
             return redirect('dashboard')
         else:
@@ -189,77 +222,110 @@ def edit_order(request, order_id):
 @require_POST
 def add_discount(request):
     if request.user.is_superuser:
+        data = dict()
         if 'discount' in request.POST and 'points' in request.POST:
-            Discount.objects.create(
-                points=request.POST.get('points'),
-                discount=request.POST.get('discount'),
-                max_discount=request.POST.get('max_discount')
-            )
-            messages.success(request, 'Discount added successfully')
-            return redirect('dashboard')
+            try:
+                discount = Discount.objects.create(
+                    points=request.POST.get('points'),
+                    discount=request.POST.get('discount'),
+                    max_discount=request.POST.get('max_discount')
+                )
+                data["success"] = 'Discount added successfully'
+                data["new_discount_id"] = discount.id
+                data["new_discount"] = discount.__str__()
+                data["new_discount_percentage"] = discount.discount
+                status = 200
+            except Exception as error:
+                status = 500
+                data["error"] = error.__str__()
+            return JsonResponse(data=data, status=status)
         else:
-            messages.error(request, 'Discount could not be added')
-            return redirect('dashboard')
+            data["error"] = 'Discount could not be added, invalid inputs'
+            return JsonResponse(data=data, status=422)
     else:
-        messages.error(request, "Permission denied")
-        return redirect('home')
+        data["error"] = "Permission denied"
+        return JsonResponse(data=data, status=403)
     
 
 @require_POST
 def delete_tag(request, tag_id):
     if request.user.is_superuser:
+        data = dict()
         try:
             tag = Tag.objects.get(id=tag_id)
             if tag.tag == 'desktop' or tag.tag == 'laptop':
-                messages.error(request, 'Desktop and Laptop tags are required. Aborted.')
-                return HttpResponse(status=200)
+                data['error'] = 'Desktop and Laptop tags are required. Aborted.'
+                status = 403
             else:
                 tag.delete()
-                messages.success(request, 'Tag deleted successfully')
-                return HttpResponse(status=200)
+                data['success'] = 'Tag deleted successfully.'
+                status=200
         except Exception as e:
-            messages.error(
-            request,
-            "Sorry we could not accomodate your request at\
-            this time. Please trye again later.",
-        )
-        return HttpResponse(content=e, status=400)
+            data["error"] = e.__str__()
+            status = 500
+        except Tag.DoesNotExist:
+            data["error"] = "Tag to be deleted does not exist."
+            status = 404
+        return JsonResponse(data=data, status=status)
     else:
-        messages.error(request, "Permission denied")
-        return redirect('home')
+        return JsonResponse(status=403)
 
 
 @require_POST
 def delete_discount(request, discount_id):
     if request.user.is_superuser:
-        discount = Discount.objects.get(id=discount_id)
-        discount.delete()
-        messages.success(request, 'Discount deleted successfully')
-        return redirect('dashboard')
+        data = dict()
+        try:
+            discount = Discount.objects.get(id=discount_id)
+            discount.delete()
+            data['success'] = 'Discount deleted successfully.'
+            status=200
+        except Exception as e:
+            data["error"] = e.__str__()
+            status = 500
+        except Discount.DoesNotExist:
+            data["error"] = "Discount to be deleted does not exist."
+            status = 404
+        return JsonResponse(data=data, status=status)
     else:
-        messages.error(request, "Permission denied")
-        return redirect('home')
+        return JsonResponse(status=403)
 
 
 @require_POST
 def delete_brand(request, brand_id):
     if request.user.is_superuser:
-        brand = brand.objects.get(id=brand_id)
-        brand.delete()
-        messages.success(request, 'Brand deleted successfully')
-        return redirect('dashboard')
+        data = dict()
+        try:
+            brand = Brand.objects.get(id=brand_id)
+            brand.delete()
+            data['success'] = 'Brand deleted successfully.'
+            status=200
+        except Exception as e:
+            data["error"] = e.__str__()
+            status = 500
+        except Brand.DoesNotExist:
+            data["error"] = "Brand to be deleted does not exist."
+            status = 404
+        return JsonResponse(data=data, status=status)
     else:
-        messages.error(request, "Permission denied")
-        return redirect('home')
+        return JsonResponse(status=403)
 
 
 @require_POST
 def delete_category(request, category_id):
     if request.user.is_superuser:
-        category = Category.objects.get(id=category_id)
-        category.delete()
-        messages.success(request, 'Category deleted successfully')
-        return redirect('dashboard')
+        data = dict()
+        try:
+            category = Category.objects.get(id=category_id)
+            category.delete()
+            data['success'] = 'Category deleted successfully.'
+            status=200
+        except Exception as e:
+            data["error"] = e.__str__()
+            status = 500
+        except Category.DoesNotExist:
+            data["error"] = "Category to be deleted does not exist."
+            status = 404
+        return JsonResponse(data=data, status=status)
     else:
-        messages.error(request, "Permission denied")
-        return redirect('home')
+        return JsonResponse(status=403)

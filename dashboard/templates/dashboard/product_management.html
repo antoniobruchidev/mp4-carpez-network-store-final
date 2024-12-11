@@ -168,7 +168,7 @@
 
                 <div class="w-full py-20 flex p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
                     <div class="form-container flex flex-1">
-                        <form class="w-full max-w-md p-4 space-y-6" action="{% url 'add_tag' %}" method="POST">
+                        <form class="w-full max-w-md p-4 space-y-6" id="add-tag">
                             {% csrf_token %}
                             <h5 class="text-xl font-medium text-gray-900 dark:text-white">Add a tag</h5>
                                 <div>
@@ -182,17 +182,17 @@
                             <button type="submit" class="btn btn-submit">Add Tag</button>
                         </form>
                     </div>
-                    <div class="tags-container float-right mt-10 mr-10 grid grid-cols-2 justify-items-center">
+                    <div id="tags" class="tags-container float-right mt-10 mr-10 grid grid-cols-2 justify-items-center">
                         {% for tag in tags %}
-                            <div data-popover-target="popover-tag-{{ tag.id }}">
-                                <button id="popover-tag-delete-{{ tag.id }}" data-tag-id="{{ tag.id }}" class="tag bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-yellow-300 border border-yellow-300">{{ tag.friendly_tag }}</button id="popover-brand-delete-{{ brand.id }}" data-brand-id="{{ brand.id }}">
+                            <div id="tag-{{ tag.id }}" data-popover-target="popover-tag-{{ tag.id }}">
+                                <button id="popover-tag-delete-{{ tag.id }}" data-tag-id="{{ tag.id }}" class="tag">{{ tag.friendly_tag }}</button>
                             </div>
-                            <div data-popover id="popover-tag-{{ tag.id }}" role="tooltip" class="absolute z-10 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
-                                <div class="px-3 py-2 bg-yellow-100 border-b border-yellow-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
-                                    <h3 class="font-semibold text-yellow-900 dark:text-white">Click to delete</h3>
+                            <div data-popover id="popover-tag-{{ tag.id }}" role="tooltip" class="tag-popover">
+                                <div class="tag-popover-header">
+                                    <h3 class="tag-popover-header-content">Click to delete</h3>
                                 </div>
                                 <div class="px-3 py-2">
-                                    <p class=" text-yellow-900">Click to remove {{ tag.friendly_tag }}</p>
+                                    <p class="text-yellow-900">Click to remove {{ tag.friendly_tag }}</p>
                                 </div>
                                 <div data-popper-arrow></div>
                             </div>
@@ -202,7 +202,7 @@
 
                 <div class="w-full flex p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
                     <div class="form-container flex flex-1">
-                        <form class="w-full max-w-md p-4 space-y-6" action="{% url 'add_category' %}" method="POST">
+                        <form class="w-full max-w-md p-4 space-y-6" id="add-category">
                             {% csrf_token %}
                             <h5 class="text-xl font-medium text-gray-900 dark:text-white">Add a category</h5>
                             <div>
@@ -211,19 +211,19 @@
                             </div>
                             <div>
                                 <label for="name" class="w-full block mb-2 text-sm font-medium text-gray-900 dark:text-white">machine friendly category (ex: graphic_card)</label>
-                                <input type="text" name="name" id="name" placeholder="enter a cateogry name with no special characters" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
+                                <input type="text" name="name" id="name" placeholder="enter a category name with no special characters" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
                             </div>
                             <button type="submit" class="btn btn-submit">Add Category</button>
                         </form>
                     </div>
-                    <div class="category-container float-right mt-10 mr-10 grid grid-cols-2 justify-items-center">
+                    <div id="categories" class="category-container float-right mt-10 mr-10 grid grid-cols-2 justify-items-center">
                         {% for category in categories %}
-                            <div data-popover-target="popover-category-{{ category.id }}">
-                                <button id="popover-category-delete-{{ category.id }}" data-category-id="{{ category.id }}" class="category bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-500">{{ category.friendly_name }}</button>
+                            <div id="category-{{ category.id }}" data-popover-target="popover-category-{{ category.id }}">
+                                <button id="popover-category-delete-{{ category.id }}" data-category-id="{{ category.id }}" class="category">{{ category.friendly_name }}</button>
                             </div>
-                            <div data-popover id="popover-category-{{ category.id }}" role="tooltip" class="absolute z-10 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
-                                <div class="px-3 py-2 bg-yellow-100 border-b border-yellow-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
-                                    <h3 class="font-semibold text-yellow-900 dark:text-white">Click to delete</h3>
+                            <div data-popover id="popover-category-{{ category.id }}" role="tooltip" class="category-popover">
+                                <div class="category-popover-header">
+                                    <h3 class="category-popover-content">Click to delete</h3>
                                 </div>
                                 <div class="px-3 py-2">
                                     <p class=" text-yellow-900">Click to remove {{ category.friendly_name }}</p>
@@ -236,7 +236,7 @@
 
                 <div class="w-full flex p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
                     <div class="form-container flex flex-1">
-                        <form class="w-full max-w-md p-4 space-y-6" action="{% url 'add_brand' %}" method="POST">
+                        <form class="w-full max-w-md p-4 space-y-6" id="add-brand">
                             {% csrf_token %}
                             <h5 class="text-xl font-medium text-gray-900 dark:text-white">Add a brand</h5>
                             <div>
@@ -250,14 +250,14 @@
                             <button type="submit" class="btn btn-submit">Add Brand</button>
                         </form>
                     </div>
-                    <div class="brand-container float-right mt-10 mr-10 grid grid-cols-2 justify-items-center">
+                    <div id="brands" class="brand-container float-right mt-10 mr-10 grid grid-cols-2 justify-items-center">
                         {% for brand in brands %}
-                        <div data-popover-target="popover-brand-{{ brand.id }}">
-                                <button id="popover-brand-delete-{{ brand.id }}" data-brand-id="{{ brand.id }}" class="brand bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-indigo-400 border border-indigo-400">{{ brand.brand|upper }}</button>
+                        <div id="brand-{{ brand.id }}" data-popover-target="popover-brand-{{ brand.id }}">
+                                <button id="popover-brand-delete-{{ brand.id }}" data-brand-id="{{ brand.id }}" class="brand">{{ brand.brand|upper }}</button>
                             </div>
-                            <div data-popover id="popover-brand-{{ brand.id }}" role="tooltip" class="absolute z-10 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
-                                <div class="px-3 py-2 bg-yellow-100 border-b border-yellow-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
-                                    <h3 class="font-semibold text-yellow-900 dark:text-white">Click to delete</h3>
+                            <div data-popover id="popover-brand-{{ brand.id }}" role="tooltip" class="brand-popover">
+                                <div class="brand-popover-header">
+                                    <h3 class="brand-popover-content">Click to delete</h3>
                                 </div>
                                 <div class="px-3 py-2">
                                     <p class=" text-yellow-900">Click to remove {{ brand.brand }}</p>
@@ -277,7 +277,7 @@
 
                 <div class="w-full py-20 flex p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
                     <div class="form-container flex flex-1">
-                        <form class="w-full max-w-md p-4 space-y-6" action="{% url 'add_discount' %}" method="POST">
+                        <form class="w-full max-w-md p-4 space-y-6" id="add-discount">
                             {% csrf_token %}
                             <h5 class="text-xl font-medium text-gray-900 dark:text-white">Add a Discount</h5>
                                 <div>
@@ -295,14 +295,14 @@
                             <button type="submit" class="btn btn-submit">Add Discount</button>
                         </form>
                     </div>
-                    <div class="discounts-container float-right mt-10 mr-10 grid grid-cols-2 justify-items-center">
+                    <div id="discount-container" class="float-right mt-10 mr-10 grid grid-cols-2 justify-items-center">
                         {% for discount in discounts %}
-                            <div class="div" data-popover-target="popover-discount-{{ discount.id }}">
-                                <button id="popover-discount-delete-{{ discount.id }}" data-discount-id="{{ discount.id }}" class="discount bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-yellow-300 border border-yellow-300">{{ discount.discount }}</button>
+                            <div id="discount-{{ discount.id }}" data-popover-target="popover-discount-{{ discount.id }}">
+                                <button id="popover-discount-delete-{{ discount.id }}" data-discount-id="{{ discount.id }}" class="discount">{{ discount.discount }}</button>
                             </div>
-                            <div data-popover id="popover-discount-{{ discount.id }}" role="tooltip" class="absolute z-10 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
-                                <div class="px-3 py-2 bg-yellow-100 border-b border-yellow-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
-                                    <h3 class="font-semibold text-yellow-900 dark:text-white">Click to delete</h3>
+                            <div data-popover id="popover-discount-{{ discount.id }}" role="tooltip" class="discount-popover">
+                                <div class="discount-popover-header">
+                                    <h3 class="discount-popover-content">Click to delete</h3>
                                 </div>
                                 <div class="px-3 py-2">
                                     <p class=" text-yellow-900">{{ discount.discount }}% discount to be applied when user burn {{ discount.points }} of its points for a maximum of £ {{ discount.max_discount }}</p>
@@ -325,63 +325,10 @@
 
 {% block postloadjs %}
 {{ block.super }}
-<script type="text/javascript">
-    var csrfToken = "{{ csrf_token }}";
-
-    $('.status-selector').on('change', function() {
-        var orderId = $(this).data('id')
-        $('.loading').removeClass("invisible")
-        var form = $(`#status-${orderId}`)
-        form.submit()
-    })
-    $('.tag').on('click', async function() {
-        var tagId = $(this).data('tag-id')
-        $('.loading').removeClass("invisible")
-        var postData = {
-            'csrfmiddlewaretoken': csrfToken
-        };
-        var url = `delete_tag/${tagId}`;
-        $.post(url, postData).done(function (){
-            window.location.reload()
-        })
-    })
-    $('.category').on('click', function() {
-        var categoryId = $(this).data('category-id')
-        $('.loading').removeClass("invisible")
-        var postData = {
-            'csrfmiddlewaretoken': csrfToken
-        };
-        var url = `delete_category/${categoryId}`;
-        $.post(url, postData).done(function (){
-            window.location.reload()
-        })
-    })
-    $('.brand').on('click', function() {
-        var brandId = $(this).data('brand-id')
-        $('.loading').removeClass("invisible")
-        var postData = {
-            'csrfmiddlewaretoken': csrfToken
-        };
-        var url = `delete_brand/${brandId}`;
-        $.post(url, postData).done(function (){
-            window.location.reload()
-        })
-    })
-    $('.discount').on('click', function() {
-        var discountId = $(this).data('discount-id')
-        $('.loading').removeClass("invisible")
-        var postData = {
-            'csrfmiddlewaretoken': csrfToken
-        };
-        var url = `delete_discount/${discountId}`;
-        $.post(url, postData).done(function (){
-        $('.loading').addClass("invisible")
-            window.location.reload()
-        })
-    })
-    $(".pagination-button").on("click", function(){
-        var page = $(this).data("page")
-        window.location.href = page
-    })
+<script src="{% static 'dashboard/js/dashboard.js' %}"></script>
+<script>
+    var csrfToken = "{{ csrf_token }}"
+    var superuserDashboard = "{{ on_superuser_dashboard_page }}"
 </script>
+
 {% endblock %}

@@ -5,7 +5,7 @@ from django.db import models
 
 class Category(models.Model):
 
-    name = models.CharField(max_length=254)
+    name = models.CharField(max_length=254, unique=True)
     friendly_name = models.CharField(max_length=254, null=True, blank=True)
 
     def __str__(self):
@@ -16,7 +16,12 @@ class Category(models.Model):
 
 
 class Brand(models.Model):
-    brand = models.CharField(max_length=20, null=False, default="")
+    brand = models.CharField(
+        max_length=20,
+        null=False,
+        default="",
+        unique=True
+    )
     support_page = models.CharField(max_length=254, null=False, default="")
     
     def __str__(self):
@@ -24,8 +29,13 @@ class Brand(models.Model):
 
 
 class Tag(models.Model):
-    tag = models.CharField(max_length=10, null=False, default="")
-    friendly_tag = models.CharField(max_length=16, null=False, default="")
+    tag = models.CharField(max_length=10, null=False, default="", unique=True)
+    friendly_tag = models.CharField(
+        max_length=16,
+        null=False,
+        default="",
+        unique=True
+    )
     
     def __str__(self):
         return str(self.tag)
