@@ -49,10 +49,25 @@ def update_item_quantity(request, product_id):
     """ Update quantity of item in bag """
     bag = request.session.get('bag', {})
     new_quantity = int(request.POST.get('quantity'))
-    bag[product_id] = new_quantity
-    request.session['bag'] = bag
-    messages.success(request, "Successfully updated quantity")
-    return HttpResponse(status=200)
+    if new_quantity > 0:
+        bag[product_id] = new_quantity
+        if new_quantity > 99:
+            bag[product_id] = 99
+            request.session['bag'] = bag
+            messages.warning(request, "Successfully updated quantity, but maximum is 99")
+            return HttpResponse(status=200)
+        request.session['bag'] = bag
+        messages.success(request, "Successfully updated quantity")
+        return HttpResponse(status=200)
+    elif new_quantity == 0:
+        del bag[product_id]
+        request.session['bag'] = bag
+        messages.success(request, "Successfully updated quantity")
+        return HttpResponse(status=200)
+    else:
+        messages.error(request, "Quantity cannot be less than 0")
+        return HttpResponse(status=200)
+
 
 
 def remove_from_bag(request, product_id):

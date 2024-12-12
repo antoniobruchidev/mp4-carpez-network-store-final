@@ -1,6 +1,6 @@
 # Product application
 
-It has a single view for the landing page
+It comprehend 5 views for a simple and easy to use interface, get_products, get_product_details, add_product, edit_product_details and delete_product.
 
 ## Development
 
