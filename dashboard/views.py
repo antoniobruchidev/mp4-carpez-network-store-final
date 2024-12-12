@@ -31,7 +31,9 @@ def dashboard(request):
                 except Product.DoesNotExist:
                     try:
                         order = Order.objects.get(order_number=sku)
-                        return redirect('checkout_success', order.order_number)
+                        return redirect(
+                            'checkout_success', order.order_number
+                        )
                     except Order.DoesNotExist:
                         messages.error(
                             request,
@@ -75,7 +77,9 @@ def dashboard(request):
             order = Order.objects.get(id=review.order.order.id)
             review_related_products.append(product)
             review_customer_emails.append(order.email)
-        product_reviews = zip(reviews, review_related_products, review_customer_emails)
+        product_reviews = zip(
+            reviews, review_related_products, review_customer_emails
+        )
         context = {
             'orders': page_orders,
             'product_reviews': product_reviews,
@@ -129,7 +133,9 @@ def add_tag(request):
             except Exception as error:
                 status = 500
                 if 'unique constraint' in error.__str__():
-                    data["error"] = "Attempt to add tag violates unique fields rule, double check if you already have the desired tag."
+                    data["error"] = "Attempt to add tag violates unique \
+                        fields rule, double check if you already have \
+                        the desired tag."
                 else:
                     data["error"] = error.__str__
             return JsonResponse(data=data, status=status)
@@ -158,7 +164,9 @@ def add_category(request):
             except Exception as error:
                 status = 500
                 if 'unique constraint' in error.__str__():
-                    data["error"] = "Attempt to add category violates unique fields rule, double check if you already have the desired category."
+                    data["error"] = "Attempt to add category violates \
+                        unique fields rule, double check if you already \
+                        have the desired category."
                 else:
                     data["error"] = error.__str__()
             return JsonResponse(data=data, status=status)
@@ -187,7 +195,9 @@ def add_brand(request):
             except Exception as error:
                 status = 500
                 if 'unique constraint' in error.__str__():
-                    data["error"] = "Attempt to add brand violates unique field rule, double check if you already have the desired brand."
+                    data["error"] = "Attempt to add brand violates unique \
+                        field rule, double check if you already have \
+                        the desired brand."
                 else:
                     data["error"] = error.__str__()
             return JsonResponse(data=data, status=status)
@@ -212,7 +222,8 @@ def edit_order(request, order_id):
                 send_dispatch_email(order.id)
             elif order.status == "delivered":
                 send_delivered_email(order.id)
-            messages.success(request, 'Order status updated successfully and sent notification email')
+            messages.success(request, 'Order status updated successfully \
+                             and sent notification email')
             return redirect('dashboard')
         else:
             messages.error(request, 'Order status could not be updated')
@@ -248,7 +259,7 @@ def add_discount(request):
     else:
         data["error"] = "Permission denied"
         return JsonResponse(data=data, status=403)
-    
+
 
 @require_POST
 def delete_tag(request, tag_id):
@@ -256,8 +267,10 @@ def delete_tag(request, tag_id):
         data = dict()
         try:
             tag = Tag.objects.get(id=tag_id)
-            if tag.tag == 'desktop' or tag.tag == 'laptop':
-                data['error'] = 'Desktop and Laptop tags are required. Aborted.'
+            if (tag.tag == 'desktop' or tag.tag == 'laptop' or
+                tag.tag == 'clearance'):
+                data['error'] = 'Desktop, Laptop and Clearance tags are \
+                     required. Aborted.'
                 status = 403
             else:
                 tag.delete()

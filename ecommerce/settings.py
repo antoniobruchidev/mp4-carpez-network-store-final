@@ -171,8 +171,6 @@ STATICFILES_DIRS = [
     ("tailwind", "/media/storage/dev/mp4-final/mp4-carpez-network-store-final/static/tailwind"),
 ]
 
-ACCOUNT_ADAPTER = 'custom_adapter.MyAllauthAdapter'
-
 if USE_AWS:
     # aws settings should work
     # s3 static settings
@@ -219,19 +217,21 @@ if MY_DEVELOPMENT:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
     EMAIL_HOST_USER = 'info@carpez-network.com'
 else:
-    USE_TLS = config(str('EMAIL_USE_TLS'), cast=bool, default=False)
-    USE_SSL = config(str('EMAIL_USE_SSL'), cast=bool, default=False)
     # default backend
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    EMAIL_HOST = config(str("EMAIL_HOST"))
-    EMAIL_HOST_PORT = config(str('EMAIL_HOST_PORT'))
-    EMAIL_HOST_USER = config(str("EMAIL_HOST_USER"))
+    EMAIL_HOST = config(str("EMAIL_HOST")) # smtp.gmail.com
+    # port should be 587 if tls 465 if ssl
+    EMAIL_HOST_PORT = config(str('EMAIL_HOST_PORT')) # 587
+    EMAIL_HOST_USER = config(str("EMAIL_HOST_USER")) # carpez@carpez-network.com
     EMAIL_HOST_PASSWORD = config(str("EMAIL_HOST_PASSWORD"))
-    EMAIL_USE_TLS = config(str('EMAIL_USE_TLS'), cast=bool, default=True)
-    EMAIL_USE_SSL = config(str('EMAIL_USE_SSL'), cast=bool, default=False)
+    # tls and ssl cannot be used at the same time
+    EMAIL_USE_TLS = config(str('EMAIL_USE_TLS'), cast=bool, default=True) # True
+    EMAIL_USE_SSL = config(str('EMAIL_USE_SSL'), cast=bool, default=False) # False
     DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-    DEBUG = config(str("DEBUG"), cast=bool, default=True)
+ACCOUNT_ADAPTER = 'custom_adapter.MyAllauthAdapter'
 
+
+DEBUG = config(str("DEBUG"), cast=bool, default=True)
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
@@ -248,3 +248,5 @@ STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
 STRIPE_PUBLIC_KEY = config('STRIPE_PUBLIC_KEY')
 WH_SECRET_KEY = config('STRIPE_WEBHOOK_SECRET')
 STRIPE_CURRENCY = 'gbp'
+
+HOMEPAGE_CAROUSEL_TAG = config("CAROUSEL_TAG")
