@@ -45,7 +45,7 @@ urlpatterns = [
 ```python
 urlpatterns = [
     ...
-    path('', include('products.urls')),
+    path('products/', include('products.urls')),
     ...
 ]
 ```

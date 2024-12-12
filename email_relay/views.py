@@ -1,8 +1,11 @@
 from django.conf import settings
+from django.shortcuts import redirect
 from checkout.models import Order
 from ecommerce.env import config
 from django.template.loader import render_to_string
 import requests
+from django.core.mail import EmailMultiAlternatives
+from django.contrib import messages
 # Create your views here.
 
 
@@ -106,5 +109,23 @@ def send_delivered_email(order_id):
     result = requests.post(url, data=post_data)
 
     return True
+
+
+def receive_error(request):
+    if 'to' in request.GET:
+        email = EmailMultiAlternatives(
+        "This is a test",
+        "This is so much a test",
+        settings.EMAIL_HOST_USER,
+        [request.GET["to"]]
+        )
+        email.fail_silently=False
+        try:
+            email.send()
+            messages.success(request, "Email sent")
+        except Exception as e:
+            print(e)
+            messages.error(request, e.__str__())
+    return redirect("home")
         
 
