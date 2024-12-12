@@ -44,13 +44,11 @@ class StripeWH_Handler:
         )
         amount = round(int(intent.amount) / 100, 2)
         if user_id == "ul" or user_id == 'null':
-            print(user_id, "user_id check - webhook log")
             profile = None
             user = None
         else:
             user = User.objects.get(id=int(user_id))
             profile = Dashboard.objects.get(user=user)
-            print(profile.in_use, ("users profile points in use check - webhook log"))
         billing_details = stripe_charge.billing_details
         order_exists = False
         attempt = 1
@@ -65,7 +63,10 @@ class StripeWH_Handler:
                     order.status = 'confirmed'
                     order.billing_details = billing_details
                     order.save()
-                    print("order created in place order, webhook log")
+                    if profile:
+                        if profile.in_use > 0:
+                            profile.in_use = 0
+                            profile.save()
                     break
             except Order.DoesNotExist:
                 pass
@@ -80,18 +81,17 @@ class StripeWH_Handler:
                 status=200)
         else:
             try:
+                order = Order.objects.create(
+                    bag_and_shipping_details={
+                        "bag": bag,
+                        "shipping": shipping,
+                        "email": email,
+                        "stripe_pid": pid,
+                    },
+                    status='confirmed'
+                )
                 if user:
-                    order = Order.objects.create(
-                        bag_and_shipping_details={
-                            "bag": bag,
-                            "shipping": shipping,
-                            "email": email,
-                            "stripe_pid": pid,
-                            "discount": discount
-                        },
-                        user=profile,
-                        status='confirmed'
-                    )
+                    order.user = profile
                     if discount != "0":
                         d = Discount.objects.get(id=discount)
                         profile.in_use = 0
@@ -99,26 +99,13 @@ class StripeWH_Handler:
                         order.discount = d
                         order.save()
                         order.update_total()
-                        print("order created in webhook and user and discount applied, webhook log")
                     else:
                         profile.points += round(
                             order.grand_total / 100
                         ) * 100
                         profile.save()
-                        print("order created in webhook and user applied, no discount applied, webhook log")
-                else:
-                    order = Order.objects.create(
-                        bag_and_shipping_details={
-                            "bag": bag,
-                            "shipping": shipping,
-                            "email": email,
-                            "stripe_pid": pid,
-                            "discount": discount
-                        },
-                        status='confirmed'
-                    )
+
                 order.save()
-                print("order created in webhook and no user and discount applied, webhook log")
                 for item_id, quantity in bag.items():
                     p = Product.objects.get(id=item_id)
                     order_line_item = OrderLineItem(

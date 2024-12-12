@@ -40,7 +40,7 @@ urlpatterns = [
 ```python
 urlpatterns = [
     ...
-    path('', include('bag.urls')),
+    path('bag/', include('bag.urls')),
     ...
 ]
 ```
@@ -67,4 +67,8 @@ urlpatterns = [
 
 ### remove_from_bag
 - Removing an item from the bag act as expected.
+
+## Solved bugs
+
+In case of both discount and delivery fees present it would create two different orders in place_order and in the webhook, in the bag context processor I was calculating the discount from total excluded delivery fees, while in checkout they were included in the total before calculating the discount. Even if the pid was the same, the amount of the transaction was different so I had two orders for the same transaction. Fixed by calculating the discount in the bag context processor from the grand total.
 

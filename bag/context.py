@@ -34,25 +34,25 @@ def bag(request):
             'product': product,
             'discounted_price': discounted_price,
         })
-    if discount_id != "0":
-        discount_amount = Decimal(total * discount.discount / 100).__round__(2)
-        if discount_amount <= discount.max_discount:
-            total = total - discount_amount
-        else:
-            total = total - discount.max_discount
-    else:
-        discount_amount = 0
 
     if total < settings.FREE_DELIVERY_TRESHOLD:
-        delivery = total * Decimal(
+        delivery = (total * Decimal(
             settings.STANDARD_DELIVERY_PERCENTAGE / 100
-            )
-        delivery = delivery.__round__(2)
+            )).__round__(2)
         free_delivery_delta = settings.FREE_DELIVERY_TRESHOLD - total
     else:
         delivery = 0
         free_delivery_delta = 0
     grand_total = total + delivery
+
+    if discount_id != "0":
+        discount_amount = Decimal(total * discount.discount / 100).__round__(2)
+        if discount_amount <= discount.max_discount:
+            grand_total = grand_total - discount_amount
+        else:
+            grand_total = grand_total - discount.max_discount
+    else:
+        discount_amount = 0
     json_bag = json.dumps(b)
     context = {
         'bag': json_bag,

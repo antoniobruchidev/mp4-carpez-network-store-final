@@ -76,37 +76,29 @@ def place_order(request):
         )
         order_exist = True
         if profile:
-            print(d, type(d), "discount check after profile")
             if d != "0":
                 discount = Discount.objects.get(id=d)
                 order.discount = discount
-                print("add discount to order")
             else:
                 profile.points += order.grand_total
                 profile.save()
-                print("applied discount, place order log")
             order.user = profile
-            print("profile applied in place order, place order log")
             order.update_total()
     except Order.DoesNotExist:
         order_exist = False
-        print("order created in webhook, place order log, profile check next")
 
     if order_form.is_valid() and not order_exist:
         order = order_form.save()
         for item_id, quantity in b.items():
             try:
                 product = Product.objects.get(id=item_id)
-                print("get single product, place order log")
                 order_line_item = OrderLineItem(
                     order=order, product=product, quantity=quantity
                 )
-                print(product.discount, type(product.discount), "check individual product discounts and create lineitem -place order log")
                 if product.discount > 0:
                     order_line_item.discounted_price = product.price - Decimal(
                         product.price * product.discount / 100
                     ).__round__(2)
-                    print("applied discount to lineitem")
                 order_line_item.save()
             except Product.DoesNotExist:
                 messages.error(
@@ -119,22 +111,16 @@ def place_order(request):
                 )
                 order.delete()
                 return redirect(reverse("view_bag"))
-        order = Order.objects.get(stripe_pid=pid)
-        print("order created in place order, place order log")
         if profile:
-            print(d, type(d), "check order discount")
             if d != 0:
                 discount = Discount.objects.get(id=d)
                 order.discount = discount
                 profile.in_use = 0
                 profile.save()
-                print("applied discount, place order log")
             else:
                 profile.points += round(order.grand_total / 100) * 100
                 profile.save()
-                print("applied points to profile, place order log")
             order.user = profile
-            print("applied profile, place order log")
             order.update_total()
         messages.success(
             request,
@@ -157,7 +143,6 @@ def checkout(request, discount_id):
         discount = Discount.objects.get(id=discount_id)
         calc_d = Decimal(total * discount.discount / 100).__round__(2)
         max_d = True if calc_d > discount.max_discount else False
-        request.session['discount'] = discount_id
         profile = Dashboard.objects.get(user=request.user)
         profile.in_use = discount.points
         profile.points -= discount.points
