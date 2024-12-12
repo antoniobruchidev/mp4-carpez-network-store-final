@@ -42,9 +42,11 @@
                   <button id="add-product" class="dropdown-menu" type="button">Add a product</a>
                 </li>
             {% else %}
-                <li>
-                  <button id="view-bag" class="dropdown-menu" type="button">Shopping Cart</a>
-                </li>
+                {% if grand_total %}
+                    <li>
+                      <button id="view-bag" class="dropdown-menu" type="button">Shopping Cart</a>
+                    </li>
+                {% endif %}
             {% endif %}
                 <li>
                   <form method="post" action="{% url 'account_logout' %}">
