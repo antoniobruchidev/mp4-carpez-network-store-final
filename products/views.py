@@ -17,7 +17,9 @@ from reviews.models import Review
 
 
 def get_products(request):
-    """View to return all products"""
+    """View to return all available product
+    or all available products associated with a tag,
+    or filter available products by an user query"""
     if request.user.is_superuser:
         products = Product.objects.all()
     else:
@@ -29,29 +31,7 @@ def get_products(request):
     direction = None
     query = None
 
-    if request.GET:  
-        if 'tag' in request.GET:
-            if request.GET['tag'] != "":
-                tag = get_object_or_404(
-                    Tag, tag=request.GET['tag']
-                )
-                tagged_products = []
-                for product in products:
-                    for tag_check in product.tags.all():
-                        if tag == tag_check:
-                            if product.discount > 0:
-                                discounted_price = product.price - Decimal(
-                                    product.price * product.discount / 100
-                                ).__round__(2)
-                            else:
-                                discounted_price = None
-                            tagged_products.append((product, discounted_price))
-                context = {
-                    'products': tagged_products,
-                    'tags': tags
-                }
-                return render(request, 'products/products.html', context)
-        
+    if request.GET:
         if 'category' in request.GET:
             if request.GET['category'] != "":
                 category = get_object_or_404(
@@ -84,18 +64,26 @@ def get_products(request):
                 products = products.exclude(rating__isnull=True)
 
         if 'q' in request.GET:
-            query = request.GET['q']
-            if not query:
-                messages.error(
-                    request, "You didn't enter any search criterial"
-                    )
-                return redirect(reverse('products'))
+            query = request.GET['q']    
             queries = (
-                Q(name__icontains=query) | Q(description__icontains=query) | Q(
-                    tags__friendly_tag__icontains=query
-                ) | Q( brand__brand__icontains=query)
+                Q(name__icontains=query) | Q(
+                    description__icontains=query
+                    ) | Q(brand__brand__icontains=query)
                 )
             products = products.filter(queries).distinct()
+        if 'tag' in request.GET:
+            if request.GET['tag'] != "":
+                tag = get_object_or_404(
+                    Tag, tag=request.GET['tag']
+                )
+                tagged_products = []
+                for product in products:
+                    for tag_check in product.tags.all():
+                        if tag == tag_check:
+                            tagged_products.append(
+                                product)
+                products = tagged_products
+                            
     discounted_prices = []
     for product in products:
         if product.discount > 0:
@@ -107,7 +95,7 @@ def get_products(request):
         discounted_prices.append(discounted_price)
     products_and_discounts = zip(products, discounted_prices)
     current_sorting = f'{sort}_{direction}'
-
+    
     context = {
         'products': products_and_discounts,
         'search-term': query,
@@ -140,7 +128,9 @@ def get_product_details(request, product_id):
                 reviews.append(review)
     product_reviews = zip(reviews, usernames)
     if product.discount > 0:
-        discounted_price = product.price - Decimal(product.price * product.discount / 100).__round__(2)
+        discounted_price = product.price - Decimal(
+            product.price * product.discount / 100
+        ).__round__(2)
     else:
         discounted_price = None
     template = 'products/product_details.html'
@@ -164,9 +154,10 @@ def add_product(request):
             form = ProductForm(request.POST, request.FILES)
             if form.is_valid():
                 product = form.save()
-                print(product.id)
                 messages.success(request, "Successfully added product")
-                return redirect(reverse('get_product_details', args=[product.id]))
+                return redirect(
+                    reverse('get_product_details', args=[product.id])
+                )
             else:
                 messages.error(
                     request,

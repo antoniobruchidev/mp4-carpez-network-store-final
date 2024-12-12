@@ -3,10 +3,6 @@ from .models import Brand, Product, Category, Tag
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, ButtonHolder, HTML
 
-input_css_class = 'form-control'
-input_css_class_tags = 'form-select'
-
-
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
@@ -14,7 +10,9 @@ class ProductForm(forms.ModelForm):
                   'tags', 'brand', 'sku', 'discount', 'available',]
 
     name = forms.CharField(max_length=254, required=True, label='Name:')
-    price = forms.DecimalField(decimal_places=2, required=True, label='Price:')
+    price = forms.DecimalField(
+        decimal_places=2, required=True, label='Price:'
+    )
     image = forms.ImageField(label='Image:', required=True)
     description = forms.CharField(max_length=254, label='Description')
     categories = forms.Select()
