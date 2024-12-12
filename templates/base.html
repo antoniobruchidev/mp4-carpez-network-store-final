@@ -87,7 +87,7 @@
       $('#view-bag').on('click', function() {
         window.location.href="{% url 'view_bag' %}"
       })
-      {% if not on_bag_page %}
+      {% if not on_bag_page and not on_profile_page %}
       var admin = "{{ request.user.is_superuser }}"
       console.log(admin == "True")
       if (admin != "True"){

@@ -111,7 +111,8 @@ def dashboard(request):
         context = {
             'orders': orders,
             'profile': profile,
-            'lineitems': lineitems
+            'lineitems': lineitems,
+            'on_profile_page': True
         }
     return render(request, template, context)
 
