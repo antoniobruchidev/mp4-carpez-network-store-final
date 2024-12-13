@@ -74,6 +74,4 @@ urlpatterns = [
 #### bugs
 Removing a discount will set the discount to null in the Order model, which will not impact the grand_total that is set by the update_total method. But it won't be displayed in the order page. I will add a bool available to it, and instead of deleting them i will make them unavailable.
 
-### answer_review
-- This view can be called by a superuser from its dashboard in the reviews tab.
-- It successfully update the review with the store answer.
+

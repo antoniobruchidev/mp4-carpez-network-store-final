@@ -79,9 +79,11 @@
         <!-- Dropdown menu -->
         <div id="user-dropdown" class="w-44 z-50 hidden bg-yellow-50 divide-y divide-yellow-900 rounded-lg shadow dark:bg-gray-700">
             <ul aria-labelledby="user-menu-button">
-              <li>
-                <button id="view-bag" class="dropdown-menu" type="button">Shopping Cart</a>
-              </li>
+              {% if grand_total %}
+                <li>
+                  <button id="view-bag" class="dropdown-menu" type="button">Shopping Cart</a>
+                </li>
+              {% endif %}
               <li>
                 <button id="login" class="dropdown-menu">Login</button>
               </li>

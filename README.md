@@ -107,6 +107,13 @@ I started out whit a white background but it was too plain, especially on big sc
 #### [Email relay application](reviews/readme.md)
 #### Allauth
 As I had that problem described (here)[reviews/readme.md], I also had to override a allauth registration flow or it would still throw an application error everytime an user register, or forgets the email. I created a custom adapter to override the render_mail method to prep the email to be sent and the send_mail method to post the data to the same Flask app the email_relay app interact with.
+#### Navbar
+The navbar comprehends four button and a dropdown. on mobile the four button collapse into a classic mobile menu.
+On the dropdown there also is a popover, triggered by hovering on desktop and by click on touchscreens.
+The popover is on the left on desktop at the bottom on touchscreens.
+The popover is shown only when user if present is not a superuser and there is a grand total present.
+The popover successfully show the cart content.
+dropdown successfully shows shopping cart button only if grand total is present.
 
 ### Validator Testing
 
