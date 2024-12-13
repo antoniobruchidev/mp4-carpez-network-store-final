@@ -52,7 +52,17 @@ except Exception as e:
 ```
 
 However when pushed on heroku it was not working anymore. I double and triple checked every environment variables, changed port numbers to integers, switch from tls to ssl, reset the google app password, of course none of it worked since the error was a socket timeout error and it was affecting also the registration process. User would try to register, receive the socket timeout error. They would be registered but not activated with no activation email.
+After adding the debug view receive_error, if I run it locally it successfully sends the email.
+If I run it on heroku, it return application error page, even is debug is true, and the logs on heroku looks like this
+
+![Heroku logs](../static/images/heroku_logs.png)
+
+I honestly still don't know what's really wrong and how to solve it.
+So I created a very small Flask App, here the (repository)[https://github.com/antoniobruchidev/carpez-email-relay].
+It's deployed https://carpez-network-3bb390eeb294.herokuapp.com/ and it has only one route send_email which accepts a POST request with 'subject', 'body', 'sender', 'recipient' and 'secret'.
+While the first four are for the email to be sent, the 'secret' one is to have an additional password otherwise everybody would be able to use it.
 
 ## Testing
-
-
+- send_confirmation_email is called by the webhook and can be called manually changing the status in the superuser dashboard.
+- send_dispatched_email and send_delivered_email are called from the superuser dashboard when changing the status.
+- They all render the email as expected including discounts if present.
