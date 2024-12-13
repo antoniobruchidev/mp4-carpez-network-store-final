@@ -12,4 +12,5 @@ urlpatterns = [
     path('delete_category/<category_id>', views.delete_category, name='delete_category'),
     path('delete_tag/<tag_id>', views.delete_tag, name='delete_tag'),
     path('edit_order/<order_id>', views.edit_order, name='edit_order'),
+    path('update_carousel/<tag_id>', views.change_carousel_tag, name='change_carousel_tag'),
 ]

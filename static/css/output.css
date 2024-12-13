@@ -1846,7 +1846,7 @@ input[type=number] {
   color: rgb(156 163 175 / var(--tw-text-opacity));
 }
 
-.tag-popover-header
+.tag-popover-header,
     .brand-popover-header,
     .category-popover-header,
     .discount-popover-header {
@@ -1863,7 +1863,7 @@ input[type=number] {
   padding-bottom: 0.5rem;
 }
 
-.tag-popover-header
+.tag-popover-header:is(.dark *),
     .brand-popover-header:is(.dark *),
     .category-popover-header:is(.dark *),
     .discount-popover-header:is(.dark *) {
@@ -1873,7 +1873,7 @@ input[type=number] {
   background-color: rgb(55 65 81 / var(--tw-bg-opacity));
 }
 
-.tag-popover-content
+.tag-popover-content,
     .brand-popover-content,
     .category-popover-content,
     .discount-popover-content {

@@ -58,8 +58,8 @@ If I run it on heroku, it return application error page, even is debug is true, 
 ![Heroku logs](../static/images/heroku_logs.png)
 
 I honestly still don't know what's really wrong and how to solve it.
-So I created a very small Flask App, here the (repository)[https://github.com/antoniobruchidev/carpez-email-relay].
-It's deployed https://carpez-network-3bb390eeb294.herokuapp.com/ and it has only one route send_email which accepts a POST request with 'subject', 'body', 'sender', 'recipient' and 'secret'.
+So I created a very small Flask App, here the [repository](https://github.com/antoniobruchidev/carpez-email-relay).
+It's deployed on heroku as well and it has only one route send_email. so it only accept POST request to https://carpez-network-3bb390eeb294.herokuapp.com/send_mail with 'subject', 'body', 'sender', 'recipient' and 'secret' as the post data.
 While the first four are for the email to be sent, the 'secret' one is to have an additional password otherwise everybody would be able to use it.
 
 ## Testing

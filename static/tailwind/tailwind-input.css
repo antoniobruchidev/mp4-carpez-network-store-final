@@ -108,14 +108,14 @@
         @apply absolute z-10 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800
     }
 
-    .tag-popover-header
+    .tag-popover-header,
     .brand-popover-header,
     .category-popover-header,
     .discount-popover-header {
         @apply px-3 py-2 bg-yellow-100 border-b border-yellow-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700
     }
 
-    .tag-popover-content
+    .tag-popover-content,
     .brand-popover-content,
     .category-popover-content,
     .discount-popover-content {

@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.views.decorators.http import require_POST
+from django.conf import settings
 
 from checkout.models import Discount, Order, OrderLineItem
 from dashboard.models import Dashboard
@@ -346,3 +347,16 @@ def delete_category(request, category_id):
         return JsonResponse(data=data, status=status)
     else:
         return JsonResponse(status=403)
+
+
+def change_carousel_tag(request, tag_id):
+    data = dict()
+    if request.user.is_superuser:
+        tag = Tag.objects.get(id=tag_id)
+        settings.HOMEPAGE_CAROUSEL_TAG = tag.__str__()
+        data['success'] = 'Carousel updated successfully.'
+        status = 200
+    else:
+        data['error'] = 'Permission denied'
+        status = 403
+    return JsonResponse(data=data, status=status)

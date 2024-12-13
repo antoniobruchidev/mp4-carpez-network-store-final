@@ -105,6 +105,8 @@ I started out whit a white background but it was too plain, especially on big sc
 #### [Dashboard application](dashboard/readme.md)
 #### [Reviews application](reviews/readme.md)
 #### [Email relay application](reviews/readme.md)
+#### Allauth
+As I had that problem described (here)[reviews/readme.md], I also had to override a allauth registration flow or it would still throw an application error everytime an user register, or forgets the email. I created a custom adapter to override the render_mail method to prep the email to be sent and the send_mail method to post the data to the same Flask app the email_relay app interact with.
 
 ### Validator Testing
 
@@ -114,8 +116,6 @@ I started out whit a white background but it was too plain, especially on big sc
  
   
 - **Accessibility**
-
-### Bugs
 
 
 ## Deployment

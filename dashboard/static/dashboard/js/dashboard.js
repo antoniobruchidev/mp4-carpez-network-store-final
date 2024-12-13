@@ -5,7 +5,7 @@
         form.submit()
     })
 
-    const delete_tag = async (tagId) => {
+    const deleteTag = async (tagId) => {
         var formData = new FormData()
         formData.append('csrfmiddlewaretoken', csrfToken)
         var url = `delete_tag/${tagId}`;
@@ -28,7 +28,30 @@
         }
     }
 
-    const delete_category = async (categoryId) => {
+    const updateCarousel = async (tagId) => {
+        var formData = new FormData()
+        formData.append('csrfmiddlewaretoken', csrfToken)
+        var url = `update_carousel/${tagId}`;
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                body: formData
+            })
+
+            const data = await response.json()
+            if (data.success) {
+                $(`#tag-${tagId}`).remove()
+                createGreenToast(data)
+            } else {
+                createRedToast(data)
+            }
+            $('.loading').addClass("invisible")
+        } catch(error) {
+            console.log(error)
+        }
+    }
+
+    const deleteCategory = async (categoryId) => {
         var formData = new FormData()
         formData.append('csrfmiddlewaretoken', csrfToken)
         var url = `delete_category/${categoryId}`;
@@ -51,7 +74,7 @@
         }
     }
 
-    const delete_brand = async (brandId) => {
+    const deleteBrand = async (brandId) => {
         var formData = new FormData()
         formData.append('csrfmiddlewaretoken', csrfToken)
         var url = `delete_brand/${brandId}`;
@@ -74,7 +97,7 @@
         }
     }
 
-    const delete_discount = async (discountId) => {
+    const deleteDiscount = async (discountId) => {
         var formData = new FormData()
         formData.append('csrfmiddlewaretoken', csrfToken)
         var url = `delete_discount/${discountId}`;
@@ -365,23 +388,30 @@
         return newDiscount
     }
 
-    $('.tag').on('click', async function() {
+    $('.tag').on('click', async function(e) {
+        e.preventDefault()
         var tagId = $(this).data('tag-id')
-        delete_tag(tagId)
+        updateCarousel(tagId)
         
     })
+
+    $('.tag').on('contextmenu', function() {
+        var tagId = $(this).data('tag-id')
+        deleteTag(tagId)
+    })
+
     $('.category').on('click', function() {
         var categoryId = $(this).data('category-id')
-        delete_category(categoryId)
+        deleteCategory(categoryId)
         
     })
     $('.brand').on('click', function() {
         var brandId = $(this).data('brand-id')
-        delete_brand(brandId)
+        deleteBrand(brandId)
     })
     $('.discount').on('click', function() {
         var discountId = $(this).data('discount-id')
-        delete_discount(discountId)
+        deleteDiscount(discountId)
     })
     $(".pagination-button").on("click", function(){
         var page = $(this).data("page")
