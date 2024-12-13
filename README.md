@@ -115,21 +115,6 @@ The popover is shown only when user if present is not a superuser and there is a
 The popover successfully show the cart content.
 dropdown successfully shows shopping cart button only if grand total is present.
 
-### Validator Testing
-
-- **HTML**
- 
-- **CSS**
- 
-  
-- **Accessibility**
-
-
-## Deployment
-
-
-## Credits
-
 
 ### Acknowledgements
 - My mentor, Medale Oluwafemi, for his invaluable guidance.
