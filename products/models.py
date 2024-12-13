@@ -52,7 +52,7 @@ class Product(models.Model):
         'Brand', null=True, blank=True, on_delete=models.SET_NULL
     )
     tags = models.ManyToManyField(Tag)
-    sku = models.CharField(max_length=254, null=True, blank=True)
+    sku = models.CharField(max_length=254, null=True, blank=True, unique=True)
     name = models.CharField(max_length=254)
     description = models.TextField()
     rating = models.DecimalField(max_digits=2, decimal_places=1, null=True, blank=False)

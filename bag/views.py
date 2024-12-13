@@ -15,7 +15,7 @@ def view_bag(request):
     discounts_available = None
     if str(request.user) != "AnonymousUser":
         profile = Dashboard.objects.get(user=request.user)
-        discounts = Discount.objects.all()
+        discounts = Discount.objects.exclude(available=False)
         discounts_available = False
         for discount in discounts:
             if profile.points >= discount.points:

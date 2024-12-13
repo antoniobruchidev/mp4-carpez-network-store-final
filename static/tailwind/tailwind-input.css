@@ -115,11 +115,15 @@
         @apply px-3 py-2 bg-yellow-100 border-b border-yellow-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700
     }
 
-    .tag-popover-content,
+    .tag-popover-header-content,
     .brand-popover-content,
     .category-popover-content,
     .discount-popover-content {
         @apply font-semibold text-yellow-900
+    }
+    
+    .content {
+        @apply text-yellow-900
     }
 
     .brand {

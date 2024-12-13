@@ -72,7 +72,7 @@ def dashboard(request):
         categories = Category.objects.all()
         tags = Tag.objects.all()
         brands = Brand.objects.all()
-        discounts = Discount.objects.all()
+        discounts = Discount.objects.exclude(available=False)
         for review in reviews:
             product = Product.objects.get(id=review.order.product.id)
             order = Order.objects.get(id=review.order.order.id)
@@ -96,7 +96,8 @@ def dashboard(request):
                 'entries': paginated_orders.count,
                 'page_display': page_display,
                 'page_count': page_count
-            }
+            },
+            'on_superuser_dashboard_page': True
         }
     else:
         template = 'dashboard/profile.html'
@@ -295,7 +296,8 @@ def delete_discount(request, discount_id):
         data = dict()
         try:
             discount = Discount.objects.get(id=discount_id)
-            discount.delete()
+            discount.available = False
+            discount.save()
             data['success'] = 'Discount deleted successfully.'
             status=200
         except Exception as e:

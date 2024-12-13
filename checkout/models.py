@@ -15,6 +15,7 @@ class Discount(models.Model):
     points = models.IntegerField(null=False, blank=False)
     discount = models.IntegerField(null=False)
     max_discount = models.IntegerField(null=False, blank=False)
+    available = models.BooleanField(null=False, default=True)
 
     def __str__(self):
         return f"{self.points} points for {self.discount}% discount."

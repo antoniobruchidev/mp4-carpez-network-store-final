@@ -40,7 +40,6 @@
 
             const data = await response.json()
             if (data.success) {
-                $(`#tag-${tagId}`).remove()
                 createGreenToast(data)
             } else {
                 createRedToast(data)
@@ -194,6 +193,37 @@
                 messageContainer.appendChild(toast)
     }
 
+    const selectPopoverContent = (tagHeader, tagBody) => {
+        if (navigator.userAgent.match(/Android/i)
+            || navigator.userAgent.match(/webOS/i)
+            || navigator.userAgent.match(/iPhone/i)
+            || navigator.userAgent.match(/iPad/i)
+            || navigator.userAgent.match(/iPod/i)
+            || navigator.userAgent.match(/BlackBerry/i)
+            || navigator.userAgent.match(/Windows Phone/i)) {
+
+            var title = "Click to update carousel"
+            var body = "Click on the tag to make it the tag to show in the homepage carousel."
+            
+        } else {
+            var title = "Carousel tag update or DELETE"
+            var body = "Left click to have the homepage carousel display products with this tag, right click to remove."
+        }
+        console.log(tagHeader)
+        tagHeader.innerText = title
+        tagBody.innerText = body
+    }
+
+    const resetTagsPopoverContent = () => {
+        var tagHeaders = document.getElementsByClassName("tag-popover-header-content")
+        var tagBodys = document.getElementsByClassName("tag-popover-body-content")
+        for (let i = 0; i < tagHeaders.length; i++ ) {
+            console.log(tagHeaders[i], tagBodys[i])
+            selectPopoverContent(tagHeaders[i], tagBodys[i])
+        }
+        
+    }
+
     const createTag = (data) => {
         var newTag = document.createElement("div")
         newTag.setAttribute("data-popover-target", `popover-tag-${data.new_tag_id}`)
@@ -208,8 +238,7 @@
         var popoverTagHeader = document.createElement("div")
         popoverTagHeader.classList.add("tag-popover-header")
         var headerContent = document.createElement("h3")
-        headerContent.classList.add("tag-popover-content")
-        headerContent.innerText = "Click to delete"
+        headerContent.classList.add("tag-popover-header-content")
         popoverTagHeader.appendChild(headerContent)
         popoverTag.appendChild(popoverTagHeader)
         popoverTag.setAttribute("data-popover", "")
@@ -218,8 +247,8 @@
         var popoverContent = document.createElement("div")
         popoverContent.classList.add("px-3", "py-2")
         var p = document.createElement("p")
-        p.classList.add("text-yellow-900")
-        p.innerText = `Click to remove ${data.new_tag_name}`
+        p.classList.add("tag-popover-body-content")
+        selectPopoverContent(headerContent, p)
         popoverContent.appendChild(p)
         var div = document.createElement("div")
         div.setAttribute("data-popover-arrow", "")
@@ -388,14 +417,16 @@
         return newDiscount
     }
 
-    $('.tag').on('click', async function(e) {
-        e.preventDefault()
+    
+
+    $('.tag').on('click', async function() {
         var tagId = $(this).data('tag-id')
         updateCarousel(tagId)
         
     })
 
-    $('.tag').on('contextmenu', function() {
+    $('.tag').on('contextmenu', function(e) {
+        e.preventDefault()
         var tagId = $(this).data('tag-id')
         deleteTag(tagId)
     })
@@ -540,3 +571,4 @@
         window.open(`mailto:${email}`)
     })
     
+    $("#keywords-tab").on("click", resetTagsPopoverContent())
