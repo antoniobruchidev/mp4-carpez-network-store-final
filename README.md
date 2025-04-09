@@ -1,33 +1,24 @@
 # E-commerce Application
 Full stack e-commerce platform
 
-## Live demo at [Carpez Kitchen Manager](https://carpez-network-store-9da961f19555.herokuapp.com/)
+## Live demo at [Carpez Network Store](https://carpez-network-store-9da961f19555.herokuapp.com/)
 
 ## Table of Contents
-
-- [Antonio Bruchi's Personal Website](#antonio-bruchi's-personal-website)
-  - [This is my main marketing website.](#this-is-my-main-marketing-website)
-  - [Demo](#demo)
-  - [Live website](#live-website)
-  - [Table of Contents](#table-of-contents)
-    - [UX](#ux)
-    - [User stories](#user-stories)
-      - [Strategy](#strategy)
-      - [Scope](#scope)
-      - [Structure](#structure)
-      - [Skeleton](#skeleton)
-      - [Surface](#surface)
-    - [Technologies](#technologies)
-    - [Features](#features)
-      - [Existing Features](#existing-features)
-      - [Features Left to Implement](#features-left-to-implement)
-    - [Testing](#testing)
-      - [Application](#applications)
-      - [Allauth](#allauth)
-      - [Navbar](#navbar)
-    - [Deployment](#deployment)
-    - [Credits](#credits)
-      - [Acknowledgements](#acknowledgements)
+  - [UX](#ux)
+  - [User stories](#user-stories)
+    - [Strategy](#strategy)
+    - [Scope](#scope)
+    - [Structure](#structure)
+    - [Skeleton](#skeleton)
+    - [Surface](#surface)
+  - [Technologies](#technologies)
+  - [Testing](#testing)
+    - [Application](#applications)
+    - [Allauth](#allauth)
+    - [Navbar](#navbar)
+  - [Deployment](#deployment)
+  - [Credits](#credits)
+    - [Acknowledgements](#acknowledgements)
 
 ## UX
 
