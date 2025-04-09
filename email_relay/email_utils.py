@@ -4,8 +4,9 @@ from django.template.loader import render_to_string
 from custom_adapter import send_email
 
 
-def send_confirmation_email(order):
+def send_confirmation_email(order_id):
     """Send the user a confirmation email"""
+    order = Order.objects.get(id=order_id)
     line_items = order.lineitems.all()
     discounted_amount = None
     if order.discount:

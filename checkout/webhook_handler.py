@@ -72,7 +72,7 @@ class StripeWH_Handler:
             time.sleep(1)
         if order_exists:
             
-            send_confirmation_email(order)
+            send_confirmation_email(order.id)
             return HttpResponse(
                 content=f'Webhook received: {event["type"]} | SUCCESS: \
                     Verified order already in database',
@@ -122,7 +122,7 @@ class StripeWH_Handler:
                     return HttpResponse(content=f'Webhook received: \
                         {event["type"]} | ERROR: {e}', status=500)
 
-        send_confirmation_email(order)
+        send_confirmation_email(order.id)
         return HttpResponse(
             content=f'Webhook received: {event["type"]} | SUCCESS: Created\
                 order in webhook',
