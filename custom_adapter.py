@@ -10,36 +10,30 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from allauth.account import app_settings
 from ecommerce.env import config
-    
-    
+
+
 def send_email(subject, body, recipient):
     msg = MIMEMultipart()
-    msg['From'] = config("EMAIL_HOST_USER")
-    msg['To'] = recipient
-    msg['Subject'] = subject
+    msg["From"] = config("EMAIL_HOST_USER")
+    msg["To"] = recipient
+    msg["Subject"] = subject
 
-    msg.attach(MIMEText(body, 'plain'))
+    msg.attach(MIMEText(body, "plain"))
 
     try:
-        with smtplib.SMTP('smtp.gmail.com', 587) as server:
+        with smtplib.SMTP("smtp.gmail.com", 587) as server:
             context = ssl.create_default_context()
             server.starttls(context=context)
-            server.login(
-                msg['From'],
-                config("EMAIL_HOST_PASSWORD")
-            )
+            server.login(msg["From"], config("EMAIL_HOST_PASSWORD"))
             text = msg.as_string()
-            
-            server.sendmail(
-                msg['From'], msg['To'], text)
+
+            server.sendmail(msg["From"], msg["To"], text)
             print("Email sent successfully")
     except Exception as e:
         print(f"Error: {e}")
 
 
-
 class MyAllauthAdapter(DefaultAccountAdapter):
-
 
     def render_mail(self, template_prefix, email, context, headers=None):
         """
@@ -79,7 +73,6 @@ class MyAllauthAdapter(DefaultAccountAdapter):
             )
             msg.content_subtype = "html"  # Main content is now text/html
         return msg
-    
 
     def send_mail(self, template_prefix, email, context):
         ctx = {

@@ -16,7 +16,7 @@ class Review(models.Model):
     rating = models.IntegerField(null=True, blank=True)
     store_answer = models.TextField(null=True, blank=True)
     date = models.DateTimeField(null=True, blank=True)
-    
+
     def add_date(self):
         self.date = datetime.datetime.now()
         self.save()
@@ -24,12 +24,11 @@ class Review(models.Model):
     def __str__(self):
         return f"Review for {self.order.product.name} - Rating: {self.rating}"
 
-    
 
 @receiver(post_save, sender=OrderLineItem)
 def create_or_update_review(sender, instance, created, **kwargs):
     """
-        Create or Update the user profile
+    Create or Update the user profile
     """
     if created:
         Review.objects.create(order=instance)

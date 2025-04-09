@@ -21,9 +21,7 @@ class StripeWH_Handler:
         """
         Handle a generic/unknown/unexpected webhook event
         """
-        return HttpResponse(
-            content=f'Webhook received: {event["type"]}',
-            status=200)
+        return HttpResponse(content=f'Webhook received: {event["type"]}', status=200)
 
     def handle_payment_intent_succeeded(self, event):
         """
@@ -37,11 +35,9 @@ class StripeWH_Handler:
         user_id = intent.metadata.user_id
         discount = intent.metadata.discount
         stripe.api_key = settings.STRIPE_SECRET_KEY
-        stripe_charge = stripe.Charge.retrieve(
-             intent.latest_charge
-        )
+        stripe_charge = stripe.Charge.retrieve(intent.latest_charge)
         amount = round(int(intent.amount) / 100, 2)
-        if user_id == "ul" or user_id == 'null':
+        if user_id == "ul" or user_id == "null":
             profile = None
             user = None
         else:
@@ -52,13 +48,10 @@ class StripeWH_Handler:
         attempt = 1
         while attempt <= 5:
             try:
-                order = Order.objects.get(
-                    stripe_pid=pid,
-                    grand_total=amount
-                )
+                order = Order.objects.get(stripe_pid=pid, grand_total=amount)
                 if order:
                     order_exists = True
-                    order.status = 'confirmed'
+                    order.status = "confirmed"
                     order.billing_details = billing_details
                     order.save()
                     if profile:
@@ -71,12 +64,13 @@ class StripeWH_Handler:
             attempt += 1
             time.sleep(1)
         if order_exists:
-            
+
             send_confirmation_email(order.id)
             return HttpResponse(
                 content=f'Webhook received: {event["type"]} | SUCCESS: \
                     Verified order already in database',
-                status=200)
+                status=200,
+            )
         else:
             try:
                 order = Order.objects.create(
@@ -86,7 +80,7 @@ class StripeWH_Handler:
                         "email": email,
                         "stripe_pid": pid,
                     },
-                    status='confirmed'
+                    status="confirmed",
                 )
                 if user:
                     order.user = profile
@@ -98,18 +92,14 @@ class StripeWH_Handler:
                         order.save()
                         order.update_total()
                     else:
-                        profile.points += round(
-                            order.grand_total / 100
-                        ) * 100
+                        profile.points += round(order.grand_total / 100) * 100
                         profile.save()
 
                 order.save()
                 for item_id, quantity in bag.items():
                     p = Product.objects.get(id=item_id)
                     order_line_item = OrderLineItem(
-                        order=order,
-                        product=p,
-                        quantity=quantity
+                        order=order, product=p, quantity=quantity
                     )
                     if p.discount > 0:
                         order_line_item.discounted_price = p.price - Decimal(
@@ -119,27 +109,27 @@ class StripeWH_Handler:
             except Exception as e:
                 if order:
                     order.delete()
-                    return HttpResponse(content=f'Webhook received: \
-                        {event["type"]} | ERROR: {e}', status=500)
+                    return HttpResponse(
+                        content=f'Webhook received: \
+                        {event["type"]} | ERROR: {e}',
+                        status=500,
+                    )
 
         send_confirmation_email(order.id)
         return HttpResponse(
             content=f'Webhook received: {event["type"]} | SUCCESS: Created\
                 order in webhook',
-            status=200)
+            status=200,
+        )
 
     def handle_payment_intent_failed(self, event):
         """
         Handle the payment_intent.payment_failed webhook from Stripe
         """
-        return HttpResponse(
-            content=f'Webhook received: {event["type"]}',
-            status=200)
+        return HttpResponse(content=f'Webhook received: {event["type"]}', status=200)
 
     def handle_payment_intent_created(self, event):
         """
         Handle the payment_intent.created webhook from Stripe
         """
-        return HttpResponse(
-            content=f'Webhook received: {event["type"]}',
-            status=200)
+        return HttpResponse(content=f'Webhook received: {event["type"]}', status=200)

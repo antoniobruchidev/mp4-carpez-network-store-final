@@ -13,8 +13,8 @@ def bag(request):
     total = 0
     objects = 0
 
-    b = request.session.get('bag', {})
-    discount_id = request.session.get('discount', "0")
+    b = request.session.get("bag", {})
+    discount_id = request.session.get("discount", "0")
     if discount_id != "0":
         discount = Discount.objects.get(id=discount_id)
     for product_id in b.keys():
@@ -25,20 +25,22 @@ def bag(request):
         else:
             discounted_price = product.price - Decimal(
                 product.price * product.discount / 100
-                ).__round__(2)
+            ).__round__(2)
             total += discounted_price * b[product_id]
         objects += b[product_id]
-        bag_items.append({
-            'product_id': product_id,
-            'quantity': b[product_id],
-            'product': product,
-            'discounted_price': discounted_price,
-        })
+        bag_items.append(
+            {
+                "product_id": product_id,
+                "quantity": b[product_id],
+                "product": product,
+                "discounted_price": discounted_price,
+            }
+        )
 
     if total < settings.FREE_DELIVERY_TRESHOLD:
-        delivery = (total * Decimal(
-            settings.STANDARD_DELIVERY_PERCENTAGE / 100
-            )).__round__(2)
+        delivery = (
+            total * Decimal(settings.STANDARD_DELIVERY_PERCENTAGE / 100)
+        ).__round__(2)
         free_delivery_delta = settings.FREE_DELIVERY_TRESHOLD - total
     else:
         delivery = 0
@@ -55,15 +57,15 @@ def bag(request):
         discount_amount = 0
     json_bag = json.dumps(b)
     context = {
-        'bag': json_bag,
-        'bag_items': bag_items,
-        'total': total,
-        'objects': objects,
-        'delivery': delivery,
-        'free_delivery_delta': free_delivery_delta,
-        'free_delivery_treshold': settings.FREE_DELIVERY_TRESHOLD,
-        'discount_amount': discount_amount,
-        'grand_total': grand_total,
+        "bag": json_bag,
+        "bag_items": bag_items,
+        "total": total,
+        "objects": objects,
+        "delivery": delivery,
+        "free_delivery_delta": free_delivery_delta,
+        "free_delivery_treshold": settings.FREE_DELIVERY_TRESHOLD,
+        "discount_amount": discount_amount,
+        "grand_total": grand_total,
     }
-    
+
     return context

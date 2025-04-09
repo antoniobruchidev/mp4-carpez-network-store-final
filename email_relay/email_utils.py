@@ -16,14 +16,14 @@ def send_confirmation_email(order_id):
     cust_email = order.email
     subject = "Carpez Network - Order Confirmation"
     body = render_to_string(
-        'email_relay/order_confirmation_email.txt',
+        "email_relay/order_confirmation_email.txt",
         {
-            'order': order,
-            'contact_email': settings.EMAIL_HOST_USER,
-            'line_items': line_items,
-            'discount': order.discount,
-            'discounted_amount': discounted_amount
-        }
+            "order": order,
+            "contact_email": settings.EMAIL_HOST_USER,
+            "line_items": line_items,
+            "discount": order.discount,
+            "discounted_amount": discounted_amount,
+        },
     )
     send_email(subject, body, cust_email)
     return True
@@ -41,14 +41,14 @@ def send_dispatch_email(order_id):
     cust_email = order.email
     subject = "Carpez Network - Order Notification - Dispatch"
     body = render_to_string(
-        'email_relay/order_dispatched_email.txt',
+        "email_relay/order_dispatched_email.txt",
         {
-            'order': order,
-            'contact_email': settings.EMAIL_HOST_USER,
-            'line_items': line_items,
-            'discount': order.discount,
-            'discounted_amount': discounted_amount
-        }
+            "order": order,
+            "contact_email": settings.EMAIL_HOST_USER,
+            "line_items": line_items,
+            "discount": order.discount,
+            "discounted_amount": discounted_amount,
+        },
     )
     send_email(subject, body, cust_email)
 
@@ -68,16 +68,15 @@ def send_delivered_email(order_id):
     cust_email = order.email
     subject = "Carpez Network - Order Notification - Delivery"
     body = render_to_string(
-        'email_relay/order_delivered_email.txt',
+        "email_relay/order_delivered_email.txt",
         {
-            'order': order,
-            'contact_email': settings.EMAIL_HOST_USER,
-            'line_items': line_items,
-            'discount': order.discount,
-            'discounted_amount': discounted_amount
-        }
+            "order": order,
+            "contact_email": settings.EMAIL_HOST_USER,
+            "line_items": line_items,
+            "discount": order.discount,
+            "discounted_amount": discounted_amount,
+        },
     )
     send_email(subject, body, cust_email)
 
     return True
-

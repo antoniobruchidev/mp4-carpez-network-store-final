@@ -33,7 +33,7 @@ def cache_checkout_data(request):
                 "email": request.POST.get("email"),
                 "shipping": request.POST.get("shipping"),
                 "billing": request.POST.get("billing"),
-                "discount": request.POST.get("discount")
+                "discount": request.POST.get("discount"),
             },
         )
         return HttpResponse(status=200)
@@ -47,32 +47,33 @@ def cache_checkout_data(request):
 
 
 def place_order(request):
-    body = request.body.decode('utf-8')
+    body = request.body.decode("utf-8")
     json_body = json.loads(body)
-    b = json.loads(json_body['bag'])
-    e = json_body['email']
-    s = json.loads(json_body['shipping'])
-    d = json.loads(json_body['discount'])
-    pid = json_body['stripe_pid']
+    b = json.loads(json_body["bag"])
+    e = json_body["email"]
+    s = json.loads(json_body["shipping"])
+    d = json.loads(json_body["discount"])
+    pid = json_body["stripe_pid"]
     bag_and_shipping_details = {
-        'bag': b,
-        'stripe_pid': pid,
-        'shipping': s,
-        'email': e,
-        'discount': d
+        "bag": b,
+        "stripe_pid": pid,
+        "shipping": s,
+        "email": e,
+        "discount": d,
     }
     current_bag = bag(request)
     if str(request.user) != "AnonymousUser":
         profile = Dashboard.objects.get(user=request.user)
     else:
         profile = None
-    order_form = OrderForm({
-        'bag_and_shipping_details': bag_and_shipping_details,
-    })
+    order_form = OrderForm(
+        {
+            "bag_and_shipping_details": bag_and_shipping_details,
+        }
+    )
     try:
         order = Order.objects.get(
-            stripe_pid=pid,
-            grand_total=current_bag["grand_total"]
+            stripe_pid=pid, grand_total=current_bag["grand_total"]
         )
         order_exist = True
         if profile:
@@ -128,15 +129,15 @@ def place_order(request):
             Your order number is {order.order_number}, a confirmation \
             email will be sent to {order.bag_and_shipping_details['email']}.",
         )
-        return JsonResponse({'message': order.order_number})
+        return JsonResponse({"message": order.order_number})
     else:
-        return JsonResponse({'message': 'form not valid'})
+        return JsonResponse({"message": "form not valid"})
 
 
 def checkout(request, discount_id):
     discount = None
     max_d = False
-    request.session['discount'] = discount_id
+    request.session["discount"] = discount_id
     current_bag = bag(request)
     total = current_bag["grand_total"]
     if discount_id != "0":
@@ -155,13 +156,13 @@ def checkout(request, discount_id):
         currency=settings.STRIPE_CURRENCY,
     )
     context = {
-        'client_secret': intent.client_secret,
-        'stripe_public_key': stripe_public_key,
-        'user_id': request.user.id,
-        'discount': discount,
-        'max_discount': max_d
+        "client_secret": intent.client_secret,
+        "stripe_public_key": stripe_public_key,
+        "user_id": request.user.id,
+        "discount": discount,
+        "max_discount": max_d,
     }
-    return render(request, 'checkout/checkout.html', context)
+    return render(request, "checkout/checkout.html", context)
 
 
 def checkout_success(request, order_number):
@@ -174,9 +175,6 @@ def checkout_success(request, order_number):
         del request.session["discount"]
 
     template = "checkout/checkout_success.html"
-    context = {
-        "order": order,
-        "line_items": line_items
-    }
+    context = {"order": order, "line_items": line_items}
 
     return render(request, template, context)

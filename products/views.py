@@ -32,58 +32,51 @@ def get_products(request):
     query = None
 
     if request.GET:
-        if 'category' in request.GET:
-            if request.GET['category'] != "":
-                category = get_object_or_404(
-                    Category, name=request.GET['category']
-                )
+        if "category" in request.GET:
+            if request.GET["category"] != "":
+                category = get_object_or_404(Category, name=request.GET["category"])
                 products = products.filter(category=category)
 
-        if 'brand' in request.GET:
-            if request.GET['brand'] != "":
-                brand = get_object_or_404(
-                    Brand, brand=request.GET['brand']
-                )
+        if "brand" in request.GET:
+            if request.GET["brand"] != "":
+                brand = get_object_or_404(Brand, brand=request.GET["brand"])
                 products = products.filter(brand=brand)
-            
-        if 'sort' in request.GET:
-            sortkey = request.GET['sort']
+
+        if "sort" in request.GET:
+            sortkey = request.GET["sort"]
             sort = sortkey
-            if sortkey == 'name':
-                sortkey = 'lower_name'
-                products = products.annotate(lower_name=Lower('name'))
-                
-            if 'direction' in request.GET:
-                direction = request.GET['direction']
-                if direction == 'desc':
-                    sortkey = f'-{sortkey}'
-            
+            if sortkey == "name":
+                sortkey = "lower_name"
+                products = products.annotate(lower_name=Lower("name"))
+
+            if "direction" in request.GET:
+                direction = request.GET["direction"]
+                if direction == "desc":
+                    sortkey = f"-{sortkey}"
+
             products = products.order_by(sortkey)
 
-            if request.GET['sort'] == 'rating':
+            if request.GET["sort"] == "rating":
                 products = products.exclude(rating__isnull=True)
 
-        if 'q' in request.GET:
-            query = request.GET['q']    
+        if "q" in request.GET:
+            query = request.GET["q"]
             queries = (
-                Q(name__icontains=query) | Q(
-                    description__icontains=query
-                    ) | Q(brand__brand__icontains=query)
-                )
+                Q(name__icontains=query)
+                | Q(description__icontains=query)
+                | Q(brand__brand__icontains=query)
+            )
             products = products.filter(queries).distinct()
-        if 'tag' in request.GET:
-            if request.GET['tag'] != "":
-                tag = get_object_or_404(
-                    Tag, tag=request.GET['tag']
-                )
+        if "tag" in request.GET:
+            if request.GET["tag"] != "":
+                tag = get_object_or_404(Tag, tag=request.GET["tag"])
                 tagged_products = []
                 for product in products:
                     for tag_check in product.tags.all():
                         if tag == tag_check:
-                            tagged_products.append(
-                                product)
+                            tagged_products.append(product)
                 products = tagged_products
-                            
+
     discounted_prices = []
     for product in products:
         if product.discount > 0:
@@ -94,17 +87,17 @@ def get_products(request):
             discounted_price = None
         discounted_prices.append(discounted_price)
     products_and_discounts = zip(products, discounted_prices)
-    current_sorting = f'{sort}_{direction}'
-    
+    current_sorting = f"{sort}_{direction}"
+
     context = {
-        'products': products_and_discounts,
-        'search-term': query,
-        'category': category,
-        'categories': categories,
-        'current_sorting': current_sorting,
-        'tags': tags,
+        "products": products_and_discounts,
+        "search-term": query,
+        "category": category,
+        "categories": categories,
+        "current_sorting": current_sorting,
+        "tags": tags,
     }
-    return render(request, 'products/products.html', context)
+    return render(request, "products/products.html", context)
 
 
 def get_product_details(request, product_id):
@@ -133,14 +126,14 @@ def get_product_details(request, product_id):
         ).__round__(2)
     else:
         discounted_price = None
-    template = 'products/product_details.html'
+    template = "products/product_details.html"
     context = {
-        'product': product,
-        'product_reviews': product_reviews,
-        'tags': product_badges,
-        'brand': product.brand,
-        'category': product.category,
-        'discounted_price': discounted_price
+        "product": product,
+        "product_reviews": product_reviews,
+        "tags": product_badges,
+        "brand": product.brand,
+        "category": product.category,
+        "discounted_price": discounted_price,
     }
     return render(request, template, context)
 
@@ -150,28 +143,25 @@ def add_product(request):
     """View to add a product to the store"""
     if request.user.is_superuser:
         form = ProductForm()
-        if request.method == 'POST':
+        if request.method == "POST":
             form = ProductForm(request.POST, request.FILES)
             if form.is_valid():
                 product = form.save()
                 messages.success(request, "Successfully added product")
-                return redirect(
-                    reverse('get_product_details', args=[product.id])
-                )
+                return redirect(reverse("get_product_details", args=[product.id]))
             else:
                 messages.error(
-                    request,
-                    "Form is not valid, please double check the data."
+                    request, "Form is not valid, please double check the data."
                 )
 
-        template = 'products/add_product.html'
+        template = "products/add_product.html"
         context = {
-            'form': form,
+            "form": form,
         }
         return render(request, template, context)
     else:
         messages.error(request, "You are not allowed to add products")
-        return redirect(reverse('home'))
+        return redirect(reverse("home"))
 
 
 @login_required
@@ -179,31 +169,27 @@ def edit_product_details(request, product_id):
     """View to edit a product in the store"""
     if request.user.is_superuser:
         product = get_object_or_404(Product, id=product_id)
-        if request.method == 'POST':
+        if request.method == "POST":
             form = ProductForm(request.POST, request.FILES, instance=product)
             if form.is_valid():
                 form.save()
                 messages.success(request, "Successfully updated product")
-                return redirect(
-                    reverse('get_product_details', args=[product.id])
-                    )
+                return redirect(reverse("get_product_details", args=[product.id]))
             else:
-                messages.error(
-                    request, "Failed to update, ensure the data is valid"
-                    )
+                messages.error(request, "Failed to update, ensure the data is valid")
         else:
             form = ProductForm(instance=product)
             messages.info(request, f"You are editing {product.name}")
-        template = 'products/edit_product.html'
+        template = "products/edit_product.html"
         context = {
-            'form': form,
-            'product': product,
+            "form": form,
+            "product": product,
         }
 
         return render(request, template, context)
     else:
         messages.error(request, "Authorization denied, you are not an admin.")
-        return redirect(reverse('home'))
+        return redirect(reverse("home"))
 
 
 @login_required
@@ -213,7 +199,7 @@ def delete_product(request, product_id):
         product = get_object_or_404(Product, id=product_id)
         product.delete()
         messages.success(request, "Product deleted.")
-        return redirect(reverse('get_products'))
+        return redirect(reverse("get_products"))
     else:
         messages.error(request, "Authorization denied, you are not an admin.")
-        return redirect(reverse('home'))
+        return redirect(reverse("home"))
