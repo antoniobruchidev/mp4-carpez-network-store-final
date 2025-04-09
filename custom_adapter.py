@@ -34,8 +34,8 @@ def send_email(subject, body, recipient):
             server.sendmail(
                 msg['From'], msg['To'], text)
             print("Email sent successfully")
-    except:
-        print("Error: unable to send email")
+    except Exception as e:
+        print(f"Error: {e}")
 
 
 
