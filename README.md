@@ -117,6 +117,26 @@ dropdown successfully shows shopping cart button only if grand total is present.
 
 ## Deployment
 The deployment process on Heroku platform is quite straightforward, once created the application by clicking the "New" button in the dashboard and following instructions, go to the deploy tab, from there it's possible either to deploy using heroku-cli or to connect the app to your application git repository on github. With that option is possible either to enable automatic deploys (everytime github repository changes it deploys the new version), or manually deploy it from the repository.
+If the application is developed locally in docker which is not the case it can be also be deployed by docker container registry using heroku-cli.
+This app has been deployed manually.
+### Heroku launch files
+#### Procfile
+It will tell the heroku platform how to launch the application
+```bash
+web: gunicorn ecommerce.wsgi:application
+```
+#### .python-version (Optional)
+It will tell the heroku platform which version of python to use for the build. If file not present heroku platform will use its default (currently 3.13)
+```bash
+3.12
+```
+### Python environment - pip-tools required
+requirements.txt compiled with
+```bash
+pip-compile requirements/requirements.in -o requirements.txt
+```
+### Environment variables
+Environment variables can be set in the settings tab of the application in the heroku dashboard.
 
 ## Credits
 
