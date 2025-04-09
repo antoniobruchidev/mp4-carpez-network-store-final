@@ -16,15 +16,15 @@ Full stack e-commerce platform
       - [Scope](#scope)
       - [Structure](#structure)
       - [Skeleton](#skeleton)
-        - [Wireframes](#wireframes)
       - [Surface](#surface)
     - [Technologies](#technologies)
     - [Features](#features)
       - [Existing Features](#existing-features)
       - [Features Left to Implement](#features-left-to-implement)
     - [Testing](#testing)
-      - [Validator Testing](#validator-testing)
-      - [Bugs](#bugs)
+      - [Application](#applications)
+      - [Allauth](#allauth)
+      - [Navbar](#navbar)
     - [Deployment](#deployment)
     - [Credits](#credits)
       - [Acknowledgements](#acknowledgements)
@@ -104,9 +104,9 @@ I started out whit a white background but it was too plain, especially on big sc
 #### [Checkout application](checkout/readme.md)
 #### [Dashboard application](dashboard/readme.md)
 #### [Reviews application](reviews/readme.md)
-#### [Email relay application](reviews/readme.md)
+#### [Email relay application](email_relay/readme.md)
 #### Allauth
-As I had that problem described (here)[reviews/readme.md], I also had to override a allauth registration flow or it would still throw an application error everytime an user register, or forgets the email. I created a custom adapter to override the render_mail method to prep the email to be sent and the send_mail method to post the data to the same Flask app the email_relay app interact with.
+As I had that problem described (here)[email_relay/readme.md], I also had to override a allauth registration flow or it would still throw an application error everytime an user register, or forgets the email. I created a custom adapter to override the render_mail method to prep the email to be sent and the send_mail method to post the data to the same Flask app the email_relay app interact with.
 #### Navbar
 The navbar comprehends four button and a dropdown. on mobile the four button collapse into a classic mobile menu.
 On the dropdown there also is a popover, triggered by hovering on desktop and by click on touchscreens.
@@ -115,6 +115,10 @@ The popover is shown only when user if present is not a superuser and there is a
 The popover successfully show the cart content.
 dropdown successfully shows shopping cart button only if grand total is present.
 
+## Deployment
+The deployment process on Heroku platform is quite straightforward, once created the application by clicking the "New" button in the dashboard and following instructions, go to the deploy tab, from there it's possible either to deploy using heroku-cli or to connect the app to your application git repository on github. With that option is possible either to enable automatic deploys (everytime github repository changes it deploys the new version), or manually deploy it from the repository.
+
+## Credits
 
 ### Acknowledgements
 - My mentor, Medale Oluwafemi, for his invaluable guidance.
