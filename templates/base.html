@@ -67,11 +67,8 @@
     {% endblock %}
 
     {% block postloadjs %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.5.2/flowbite.js">
-    import { Popover } from 'flowbite';
-    </script>
-    <script type="text/javascript">
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.5.2/flowbite.js"></script>
+    <script>
       $('#dashboard').on('click', function() {
         window.location.href="{% url 'dashboard' %}"
       })
@@ -89,7 +86,6 @@
       })
       {% if not on_bag_page and not on_profile_page and on_superuser_dashboard_page %}
       var admin = "{{ request.user.is_superuser }}"
-      console.log(admin == "True")
       if (admin != "True"){
         if (navigator.userAgent.match(/Android/i)
             || navigator.userAgent.match(/webOS/i)
