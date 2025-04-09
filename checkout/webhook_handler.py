@@ -1,6 +1,5 @@
 from decimal import Decimal
 import json
-import socket
 import time
 from django.http import HttpResponse
 from checkout.models import Discount, Order, OrderLineItem
@@ -8,9 +7,8 @@ from dashboard.models import Dashboard
 from products.models import Product
 import stripe
 from django.conf import settings
-from django.core.mail import EmailMultiAlternatives
 from django.contrib.auth.models import User
-from email_relay.views import send_confirmation_email
+from email_relay.email_utils import send_confirmation_email
 
 
 class StripeWH_Handler:

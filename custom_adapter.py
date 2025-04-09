@@ -5,9 +5,36 @@ from allauth.account.adapter import DefaultAccountAdapter
 from django.template.loader import render_to_string
 from django.template import TemplateDoesNotExist
 from django.core.mail import EmailMessage, EmailMultiAlternatives
+import smtplib, ssl
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from allauth.account import app_settings
-from django.contrib.sites.shortcuts import get_current_site
 from ecommerce.env import config
+    
+    
+def send_email(subject, body, recipient):
+    msg = MIMEMultipart()
+    msg['From'] = config("EMAIL_HOST_USER")
+    msg['To'] = recipient
+    msg['Subject'] = subject
+
+    msg.attach(MIMEText(body, 'plain'))
+
+    try:
+        with smtplib.SMTP('smtp.gmail.com', 587) as server:
+            context = ssl.create_default_context()
+            server.starttls(context=context)
+            server.login(
+                msg['From'],
+                config("EMAIL_HOST_PASSWORD")
+            )
+            text = msg.as_string()
+            
+            server.sendmail(
+                msg['From'], msg['To'], text)
+            print("Email sent successfully")
+    except:
+        print("Error: unable to send email")
 
 
 
@@ -60,12 +87,4 @@ class MyAllauthAdapter(DefaultAccountAdapter):
         }
         ctx.update(context)
         msg = self.render_mail(template_prefix, email, ctx)
-        url = config('EMAIL_RELAY_URL')
-        post_data = [
-            ('subject', msg.subject),
-            ('recipient', msg.to[0]),
-            ('body', msg.body),
-            ('sender', msg.from_email),
-            ('secret', config("FLASK_RELAY_SECRET"))]
-            
-        result = requests.post(url, data=post_data)
+        send_email(msg.subject, msg.body, msg.to[0])

@@ -5,14 +5,14 @@ from django.urls import reverse
 from django.views.decorators.http import require_POST
 from django.conf import settings
 
-from checkout.models import Discount, Order, OrderLineItem
+from checkout.models import Discount, Order
 from dashboard.models import Dashboard
 from products.models import Brand, Category, Product, Tag
 from django.contrib import messages
 from django.core.paginator import Paginator
 
 from reviews.models import Review
-from email_relay.views import (
+from email_relay.email_utils import (
     send_dispatch_email,
     send_delivered_email,
     send_confirmation_email

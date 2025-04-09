@@ -59,8 +59,54 @@ If I run it on heroku, it return application error page, even is debug is true, 
 
 I honestly still don't know what's really wrong and how to solve it.
 So I created a very small Flask App, here the [repository](https://github.com/antoniobruchidev/carpez-email-relay).
-It's deployed on heroku as well and it has only one route send_email. so it only accept POST request to https://carpez-network-3bb390eeb294.herokuapp.com/send_mail with 'subject', 'body', 'sender', 'recipient' and 'secret' as the post data.
+It was deployed on heroku as well and it has only one route send_email. so it only accept POST request to [removed](#) with 'subject', 'body', 'sender', 'recipient' and 'secret' as the post data.
 While the first four are for the email to be sent, the 'secret' one is to have an additional password otherwise everybody would be able to use it.
+
+## FIX - [found a fix here](https://realpython.com/python-send-email/)
+Added this code to custom_adapter
+
+```python
+import smtplib, ssl
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
+
+def send_email(subject, body, recipient):
+    msg = MIMEMultipart()
+    msg['From'] = config("EMAIL_HOST_USER")
+    msg['To'] = recipient
+    msg['Subject'] = subject
+
+    msg.attach(MIMEText(body, 'plain'))
+
+    try:
+        with smtplib.SMTP('smtp.gmail.com', 587) as server:
+            context = ssl.create_default_context()
+            server.starttls(context=context)
+            server.login(
+                msg['From'],
+                config("EMAIL_HOST_PASSWORD")
+            )
+            text = msg.as_string()
+            
+            server.sendmail(
+                msg['From'], msg['To'], text)
+            print("Email sent successfully")
+    except:
+        print("Error: unable to send email")
+```
+
+and modified the MyAllauthAdapter.send_mail to
+
+```python
+def send_mail(self, template_prefix, email, context):
+        ctx = {
+            "email": email,
+        }
+        ctx.update(context)
+        msg = self.render_mail(template_prefix, email, ctx)
+        send_email(msg.subject, msg.body, msg.to[0])
+```
 
 ## Testing
 - send_confirmation_email is called by the webhook and can be called manually changing the status in the superuser dashboard.

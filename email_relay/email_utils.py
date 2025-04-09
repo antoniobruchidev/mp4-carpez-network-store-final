@@ -1,12 +1,7 @@
 from django.conf import settings
-from django.shortcuts import redirect
 from checkout.models import Order
-from ecommerce.env import config
 from django.template.loader import render_to_string
-import requests
-from django.core.mail import EmailMultiAlternatives
-from django.contrib import messages
-# Create your views here.
+from custom_adapter import send_email
 
 
 def send_confirmation_email(order):
@@ -29,16 +24,7 @@ def send_confirmation_email(order):
             'discounted_amount': discounted_amount
         }
     )
-    url = config('EMAIL_RELAY_URL')
-    post_data = [
-        ('subject', subject),
-        ('recipient', cust_email),
-        ('body', body),
-        ('sender', settings.EMAIL_HOST_USER),
-        ('secret', config("FLASK_RELAY_SECRET"))]
-        
-    result = requests.post(url, data=post_data)
-
+    send_email(subject, body, cust_email)
     return True
 
 
@@ -63,15 +49,7 @@ def send_dispatch_email(order_id):
             'discounted_amount': discounted_amount
         }
     )
-    url = config('EMAIL_RELAY_URL')
-    post_data = [
-        ('subject', subject),
-        ('recipient', cust_email),
-        ('body', body),
-        ('sender', settings.EMAIL_HOST_USER),
-        ('secret', config("FLASK_RELAY_SECRET"))]
-        
-    result = requests.post(url, data=post_data)
+    send_email(subject, body, cust_email)
 
     return True
 
@@ -98,34 +76,7 @@ def send_delivered_email(order_id):
             'discounted_amount': discounted_amount
         }
     )
-    url = config('EMAIL_RELAY_URL')
-    post_data = [
-        ('subject', subject),
-        ('recipient', cust_email),
-        ('body', body),
-        ('sender', settings.EMAIL_HOST_USER),
-        ('secret', config("FLASK_RELAY_SECRET"))]
-        
-    result = requests.post(url, data=post_data)
+    send_email(subject, body, cust_email)
 
     return True
-
-
-def receive_error(request):
-    if 'to' in request.GET:
-        email = EmailMultiAlternatives(
-        "This is a test",
-        "This is so much a test",
-        settings.EMAIL_HOST_USER,
-        [request.GET["to"]]
-        )
-        email.fail_silently=False
-        try:
-            email.send()
-            messages.success(request, "Email sent")
-        except Exception as e:
-            print(e)
-            messages.error(request, e.__str__())
-    return redirect("home")
-        
 
