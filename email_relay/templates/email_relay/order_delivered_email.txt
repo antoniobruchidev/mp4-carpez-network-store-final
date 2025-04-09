@@ -28,8 +28,6 @@ This is a notification for your order at Carpez Network e-Store. Your informatio
         {{ order.full_name }}
         {{ order.shipping }}
 
-We'll update you every step of the way here {{ order.email }}.
-
 If you have any questions, feel free to contact us at {{ contact_email }}.
 
 Thank you for your order!

@@ -305,8 +305,8 @@
                     </div>
                     <div id="discount-container" class="float-right mt-10 mr-10 grid grid-cols-2 justify-items-center">
                         {% for discount in discounts %}
-                            <div id="discount-{{ discount.id }}" data-popover-target="popover-discount-{{ discount.id }}">
-                                <button id="popover-discount-delete-{{ discount.id }}" data-discount-id="{{ discount.id }}" class="discount">{{ discount.discount }}</button>
+                            <div id="discount-{{ discount.id }}">
+                                <button id="popover-discount-delete-{{ discount.id }}" data-discount-id="{{ discount.id }}" class="discount" data-popover-target="popover-discount-{{ discount.id }}">{{ discount.discount }}</button>
                             </div>
                             <div data-popover id="popover-discount-{{ discount.id }}" role="tooltip" class="discount-popover">
                                 <div class="discount-popover-header">

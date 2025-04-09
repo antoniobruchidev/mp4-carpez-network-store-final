@@ -209,7 +209,6 @@
             var title = "Carousel tag update or DELETE"
             var body = "Left click to have the homepage carousel display products with this tag, right click to remove."
         }
-        console.log(tagHeader)
         tagHeader.innerText = title
         tagBody.innerText = body
     }
@@ -218,7 +217,6 @@
         var tagHeaders = document.getElementsByClassName("tag-popover-header-content")
         var tagBodys = document.getElementsByClassName("tag-popover-body-content")
         for (let i = 0; i < tagHeaders.length; i++ ) {
-            console.log(tagHeaders[i], tagBodys[i])
             selectPopoverContent(tagHeaders[i], tagBodys[i])
         }
         
@@ -368,7 +366,6 @@
     }
 
     const createDiscount = (data) => {
-        console.log("yes")
         var newDiscount = document.createElement("div")
         newDiscount.setAttribute("data-popover-target", `popover-discount-${data.new_discount_id}`)
         newDiscount.setAttribute("id", `discount-${data.new_discount_id}`)
@@ -405,7 +402,6 @@
         discounts.appendChild(popoverDiscount)
         const $targetEl = popoverDiscount
         const $triggerEl = newDiscountButton
-        console.log(discounts, newDiscount)
 
         // options with default values
         const options = {
