@@ -22,8 +22,9 @@ def send_email(subject, body, recipient):
 
     try:
         with smtplib.SMTP('smtp.gmail.com', 587) as server:
-            context = ssl.create_default_context()
-            server.starttls(context=context)
+            # context = ssl.create_default_context()
+            # server.starttls(context=context)
+            server.starttls()
             server.login(
                 msg['From'],
                 config("EMAIL_HOST_PASSWORD")
